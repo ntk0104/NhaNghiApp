@@ -8,24 +8,28 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'yellow',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    backgroundColor: '#61B4DC'
   },
   btnSetting: {
     width: 60,
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'pink'
+    borderLeftColor: 'gray',
+    borderLeftWidth: 2
   },
   leftMenu: {
     width: screen.width - 60,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'gray'
+  },
+  dateTxt: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold'
   }
-
 })
 
 export default styles;
