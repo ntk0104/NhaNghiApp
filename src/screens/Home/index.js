@@ -14,44 +14,74 @@ export default class Home extends PureComponent {
         {
           roomNumber: 16,
           itemID: 123,
-          timeIn: '15h30',
-          tagName: 'DG'
+          time: '15h30',
+          tagName: 'DG',
+          status: 'in',
+          note: 'note',
+          total: 100
+        },
+        {
+          roomNumber: 15,
+          itemID: 123,
+          time: '15h31',
+          tagName: 'DG',
+          status: 'out',
+          note: 'note',
+          total: 100
         },
         {
           roomNumber: 16,
           itemID: 1223,
-          timeIn: '15h30',
-          tagName: 'CD'
+          time: '15h30',
+          tagName: 'CD',
+          status: 'in',
+          note: 'note',
+          total: 100
         },
         {
           roomNumber: 16,
           itemID: 1233,
-          timeIn: '15h30',
-          tagName: 'QD'
+          time: '15h30',
+          tagName: 'QD',
+          status: 'out',
+          note: 'note',
+          total: 100
         },
         {
           roomNumber: 16,
           itemID: 1243,
-          timeIn: '15h30',
-          tagName: 'DG'
+          time: '15h30',
+          tagName: 'DG',
+          status: 'in',
+          note: 'note',
+          total: 100
         },
         {
           roomNumber: 16,
           itemID: 1253,
-          timeIn: '15h30',
-          tagName: 'QD'
+          time: '15h30',
+          tagName: 'QD',
+          status: 'out',
+          note: 'note',
+          total: 100
         },
         {
           roomNumber: 16,
           itemID: 1263,
-          timeIn: '15h30',
-          tagName: 'DG'
+          time: '15h30',
+          tagName: 'DG',
+          status: 'in',
+          note: 'note',
+          total: 100
         },
         {
           roomNumber: 16,
           itemID: 1273,
-          timeIn: '15h30',
-          tagName: 'CD'
+          time: '15h30',
+          tagName: 'CD',
+          status: 'in',
+          note: 'note',
+          total: 100
         }
       ]
     }
@@ -100,12 +130,14 @@ export default class Home extends PureComponent {
             </View>
           </View>
           <View style={styles.rightSideContent}>
-            <Text style={styles.withdrawTxt}>Danh sách vào</Text>
-            <View>
+            <Text style={[styles.withdrawTxt, {fontSize: 25}]}>Danh sách vào / ra</Text>
+            <View style={{width: '100%', flex: 1}}>
               <FlatList
                 data={this.state.history}
+                scrollEnabled
+                bounces={true}
                 keyExtractor={item => item.itemID}
-                renderItem={({item, index}) => <HistoryItem />}
+                renderItem={({item, index}) => <HistoryItem roomNumber={item.roomNumber} time={item.time} tagName={item.tagName} note={item.note} total={item.total} status={item.status} />}
               />
             </View>
           </View>

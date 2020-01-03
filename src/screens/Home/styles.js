@@ -14,9 +14,9 @@ const styles = StyleSheet.create({
   },
   rightSideContent: {
     flex: 3,
-    backgroundColor: 'red',
+    backgroundColor: '#95A5A6',
     alignItems: 'center',
-    paddingVertical: 10
+    paddingTop: 10
   },
   lableTxt: {
     fontSize: 20,
@@ -42,16 +42,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   btnWithDraw: {
-    paddingVertical: 10,
     paddingHorizontal: 15,
     backgroundColor: '#FF5B5B',
     borderRadius: 5,
-    fontSize: 20
+    fontSize: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+
   },
   withdrawTxt: {
     color: 'white',
     fontWeight: 'bold',
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
+    paddingVertical: 10
   }
 })
 
