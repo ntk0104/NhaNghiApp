@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react'
-import { Text, View, TouchableOpacity, FlatList } from 'react-native'
+import { Text, View, TouchableOpacity, FlatList, TextInput, ScrollView } from 'react-native'
 import styles from './styles'
 import MenuBar from '../../components/MenuBar/index'
 import RoomItem from '../../components/RoomItem/index'
 import HistoryItem from '../../components/HistoryItem/index'
+import Modal from 'react-native-modal'
+import { Icon, CheckBox } from 'native-base'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 
 export default class Home extends PureComponent {
 
@@ -83,11 +86,25 @@ export default class Home extends PureComponent {
           note: 'note',
           total: 100
         }
-      ]
+      ],
+      modalGetRoomVisible: false,
     }
   }
 
+  closeGetRoomModal = () => {
+    this.setState({
+      modalGetRoomVisible: false
+    })
+  }
+
+  onClickRoom = (roomNumber) => {
+    this.setState({
+      modalGetRoomVisible: true
+    })
+  }
+
   render() {
+    const { modalGetRoomVisible } = this.state
     return (
       <View style={styles.container}>
         <MenuBar />
@@ -98,7 +115,7 @@ export default class Home extends PureComponent {
             </View>
             <View style={styles.roomMapContainer}>
               <View style={styles.roomsLaneContainer}>
-                <RoomItem width='11%' height='100%' roomNumber={18} type='1bed' />
+                <RoomItem width='11%' height='100%' roomNumber={18} type='1bed' onClickRoom={this.onClickRoom} />
                 <RoomItem width='11%' height='100%' roomNumber={9} type='1bed' />
                 <RoomItem width='11%' height='100%' roomNumber={10} type='1bed' />
                 <RoomItem width='11%' height='100%' roomNumber={11} type='1bed' />
@@ -130,19 +147,108 @@ export default class Home extends PureComponent {
             </View>
           </View>
           <View style={styles.rightSideContent}>
-            <Text style={[styles.withdrawTxt, {fontSize: 25}]}>Danh sách vào / ra</Text>
-            <View style={{width: '100%', flex: 1}}>
+            <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>
+            <View style={{ width: '100%', flex: 1 }}>
               <FlatList
                 data={this.state.history}
                 scrollEnabled
                 bounces={true}
                 keyExtractor={item => item.itemID}
-                renderItem={({item, index}) => <HistoryItem roomNumber={item.roomNumber} time={item.time} tagName={item.tagName} note={item.note} total={item.total} status={item.status} />}
+                renderItem={({ item, index }) => <HistoryItem roomNumber={item.roomNumber} time={item.time} tagName={item.tagName} note={item.note} total={item.total} status={item.status} />}
               />
             </View>
           </View>
-
         </View>
+
+        <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} style={{ justifyContent: 'center', alignItems: 'center' }} onBackdropPress={this.closeGetRoomModal}>
+          <ScrollView>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTopBar}>
+                <View style={styles.modalHeaderTxtWrapper}>
+                  <Text style={styles.headerTxt}>Nhận Phòng</Text>
+                </View>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
+                  <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.modalBody}>
+                <View style={styles.leftBodyContainer}>
+                  <View style={styles.typeContainer}>
+                    <Text style={styles.titleTxt}>Loại:</Text>
+                    <View style={styles.typeOptionsWrapper}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                        <View style={styles.optionBtnWrapper}>
+                          <CheckBox checked={true} color="green" />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>DG</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                        <View style={styles.optionBtnWrapper}>
+                          <CheckBox checked={false} color="green" />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>CP</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                        <View style={styles.optionBtnWrapper}>
+                          <CheckBox checked={false} color="green" />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Qua đêm</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <View style={[styles.typeContainer, { backgroundColor: 'green' }]}>
+                    <Text style={styles.titleTxt}>Phòng:</Text>
+                    <View style={styles.typeOptionsWrapper}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                        <View style={styles.optionBtnWrapper}>
+                          <CheckBox checked={true} color="green" />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                        <View style={styles.optionBtnWrapper}>
+                          <CheckBox checked={false} color="green" />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <View style={[styles.typeContainer, { backgroundColor: 'red' }]}>
+                    <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
+                    <View style={styles.typeOptionsWrapper}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                        <View style={styles.optionBtnWrapper}>
+                          <Icon type="Entypo" name="camera" size={30} style={{ color: 'black' }} />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.rightBodyContainer}>
+                  <Text style={styles.titleTxt}>Ghi chú:</Text>
+                  <TextInput
+                    style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
+                    placeholder="Nhập ghi chú"
+                    onChangeText={(text) => this.setState({ text })}
+                    multiline
+                    returnKeyLabel={'OK'}
+                    returnKeyType='done'
+                  />
+                </View>
+              </View>
+              <View style={styles.modalFooter}>
+                <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
+                  <Text style={styles.headerTxt}>Hủy</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnOK}>
+                  <Text style={styles.headerTxt}>OK</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+
+        </Modal>
       </View>
     )
   }

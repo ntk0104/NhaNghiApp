@@ -6,7 +6,7 @@ import { Icon } from 'native-base'
 export default class RoomItem extends Component {
   render() {
     return (
-      <TouchableOpacity style={{ width: this.props.width, height: this.props.height, alignItems: 'center', justifyContent: 'center', borderWidth: 1}}>
+      <TouchableOpacity style={{ width: this.props.width, height: this.props.height, alignItems: 'center', justifyContent: 'center', borderWidth: 1}} onPress={() => this.props.onClickRoom(this.props.roomNumber)}>
         <View style={styles.roomNumberWrapper}>
           <Text style={styles.roomNumberTxt}>{this.props.roomNumber}</Text>
           {
