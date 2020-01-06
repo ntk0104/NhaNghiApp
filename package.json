@@ -16,7 +16,8 @@
     "react-native": "0.61.5",
     "react-native-keyboard-aware-scrollview": "2.1.0",
     "react-native-modal": "11.5.3",
-    "react-native-vector-icons": "6.6.0"
+    "react-native-vector-icons": "6.6.0",
+    "realm": "^4.0.0-beta.0"
   },
   "devDependencies": {
     "@babel/core": "7.7.7",

@@ -6,7 +6,9 @@ import RoomItem from '../../components/RoomItem/index'
 import HistoryItem from '../../components/HistoryItem/index'
 import Modal from 'react-native-modal'
 import { Icon, CheckBox } from 'native-base'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
+import Realm from 'realm'
+import { updateRoom } from '../../database/index'
+import moment from 'moment'
 
 export default class Home extends PureComponent {
 
@@ -88,7 +90,16 @@ export default class Home extends PureComponent {
         }
       ],
       modalGetRoomVisible: false,
+      selectedSectionType: 'CD',
+      selectedRoomType: 'quat',
+      gettingRoomName: null,
+      currentNote: null,
+      gettingRoomID: null
     }
+  }
+
+  componentDidMount() {
+    console.log('%c%s', 'color: #22b6', Realm.defaultPath);
   }
 
   closeGetRoomModal = () => {
@@ -97,14 +108,49 @@ export default class Home extends PureComponent {
     })
   }
 
-  onClickRoom = (roomNumber) => {
+  showGetRoomModal = (roomId, roomNumber) => {
     this.setState({
-      modalGetRoomVisible: true
+      modalGetRoomVisible: true,
+      gettingRoomName: roomNumber,
+      gettingRoomID: roomId
+    })
+  }
+
+  onSubmitGetRoom = () => {
+    const updatedInfo = {
+      id: this.state.gettingRoomID,
+      currentStatus: 'busy',
+      timeIn: moment().unix(),
+      chargedItems: [],
+      note: this.state.currentNote,
+      tag: this.state.selectedSectionType,
+      cmnd: null
+    }
+    updateRoom(updatedInfo)
+      .then(() => {
+        this.closeGetRoomModal()
+      })
+      .catch((err) => {
+        console.log('%c%s', 'color: #00e600', err);
+      })
+  }
+
+  selectSectionType = (sectionType) => {
+    this.setState({
+      selectedSectionType: sectionType
+    })
+  }
+
+  selectRoomType = (roomType) => {
+    this.setState({
+      selectedRoomType: roomType
     })
   }
 
   render() {
-    const { modalGetRoomVisible } = this.state
+
+    console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
+    const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType } = this.state
     return (
       <View style={styles.container}>
         <MenuBar />
@@ -115,25 +161,25 @@ export default class Home extends PureComponent {
             </View>
             <View style={styles.roomMapContainer}>
               <View style={styles.roomsLaneContainer}>
-                <RoomItem width='11%' height='100%' roomNumber={18} type='1bed' onClickRoom={this.onClickRoom} />
-                <RoomItem width='11%' height='100%' roomNumber={9} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={10} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={11} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={12} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={13} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={14} type='special' />
-                <RoomItem width='11%' height='100%' roomNumber={15} type='special' />
-                <RoomItem width='11%' height='100%' roomNumber={16} type='2beds' />
+                <RoomItem id={'18'} overnight_price={180} roomNumber={18} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'9'} overnight_price={180} roomNumber={9} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'10'} overnight_price={180} roomNumber={10} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'11'} overnight_price={180} roomNumber={11} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'12'} overnight_price={180} roomNumber={12} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'13'} overnight_price={180} roomNumber={13} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'14'} overnight_price={180} roomNumber={14} type='special' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'15'} overnight_price={180} roomNumber={15} type='special' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'16'} overnight_price={180} roomNumber={16} type='2beds' onGetRoom={this.showGetRoomModal} />
               </View>
               <View style={[styles.roomsLaneContainer, { marginTop: 10 }]}>
-                <RoomItem width='11%' height='100%' roomNumber={17} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={8} type='special' />
-                <RoomItem width='11%' height='100%' roomNumber={7} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={6} type='special' />
-                <RoomItem width='11%' height='100%' roomNumber={5} type='2beds' />
-                <RoomItem width='11%' height='100%' roomNumber={4} type='1bed' />
-                <RoomItem width='11%' height='100%' roomNumber={3} type='special' />
-                <RoomItem width='11%' height='100%' roomNumber={2} type='special' />
+                <RoomItem id={'17'} overnight_price={180} roomNumber={17} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'8'} overnight_price={180} roomNumber={8} type='special' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'7'} overnight_price={180} roomNumber={7} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'6'} overnight_price={180} roomNumber={6} type='special' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'5'} overnight_price={180} roomNumber={5} type='2beds' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'4'} overnight_price={180} roomNumber={4} type='1bed' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'3'} overnight_price={180} roomNumber={3} type='special' onGetRoom={this.showGetRoomModal} />
+                <RoomItem id={'2'} overnight_price={180} roomNumber={2} type='special' onGetRoom={this.showGetRoomModal} />
               </View>
             </View>
             <View style={styles.totalContainer}>
@@ -161,11 +207,14 @@ export default class Home extends PureComponent {
         </View>
 
         <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} style={{ justifyContent: 'center', alignItems: 'center' }} onBackdropPress={this.closeGetRoomModal}>
-          <ScrollView>
+          <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.modalContent}>
               <View style={styles.modalTopBar}>
                 <View style={styles.modalHeaderTxtWrapper}>
-                  <Text style={styles.headerTxt}>Nhận Phòng</Text>
+                  <Text style={[styles.headerTxt, { marginRight: 20 }]}>Nhận Phòng</Text>
+                  <View style={styles.roomNumber}>
+                    <Text style={styles.roomNumberTxt}>{gettingRoomName}</Text>
+                  </View>
                 </View>
                 <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
                   <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
@@ -176,21 +225,21 @@ export default class Home extends PureComponent {
                   <View style={styles.typeContainer}>
                     <Text style={styles.titleTxt}>Loại:</Text>
                     <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
                         <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={true} color="green" />
+                          <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
                           <Text style={[styles.titleTxt, { marginLeft: 20 }]}>DG</Text>
                         </View>
                       </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
                         <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={false} color="green" />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>CP</Text>
+                          <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
+                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>CD</Text>
                         </View>
                       </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
                         <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={false} color="green" />
+                          <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
                           <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Qua đêm</Text>
                         </View>
                       </TouchableOpacity>
@@ -199,15 +248,15 @@ export default class Home extends PureComponent {
                   <View style={[styles.typeContainer, { backgroundColor: 'green' }]}>
                     <Text style={styles.titleTxt}>Phòng:</Text>
                     <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
                         <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={true} color="green" />
+                          <CheckBox checked={selectedRoomType == 'quat'} color="green" onPress={() => this.selectRoomType('quat')} />
                           <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
                         </View>
                       </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('lanh')}>
                         <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={false} color="green" />
+                          <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
                           <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
                         </View>
                       </TouchableOpacity>
@@ -230,10 +279,11 @@ export default class Home extends PureComponent {
                   <TextInput
                     style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
                     placeholder="Nhập ghi chú"
-                    onChangeText={(text) => this.setState({ text })}
+                    onChangeText={(text) => this.setState({ currentNote: text })}
                     multiline
-                    returnKeyLabel={'OK'}
-                    returnKeyType='done'
+                    keyboardType="default"
+                    blurOnSubmit={true}
+                    returnKeyType="done"
                   />
                 </View>
               </View>
@@ -241,7 +291,7 @@ export default class Home extends PureComponent {
                 <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
                   <Text style={styles.headerTxt}>Hủy</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnOK}>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnOK} onPress={this.onSubmitGetRoom}>
                   <Text style={styles.headerTxt}>OK</Text>
                 </TouchableOpacity>
               </View>

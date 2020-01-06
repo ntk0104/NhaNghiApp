@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   btnCloseModal: {
     width: 60,
@@ -152,7 +153,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     flexDirection: 'row'
-  }
+  },
+  roomNumber: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'white'
+  },
+  roomNumberTxt: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
 })
 
 export default styles;
