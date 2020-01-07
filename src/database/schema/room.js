@@ -7,7 +7,7 @@ Room.schema = {
   primaryKey: 'id',
   properties: {
     id: 'string',
-    roomName: 'int',
+    roomName: 'string',
     currentStatus: { type: 'string', default: 'available' },
     timeIn: 'int',
     chargedItems: 'ChargedItem[]',

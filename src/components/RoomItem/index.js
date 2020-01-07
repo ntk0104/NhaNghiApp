@@ -2,102 +2,69 @@ import React, { Component } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import styles from './styles'
 import { Icon } from 'native-base'
-import { checkRoomExisted, addRoom, updateRoom, getRoomInfo } from '../../database/index'
+import _ from 'lodash'
 
 export default class RoomItem extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      roomStatus: '',
-      lastTimeIn: null,
-      currentTag: '',
-      currentNote: '',
-      cmnd: null
+     
     }
+  }
+
+  shouldComponentUpdate(nextprops){
+    if(!_.isEqual(this.props, nextprops)){
+      return true
+    }
+    return false
   }
 
   componentDidMount() {
-    const isRoomExisted = checkRoomExisted(this.props.id)
-    if (!isRoomExisted) {
-      let newRoom = {
-        id: this.props.id,
-        roomName: this.props.roomNumber,
-        currentStatus: 'available',
-        timeIn: 0,
-        chargedItems: [],
-        note: '',
-        tag: 'DG',
-        fan_hour_price: 60,
-        air_hour_price: 100,
-        overnight_price: this.props.overnight_price,
-        limitSection: 3.2,
-        limitMidnight: 15,
-        type: this.props.type,
-        cmnd: null
-      }
-      addRoom(newRoom)
-    }
-    this.getRoomInformation(this.props.id)
-  }
-
-  getRoomInformation = (id) => {
-    getRoomInfo(id)
-      .then(rs => {
-        this.setState({
-          roomStatus: rs.currentStatus,
-          lastTimeIn: rs.timeIn,
-          currentTag: rs.tag,
-          currentNote: rs.note,
-          cmnd: rs.cmnd
-        })
-      })
-      .catch(err => {
-        console.log('%c%s', 'color: #f2ceb6', err);
-      })
+    
   }
 
   clickRoom = () => {
-    const { roomStatus } = this.state
+    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = this.props
     if (roomStatus == 'available'){
       // get room
-      this.props.onGetRoom(this.props.id ,this.props.roomNumber)
+      this.props.onGetRoom(id ,roomName)
     } else {
       // see room detail
     }
   }
 
   render() {
-
     console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
-    const { roomStatus, lastTimeIn, currentTag, currentNote, cmnd } = this.state
+    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = this.props
     return (
       <TouchableOpacity style={[styles.roomContainer, {backgroundColor: roomStatus == 'available' ? 'white' : 'red' }]} onPress={this.clickRoom}>
         <View style={styles.roomNumberWrapper}>
-          <Text style={styles.roomNumberTxt}>{this.props.roomNumber}</Text>
+          <Text style={styles.roomNumberTxt}>{roomName}</Text>
           {
-            this.props.type == '2beds' &&
+            type == '2beds' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>
               <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
               <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
             </View>
           }
           {
-            this.props.type == '1bed' &&
+            type == '1bed' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>
               <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
             </View>
           }
           {
-            this.props.type == 'special' &&
+            type == 'special' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>
               <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
               <Icon type='AntDesign' name='heart' style={{ color: 'red', fontSize: 15 }} />
             </View>
           }
+          <Text style={[styles.roomNumberTxt, {fontSize: 13}]}>Giá:{overnight_price}</Text>
         </View>
         <View style={{ flex: 4, width: '100%' }}>
-          <Text>{lastTimeIn}</Text>
+          <Text>{tag}</Text>
         </View>
       </TouchableOpacity>
     )

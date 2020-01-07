@@ -2,13 +2,15 @@ import React, { PureComponent } from 'react'
 import { Text, View, TouchableOpacity, FlatList, TextInput, ScrollView } from 'react-native'
 import styles from './styles'
 import MenuBar from '../../components/MenuBar/index'
-import RoomItem from '../../components/RoomItem/index'
 import HistoryItem from '../../components/HistoryItem/index'
 import Modal from 'react-native-modal'
 import { Icon, CheckBox } from 'native-base'
 import Realm from 'realm'
-import { updateRoom } from '../../database/index'
+import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
 import moment from 'moment'
+import { Storage, constants, appConfig } from '../../utils'
+import RoomMap from './RoomMap'
+import HistoryList from './HistoryList'
 
 export default class Home extends PureComponent {
 
@@ -89,22 +91,61 @@ export default class Home extends PureComponent {
           total: 100
         }
       ],
+
       modalGetRoomVisible: false,
       selectedSectionType: 'CD',
       selectedRoomType: 'quat',
       gettingRoomName: null,
       currentNote: null,
-      gettingRoomID: null
+      gettingRoomID: null,
+      roomsData: null
     }
   }
 
   componentDidMount() {
     console.log('%c%s', 'color: #22b6', Realm.defaultPath);
+    this.checkFirstInitApp()
+  }
+
+  checkFirstInitApp = async () => {
+    const isSecond = await Storage.shared().getStorage(constants.SecondStart);
+    if (isSecond == true) {
+      // is not first init
+      console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
+      this.updateAllRoomsInfo()
+    } else {
+      console.log('%c%s', 'color: #f2ceb6', 'Is first start');
+      // first init
+      await Storage.shared().setStorage(constants.SecondStart, true)
+      const listRooms = appConfig.listRooms
+      let addRoomQueues = []
+      listRooms.forEach(room => {
+        addRoomQueues.push(addRoom(room))
+      });
+      Promise.all(addRoomQueues)
+        .then(rs => {
+          this.updateAllRoomsInfo()
+        })
+        .catch(err => console.log(err))
+    }
+  }
+
+  updateAllRoomsInfo = () => {
+    getAllRoomsInfo()
+      .then(roomsInfo => {
+        this.setState({ roomsData: roomsInfo })
+      })
+      .catch(err => console.log(err))
   }
 
   closeGetRoomModal = () => {
     this.setState({
-      modalGetRoomVisible: false
+      modalGetRoomVisible: false,
+      selectedSectionType: 'CD',
+      selectedRoomType: 'quat',
+      gettingRoomName: null,
+      currentNote: null,
+      gettingRoomID: null,
     })
   }
 
@@ -129,6 +170,7 @@ export default class Home extends PureComponent {
     updateRoom(updatedInfo)
       .then(() => {
         this.closeGetRoomModal()
+        this.updateAllRoomsInfo()
       })
       .catch((err) => {
         console.log('%c%s', 'color: #00e600', err);
@@ -150,7 +192,7 @@ export default class Home extends PureComponent {
   render() {
 
     console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
-    const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType } = this.state
+    const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, roomsData } = this.state
     return (
       <View style={styles.container}>
         <MenuBar />
@@ -159,29 +201,14 @@ export default class Home extends PureComponent {
             <View style={styles.labelWrapper}>
               <Text style={styles.lableTxt}>Sơ đồ phòng</Text>
             </View>
-            <View style={styles.roomMapContainer}>
-              <View style={styles.roomsLaneContainer}>
-                <RoomItem id={'18'} overnight_price={180} roomNumber={18} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'9'} overnight_price={180} roomNumber={9} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'10'} overnight_price={180} roomNumber={10} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'11'} overnight_price={180} roomNumber={11} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'12'} overnight_price={180} roomNumber={12} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'13'} overnight_price={180} roomNumber={13} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'14'} overnight_price={180} roomNumber={14} type='special' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'15'} overnight_price={180} roomNumber={15} type='special' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'16'} overnight_price={180} roomNumber={16} type='2beds' onGetRoom={this.showGetRoomModal} />
-              </View>
-              <View style={[styles.roomsLaneContainer, { marginTop: 10 }]}>
-                <RoomItem id={'17'} overnight_price={180} roomNumber={17} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'8'} overnight_price={180} roomNumber={8} type='special' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'7'} overnight_price={180} roomNumber={7} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'6'} overnight_price={180} roomNumber={6} type='special' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'5'} overnight_price={180} roomNumber={5} type='2beds' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'4'} overnight_price={180} roomNumber={4} type='1bed' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'3'} overnight_price={180} roomNumber={3} type='special' onGetRoom={this.showGetRoomModal} />
-                <RoomItem id={'2'} overnight_price={180} roomNumber={2} type='special' onGetRoom={this.showGetRoomModal} />
-              </View>
-            </View>
+            {
+              roomsData ?
+                <RoomMap roomsData={roomsData} showGetRoomModal={this.showGetRoomModal} />
+                :
+                <View style={styles.roomMapContainer}>
+                  <Text>Loading...</Text>
+                </View>
+            }
             <View style={styles.totalContainer}>
               <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Tiền trong tủ: 3.570.000</Text>
               <TouchableOpacity style={styles.btnWithDraw}>
@@ -194,15 +221,7 @@ export default class Home extends PureComponent {
           </View>
           <View style={styles.rightSideContent}>
             <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>
-            <View style={{ width: '100%', flex: 1 }}>
-              <FlatList
-                data={this.state.history}
-                scrollEnabled
-                bounces={true}
-                keyExtractor={item => item.itemID}
-                renderItem={({ item, index }) => <HistoryItem roomNumber={item.roomNumber} time={item.time} tagName={item.tagName} note={item.note} total={item.total} status={item.status} />}
-              />
-            </View>
+            {/* <HistoryList data /> */}
           </View>
         </View>
 

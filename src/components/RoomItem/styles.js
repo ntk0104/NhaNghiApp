@@ -4,7 +4,7 @@ const screen = Dimensions.get('screen')
 
 const styles = StyleSheet.create({
   roomNumberWrapper: {
-    flex: 1,
+    flex: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'gray',

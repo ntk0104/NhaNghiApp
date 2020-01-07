@@ -79,3 +79,33 @@ export const getRoomInfo = (id) => {
     }
   });
 }
+
+export const getAllRoomsInfo = (i) => {
+  return new Promise((resolve, reject) => {
+    try {
+      let rooms = realm.objects('Room')
+      let roomsData = {}
+      for (let room of rooms) {
+        const roomData = {
+          id: room.id,
+          roomName: room.roomName,
+          currentStatus: room.currentStatus,
+          timeIn: room.timeIn,
+          chargedItems: room.chargedItems,
+          note: room.note,
+          tag: room.tag,
+          fan_hour_price: room.fan_hour_price,
+          air_hour_price: room.air_hour_price,
+          overnight_price: room.overnight_price,
+          limitSection: room.limitSection,
+          limitMidnight: room.limitMidnight,
+          type: room.type
+        }
+        roomsData[room.id] = roomData
+      }
+      resolve(roomsData)
+    } catch (error) {
+      reject(error);
+    }
+  });
+}

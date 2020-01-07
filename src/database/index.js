@@ -1,8 +1,9 @@
-import { checkRoomExisted, addRoom, updateRoom, getRoomInfo } from './model/room'
+import { checkRoomExisted, addRoom, updateRoom, getRoomInfo, getAllRoomsInfo } from './model/room'
 
 export {
     checkRoomExisted,
     addRoom,
     updateRoom,
-    getRoomInfo
+    getRoomInfo,
+    getAllRoomsInfo
 }
