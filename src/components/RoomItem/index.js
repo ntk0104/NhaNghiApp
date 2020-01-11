@@ -25,12 +25,13 @@ export default class RoomItem extends Component {
   }
 
   clickRoom = () => {
-    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = this.props
+    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, sectionRoom, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = this.props
     if (roomStatus == 'available'){
       // get room
       this.props.onGetRoom(id ,roomName)
     } else {
       // see room detail
+      this.props.showRoomDetail({id, roomName, timeIn, chargedItems, note, tag, sectionRoom, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type})
     }
   }
 

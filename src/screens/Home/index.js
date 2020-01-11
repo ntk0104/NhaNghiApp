@@ -157,14 +157,19 @@ export default class Home extends PureComponent {
     })
   }
 
+  showRoomDetail = (payload) => {
+    this.props.navigation.navigate('DetailRoom', {payload})
+  }
+
   onSubmitGetRoom = () => {
     const updatedInfo = {
       id: this.state.gettingRoomID,
       currentStatus: 'busy',
-      timeIn: moment().unix(),
+      timeIn: moment().valueOf(),
       chargedItems: [],
       note: this.state.currentNote,
       tag: this.state.selectedSectionType,
+      sectionRoom: this.state.selectedRoomType,
       cmnd: null
     }
     updateRoom(updatedInfo)
@@ -203,7 +208,7 @@ export default class Home extends PureComponent {
             </View>
             {
               roomsData ?
-                <RoomMap roomsData={roomsData} showGetRoomModal={this.showGetRoomModal} />
+                <RoomMap roomsData={roomsData} showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
                 :
                 <View style={styles.roomMapContainer}>
                   <Text>Loading...</Text>
@@ -316,7 +321,6 @@ export default class Home extends PureComponent {
               </View>
             </View>
           </ScrollView>
-
         </Modal>
       </View>
     )

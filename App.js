@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
-import Home from './src/screens/Home/index'
+import RootNavigation from './src/config/config.route'
 
 export default class App extends Component {
   render() {
     return (
-      <Home />
+      <RootNavigation />
     )
   }
 }

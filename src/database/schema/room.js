@@ -13,6 +13,7 @@ Room.schema = {
     chargedItems: 'ChargedItem[]',
     note: 'string?',
     tag: { type: 'string', default: 'DG' },
+    sectionRoom: { type: 'string', default: 'quat' },
     fan_hour_price: 'int',
     air_hour_price: 'int',
     overnight_price: 'int',
