@@ -14,45 +14,177 @@ export default class DetailRoom extends Component {
     this.state = {
       payload: null,
       tag: null,
-      selectedSectionType: null
+      selectedSectionType: null,
+      price: 0,
+      overnight_price: null,
+      roomCost: 0,
+      waterQuantity: 0,
+      beerQuantity: 0,
+      softdrinkQuantity: 0,
+      instantNoodleQuantity: 0,
+      additionalCost: 0,
+      livingTimeString: null,
     }
   }
 
   componentDidMount() {
     const payload = this.props.navigation.getParam('payload')
-    const { id, roomName, timeIn, note, tag, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = payload
     console.log(JSON.stringify(payload, null, 2))
-    this.setState({ 
-      payload : payload,
+    this.setState({
+      payload: payload,
       tag: payload.tag,
-      selectedSectionType: payload.sectionRoom
+      selectedSectionType: payload.sectionRoom,
+      price: payload.sectionRoom == 'quat' ? payload.fan_hour_price : payload.air_hour_price,
+      overnight_price: payload.overnight_price
+    }, () => {
+      this.exportLivingTimeToString(moment().valueOf(), this.state.payload.timeIn, this.state.tag)
+      if (this.state.tag == 'QD') {
+        let roomCostOvernight = this.calculateRoomCostOvernight(this.state.payload.timeIn)
+        this.setState({
+          roomCost: roomCostOvernight
+        })
+      } else {
+        let roomCostPerHour = this.calculateRoomCostPerHour(this.state.selectedSectionType, payload.timeIn)
+        this.setState({
+          roomCost: roomCostPerHour
+        })
+      }
     })
   }
 
   calculateLivingTime = (newTime, oldTime) => {
-    console.log('%c%s', 'color: #00e600', oldTime);
-    console.log('%c%s', 'color: #f2ceb6', newTime);
-
     let diffTimestamp = newTime - oldTime
-    let livingTime = ''
     const diffDays = Math.floor(moment.duration(diffTimestamp).asDays())
     if (diffDays > 0) {
       diffTimestamp = diffTimestamp - diffDays * 24 * 60 * 60 * 1000
-      livingTime += diffDays + ' ngày '
     }
     const diffHours = Math.floor(moment.duration(diffTimestamp).asHours())
     if (diffHours > 0) {
       diffTimestamp = diffTimestamp - diffHours * 60 * 60 * 1000
-      livingTime += diffHours + ' giờ '
     }
     const diffMinutes = Math.floor(moment.duration(diffTimestamp).asMinutes())
-    livingTime += diffMinutes + ' phút'
-    return livingTime
+    const durationObj = {
+      days: diffDays,
+      hours: diffHours,
+      minutes: diffMinutes
+    }
+    console.log(JSON.stringify(durationObj, null, 2));
+    return durationObj
+  }
+
+  exportLivingTimeToString = (newTime, oldTime, type) => {
+    let livingTimeObj = this.calculateLivingTime(newTime, oldTime)
+    const { days, hours, minutes } = livingTimeObj
+    let livingTime = ''
+    if (days > 0) {
+      livingTime += days + ' ngày '
+    }
+    if (hours > 0) {
+      livingTime += hours + ' giờ '
+    }
+    livingTime += minutes + ' phút'
+    this.setState({ livingTimeString: livingTime })
+  }
+
+  calculateRoomCostPerHour = (timeIn, type) => {
+    const { overnight_price, payload, price } = this.state
+    let livingTimeObj = this.calculateLivingTime(moment().valueOf(), timeIn)
+    const { days, hours, minutes } = livingTimeObj
+    const livingTimeToSecs = hours * 3600 + minutes * 60
+    const limitSectionToSecs = payload.limitSection * 3600
+    const limit6hrs15minsToSecs = 6 * 3600 + 15 * 60
+    let additionalHourPrice = Math.floor(price / 3) - (Math.floor(price / 3) % 10)
+    console.log("TCL: calculateRoomCostPerHour -> additionalHourPrice", additionalHourPrice)
+    let bufferSectionMinutes = (payload.limitSection - Math.floor(payload.limitSection)) * 60
+    console.log("TCL: calculateRoomCostPerHour -> bufferSectionMinutes", bufferSectionMinutes)
+    if (livingTimeToSecs > limitSectionToSecs) {
+      if (livingTimeToSecs > limit6hrs15minsToSecs) {
+        return overnight_price
+      } else {
+        if (minutes > bufferSectionMinutes) {
+          return (hours - Math.floor(payload.limitSection) + 1) * additionalHourPrice + price
+        }
+        return (hours - Math.floor(payload.limitSection)) * additionalHourPrice + price
+      }
+    } else {
+      if (type == 'additionalOverNight') {
+        let additionalHour = hours
+        if (minutes > bufferSectionMinutes) {
+          additionalHour += 1
+        }
+        return additionalHour * additionalHourPrice
+      }
+      return price
+    }
+  }
+
+  calculateNumsNight = (timeIn) => {
+    const dateValue = moment(timeIn).date()
+    const monthValue = moment(timeIn).month()
+    const yearValue = moment(timeIn).year()
+    const timeInMoment = moment([yearValue, monthValue, dateValue])
+    const currentTimeMoment = moment([moment().year(), moment().month(), moment().date()])
+    const numsNights = currentTimeMoment.diff(timeInMoment, 'days')
+    return numsNights
+  }
+
+  calculateRoomCostOvernight = (timeIn) => {
+    console.log('%c⧭', 'color: #00bf00', 'calculateRoomCostOvernight');
+    const { payload, overnight_price, price } = this.state
+    let numsNight = this.calculateNumsNight(timeIn)
+    console.log('%c⧭', 'color: #917399', 'So dem o: ' + numsNight);
+    if (numsNight == 0) {
+      // without charge additional hour
+      return overnight_price
+    } else {
+      const currentDate = moment(moment().valueOf()).format('YYYY-MM-DD')
+      let bufferSectionMinutes = (payload.limitSection - Math.floor(payload.limitSection)) * 60
+      const generatedTimeThreshold = currentDate + ' 12:' + bufferSectionMinutes + ':00'
+      const generatedTimestampThreshold = moment(generatedTimeThreshold).valueOf()
+      let additionalHourPrice = Math.floor(price / 3) - (Math.floor(price / 3) % 10)
+      if (moment().valueOf() > generatedTimestampThreshold) {
+        let additionalHourCost = this.calculateRoomCostPerHour(moment(currentDate + ' 12:00:00').valueOf(), 'additionalOverNight')
+        console.log("TCL: DetailRoom -> calculateRoomCostOvernight -> additionalHourCost", additionalHourCost)
+        this.setState({ livingTime: numsNight + ' đêm ' + Math.floor(additionalHourCost / additionalHourPrice) + ' giờ' })
+        return numsNight * overnight_price + additionalHourCost
+      }
+      this.setState({ livingTime: numsNight + ' đêm' })
+      return numsNight * overnight_price
+    }
+
+  }
+
+  decreaseQuantity = (itemID, currentValue) => {
+    if (currentValue > 0) {
+      currentValue -= 1
+      if (itemID == 'water') {
+        this.setState({ waterQuantity: currentValue })
+      } else if (itemID == 'beer') {
+        this.setState({ beerQuantity: currentValue })
+      } else if (itemID == 'softdrink') {
+        this.setState({ softdrinkQuantity: currentValue })
+      } else if (itemID == 'instantNoodle') {
+        this.setState({ instantNoodleQuantity: currentValue })
+      }
+    }
+  }
+
+  increaseQuantity = (itemID, currentValue) => {
+    currentValue += 1
+    if (itemID == 'water') {
+      this.setState({ waterQuantity: currentValue })
+    } else if (itemID == 'beer') {
+      this.setState({ beerQuantity: currentValue })
+    } else if (itemID == 'softdrink') {
+      this.setState({ softdrinkQuantity: currentValue })
+    } else if (itemID == 'instantNoodle') {
+      this.setState({ instantNoodleQuantity: currentValue })
+    }
   }
 
   render() {
-    const { payload, tag, selectedSectionType } = this.state
-    const livingTime = payload && this.calculateLivingTime(moment().valueOf(), payload.timeIn)
+    const { payload, tag, selectedSectionType, roomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, livingTimeString } = this.state
+    // const livingTime = payload && this.exportLivingTimeToString(moment().valueOf(), payload.timeIn, tag)
     return (
       <View style={styles.container}>
         {
@@ -92,7 +224,7 @@ export default class DetailRoom extends Component {
                       <Text style={styles.titleTxt}>Thời gian ở:</Text>
                     </View>
                     <View style={styles.InfoRowWrapper}>
-                      <Text style={styles.titleTxt}>{livingTime}</Text>
+                      <Text style={styles.titleTxt}>{livingTimeString}</Text>
                     </View>
                   </View>
                   <View style={styles.rowInfoContainer}>
@@ -102,32 +234,35 @@ export default class DetailRoom extends Component {
                     <View style={[styles.InfoRowWrapper, { flexDirection: 'row' }]}>
                       <View style={styles.optionSectionType}>
                         <CheckBoxButton
-                          width={100}
+                          width={'90%'}
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'DG'}
                           title={'DG'}
+                          selectOption={() => this.setState({ tag: 'DG' })}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
                         <CheckBoxButton
-                          width={100}
+                          width={'90%'}
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'CD'}
                           title={'CD'}
+                          selectOption={() => this.setState({ tag: 'CD' })}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
                         <CheckBoxButton
-                          width={100}
+                          width={'90%'}
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'QD'}
                           title={'Qua đêm'}
+                          selectOption={() => this.setState({ tag: 'QD' })}
                         />
                       </View>
                     </View>
@@ -139,22 +274,24 @@ export default class DetailRoom extends Component {
                     <View style={[styles.InfoRowWrapper, { flexDirection: 'row' }]}>
                       <View style={styles.optionSectionType}>
                         <CheckBoxButton
-                          width={100}
+                          width={'90%'}
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
                           checked={selectedSectionType == 'quat'}
                           title={'Quạt'}
+                          selectOption={() => this.setState({ selectedSectionType: 'quat' })}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
                         <CheckBoxButton
-                          width={100}
+                          width={'90%'}
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
                           checked={selectedSectionType == 'lanh'}
                           title={'Lạnh'}
+                          selectOption={() => this.setState({ selectedSectionType: 'lanh' })}
                         />
                       </View>
                     </View>
@@ -194,32 +331,40 @@ export default class DetailRoom extends Component {
                   <ChargedItemRow
                     title={'Tiền phòng'}
                     totalPrice={'1000K'}
-                    quantity={2}
+                    quantity={roomCost}
                   />
                   <ChargedItemRow
                     title={'Nước suối'}
                     totalPrice={'1000K'}
-                    quantity={2}
+                    quantity={waterQuantity}
+                    decreaseQuantity={() => this.decreaseQuantity('water', waterQuantity)}
+                    increaseQuantity={() => this.increaseQuantity('water', waterQuantity)}
                   />
                   <ChargedItemRow
                     title={'Bia'}
                     totalPrice={'1000K'}
-                    quantity={2}
+                    quantity={beerQuantity}
+                    decreaseQuantity={() => this.decreaseQuantity('beer', beerQuantity)}
+                    increaseQuantity={() => this.increaseQuantity('beer', beerQuantity)}
                   />
                   <ChargedItemRow
                     title={'Nước ngọt'}
                     totalPrice={'1000K'}
-                    quantity={2}
+                    quantity={softdrinkQuantity}
+                    decreaseQuantity={() => this.decreaseQuantity('softdrink', softdrinkQuantity)}
+                    increaseQuantity={() => this.increaseQuantity('softdrink', softdrinkQuantity)}
                   />
                   <ChargedItemRow
                     title={'Mỳ gói'}
                     totalPrice={'1000K'}
-                    quantity={2}
+                    quantity={instantNoodleQuantity}
+                    decreaseQuantity={() => this.decreaseQuantity('instantNoodle', instantNoodleQuantity)}
+                    increaseQuantity={() => this.increaseQuantity('instantNoodle', instantNoodleQuantity)}
                   />
                   <ChargedItemRow
-                    title={'Phụ thu'}
+                    title={'Chi Phí Khác'}
                     totalPrice={'1000K'}
-                    quantity={2}
+                    quantity={additionalCost}
                   />
                   <View style={styles.totalWrapper}>
                     <View style={styles.totalHeaderWrapper}>
@@ -228,11 +373,6 @@ export default class DetailRoom extends Component {
                     <View style={styles.totalTxtWrapper}>
                       <Text style={styles.totalTxt}>1.091 K</Text>
                     </View>
-                    <TouchableOpacity activeOpacity={0.7} style={styles.PayBtnWrapper}>
-                      <View style={styles.payBtn}>
-                        <Text style={[styles.totalTxt, { fontSize: 20, textTransform: 'uppercase' }]}>Trả tiền</Text>
-                      </View>
-                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
@@ -244,10 +384,10 @@ export default class DetailRoom extends Component {
             <Text style={styles.headerTitleTxt}>Đổi phòng</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#F1C40F' }]}>
-            <Text style={styles.headerTitleTxt}>Sang sổ</Text>
+            <Text style={styles.headerTitleTxt}>Trả tiền trước</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]}>
-            <Text style={styles.headerTitleTxt}>Trả phòng</Text>
+            <Text style={styles.headerTitleTxt}>Trả phòng & Thanh Toán</Text>
           </TouchableOpacity>
         </View>
       </View>

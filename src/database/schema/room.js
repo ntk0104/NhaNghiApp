@@ -17,8 +17,8 @@ Room.schema = {
     fan_hour_price: 'int',
     air_hour_price: 'int',
     overnight_price: 'int',
-    limitSection: 'int',
-    limitMidnight: 'int',
+    limitSection: 'float', // by hour
+    limitMidnight: 'int', // by minutes
     type: { type: 'string', default: '1bed' },
     cmnd: 'data?'
   }

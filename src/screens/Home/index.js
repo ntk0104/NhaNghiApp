@@ -11,6 +11,8 @@ import moment from 'moment'
 import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
 import HistoryList from './HistoryList'
+import { camera, pickerImage } from '../../components/ImagePicker/index'
+import ImagePicker from 'react-native-image-picker'
 
 export default class Home extends PureComponent {
 
@@ -98,13 +100,25 @@ export default class Home extends PureComponent {
       gettingRoomName: null,
       currentNote: null,
       gettingRoomID: null,
-      roomsData: null
+      roomsData: null,
+
     }
   }
 
   componentDidMount() {
     console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
+  }
+
+  showCamera = () => {
+    camera((source, data) => {
+      this.setState({
+        imageUrl: source,
+        imageData: "data:image/jpeg;base64," + data
+      })
+
+
+    });
   }
 
   checkFirstInitApp = async () => {
@@ -158,7 +172,7 @@ export default class Home extends PureComponent {
   }
 
   showRoomDetail = (payload) => {
-    this.props.navigation.navigate('DetailRoom', {payload})
+    this.props.navigation.navigate('DetailRoom', { payload })
   }
 
   onSubmitGetRoom = () => {
@@ -269,7 +283,7 @@ export default class Home extends PureComponent {
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <View style={[styles.typeContainer, { backgroundColor: 'green' }]}>
+                  <View style={styles.typeContainer}>
                     <Text style={styles.titleTxt}>Phòng:</Text>
                     <View style={styles.typeOptionsWrapper}>
                       <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
@@ -286,10 +300,10 @@ export default class Home extends PureComponent {
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <View style={[styles.typeContainer, { backgroundColor: 'red' }]}>
+                  <View style={styles.typeContainer}>
                     <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
                     <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]}>
+                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
                         <View style={styles.optionBtnWrapper}>
                           <Icon type="Entypo" name="camera" size={30} style={{ color: 'black' }} />
                           <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>

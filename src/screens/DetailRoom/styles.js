@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     height: screen.height - 140
   },
   btnAction: {
-    width: 150,
+    width: '30%',
     height: '80%',
     backgroundColor: '#E74C3C',
     justifyContent: 'center',

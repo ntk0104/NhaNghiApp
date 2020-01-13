@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   modalBody: {
-    backgroundColor: 'yellow',
+    // backgroundColor: 'yellow',
     flex: 1,
     flexDirection: 'row'
   },
@@ -116,22 +116,22 @@ const styles = StyleSheet.create({
   },
   leftBodyContainer: {
     flex: 3,
-    backgroundColor: '#F5B041',
+    // backgroundColor: '#F5B041',
     padding: 10
   },
   rightBodyContainer: {
     flex: 2,
-    backgroundColor: '#1ABC9C',
+    // backgroundColor: '#1ABC9C',
     padding: 10
   },
   typeContainer: {
     flex : 1,
-    backgroundColor: 'gray',
+    // backgroundColor: 'gray',
     justifyContent: 'space-around'
   },
   typeOptionsWrapper: {
     flexDirection: 'row',
-    backgroundColor: 'yellow',
+    // backgroundColor: 'yellow',
     flex: 1
   },
   optionWrapper: {

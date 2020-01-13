@@ -18,12 +18,13 @@ export const checkRoomExisted = (id) => {
 }
 
 export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, note, tag, sectionRoom, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type, cmnd }) => {
+  console.log("TCL: addRoom -> limitSection", limitSection)
   console.log('%c%s', 'color: #f2ceb6', "added Room " + id);
   return new Promise((resolve, reject) => {
     try {
       realm.write(() => {
         let newRoom = realm.create("Room", {
-          id: id || moment().unix(),
+          id: id || moment().valueOf(),
           roomName,
           currentStatus,
           timeIn,
