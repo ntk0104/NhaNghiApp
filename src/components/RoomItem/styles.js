@@ -21,6 +21,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1
+  },
+  part: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+  },
+  tagWrapper: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'green',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'white'
+  },
+  tagTxt: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center'
   }
 })
 

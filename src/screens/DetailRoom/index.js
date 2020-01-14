@@ -44,7 +44,7 @@ export default class DetailRoom extends Component {
           roomCost: roomCostOvernight
         })
       } else {
-        let roomCostPerHour = this.calculateRoomCostPerHour(this.state.selectedSectionType, payload.timeIn)
+        let roomCostPerHour = this.calculateRoomCostPerHour(this.state.payload.timeIn, this.state.payload.timeIn)
         this.setState({
           roomCost: roomCostPerHour
         })
@@ -330,8 +330,9 @@ export default class DetailRoom extends Component {
                 <View style={styles.menuWrapper}>
                   <ChargedItemRow
                     title={'Tiền phòng'}
-                    totalPrice={'1000K'}
-                    quantity={roomCost}
+                    totalPrice={roomCost}
+                    duration={livingTimeString}
+                    // quantity={roomCost}
                   />
                   <ChargedItemRow
                     title={'Nước suối'}
