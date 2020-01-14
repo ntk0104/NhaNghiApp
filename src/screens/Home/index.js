@@ -8,91 +8,96 @@ import { Icon, CheckBox } from 'native-base'
 import Realm from 'realm'
 import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
 import moment from 'moment'
-import { Storage, constants, appConfig } from '../../utils'
+import { Storage, constants, appConfig, Helpers } from '../../utils'
 import RoomMap from './RoomMap'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import ImagePicker from 'react-native-image-picker'
+// import { makeGetRoomsData } from '../../redux/selectors/index'
+import { getRoomsDataRequest } from '../../redux/actions/index'
+import { connect } from 'react-redux';
 
-export default class Home extends PureComponent {
+import { createStructuredSelector } from 'reselect';
+
+class Home extends PureComponent {
 
   constructor(props) {
     super(props)
     this.state = {
-      history: [
-        {
-          roomNumber: 16,
-          itemID: 123,
-          time: '15h30',
-          tagName: 'DG',
-          status: 'in',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 15,
-          itemID: 123,
-          time: '15h31',
-          tagName: 'DG',
-          status: 'out',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 16,
-          itemID: 1223,
-          time: '15h30',
-          tagName: 'CD',
-          status: 'in',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 16,
-          itemID: 1233,
-          time: '15h30',
-          tagName: 'QD',
-          status: 'out',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 16,
-          itemID: 1243,
-          time: '15h30',
-          tagName: 'DG',
-          status: 'in',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 16,
-          itemID: 1253,
-          time: '15h30',
-          tagName: 'QD',
-          status: 'out',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 16,
-          itemID: 1263,
-          time: '15h30',
-          tagName: 'DG',
-          status: 'in',
-          note: 'note',
-          total: 100
-        },
-        {
-          roomNumber: 16,
-          itemID: 1273,
-          time: '15h30',
-          tagName: 'CD',
-          status: 'in',
-          note: 'note',
-          total: 100
-        }
-      ],
+      // history: [
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 123,
+      //     time: '15h30',
+      //     tagName: 'DG',
+      //     status: 'in',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 15,
+      //     itemID: 123,
+      //     time: '15h31',
+      //     tagName: 'DG',
+      //     status: 'out',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 1223,
+      //     time: '15h30',
+      //     tagName: 'CD',
+      //     status: 'in',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 1233,
+      //     time: '15h30',
+      //     tagName: 'QD',
+      //     status: 'out',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 1243,
+      //     time: '15h30',
+      //     tagName: 'DG',
+      //     status: 'in',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 1253,
+      //     time: '15h30',
+      //     tagName: 'QD',
+      //     status: 'out',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 1263,
+      //     time: '15h30',
+      //     tagName: 'DG',
+      //     status: 'in',
+      //     note: 'note',
+      //     total: 100
+      //   },
+      //   {
+      //     roomNumber: 16,
+      //     itemID: 1273,
+      //     time: '15h30',
+      //     tagName: 'CD',
+      //     status: 'in',
+      //     note: 'note',
+      //     total: 100
+      //   }
+      // ],
 
       modalGetRoomVisible: false,
       selectedSectionType: 'CD',
@@ -100,7 +105,6 @@ export default class Home extends PureComponent {
       gettingRoomName: null,
       currentNote: null,
       gettingRoomID: null,
-      roomsData: null,
 
     }
   }
@@ -126,11 +130,18 @@ export default class Home extends PureComponent {
     if (isSecond == true) {
       // is not first init
       console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
-      this.updateAllRoomsInfo()
+      // this.updateAllRoomsInfo()
+      this.props.getRoomsDataRequestHandler()
     } else {
       console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
+      await Storage.shared().setStorage(constants.bufferTimeInMinutes, 30)
+      await Storage.shared().setStorage(constants.limitHourSectionTimeInHour, 3)
+      await Storage.shared().setStorage(constants.fanSectionPrice, 60)
+      await Storage.shared().setStorage(constants.airSectionPrice, 100)
+      await Storage.shared().setStorage(constants.fanHourAdditionalPrice, 20)
+      await Storage.shared().setStorage(constants.airHourAdditionalPrice, 30)
       const listRooms = appConfig.listRooms
       let addRoomQueues = []
       listRooms.forEach(room => {
@@ -138,7 +149,7 @@ export default class Home extends PureComponent {
       });
       Promise.all(addRoomQueues)
         .then(rs => {
-          this.updateAllRoomsInfo()
+          this.props.getRoomsDataRequestHandler()
         })
         .catch(err => console.log(err))
     }
@@ -189,7 +200,7 @@ export default class Home extends PureComponent {
     updateRoom(updatedInfo)
       .then(() => {
         this.closeGetRoomModal()
-        this.updateAllRoomsInfo()
+        // this.updateAllRoomsInfo()
       })
       .catch((err) => {
         console.log('%c%s', 'color: #00e600', err);
@@ -220,14 +231,7 @@ export default class Home extends PureComponent {
             <View style={styles.labelWrapper}>
               <Text style={styles.lableTxt}>Sơ đồ phòng</Text>
             </View>
-            {
-              roomsData ?
-                <RoomMap roomsData={roomsData} showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
-                :
-                <View style={styles.roomMapContainer}>
-                  <Text>Loading...</Text>
-                </View>
-            }
+            <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
             <View style={styles.totalContainer}>
               <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Tiền trong tủ: 3.570.000</Text>
               <TouchableOpacity style={styles.btnWithDraw}>
@@ -340,3 +344,13 @@ export default class Home extends PureComponent {
     )
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+  // roomsData: makeGetRoomsData()
+})
+
+const mapDispatchToProps = dispatch => ({
+  getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

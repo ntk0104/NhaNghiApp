@@ -17,8 +17,7 @@ export const checkRoomExisted = (id) => {
   }
 }
 
-export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, note, tag, sectionRoom, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type, cmnd }) => {
-  console.log("TCL: addRoom -> limitSection", limitSection)
+export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, note, tag, sectionRoom, air_hour_price, overnight_price, type, cmnd }) => {
   console.log('%c%s', 'color: #f2ceb6', "added Room " + id);
   return new Promise((resolve, reject) => {
     try {
@@ -32,11 +31,7 @@ export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, not
           note,
           tag,
           sectionRoom,
-          fan_hour_price,
-          air_hour_price,
           overnight_price,
-          limitSection,
-          limitMidnight,
           type,
           cmnd
         });
@@ -98,11 +93,7 @@ export const getAllRoomsInfo = (i) => {
           note: room.note,
           tag: room.tag,
           sectionRoom: room.sectionRoom,
-          fan_hour_price: room.fan_hour_price,
-          air_hour_price: room.air_hour_price,
           overnight_price: room.overnight_price,
-          limitSection: room.limitSection,
-          limitMidnight: room.limitMidnight,
           type: room.type
         }
         roomsData[room.id] = roomData

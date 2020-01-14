@@ -47,5 +47,11 @@ export default (constants = {
     User_id: 'UserId',
     Language: 'Language',
     SecondStart:'SecondStart',
+    bufferTimeInMinutes: 'bufferTimeInMinutes',
+    limitHourSectionTimeInHour: 'limitHourSectionTimeInHour',
+    fanSectionPrice: 'fanSectionPrice',
+    airSectionPrice: 'airSectionPrice',
+    fanHourAdditionalPrice: 'fanHourAdditionalPrice',
+    airHourAdditionalPrice: 'airHourAdditionalPrice'
 
 })

@@ -10,15 +10,11 @@ Room.schema = {
     roomName: 'string',
     currentStatus: { type: 'string', default: 'available' },
     timeIn: 'int',
-    chargedItems: 'ChargedItem[]',
+    chargedItems: 'ChargedItem[]', 
     note: 'string?',
-    tag: { type: 'string', default: 'DG' },
-    sectionRoom: { type: 'string', default: 'quat' },
-    fan_hour_price: 'int',
-    air_hour_price: 'int',
+    tag: { type: 'string', default: 'DG' }, // DG/CD/QD
+    sectionRoom: { type: 'string', default: 'quat' }, //quat / lanh
     overnight_price: 'int',
-    limitSection: 'float', // by hour
-    limitMidnight: 'int', // by minutes
     type: { type: 'string', default: '1bed' },
     cmnd: 'data?'
   }

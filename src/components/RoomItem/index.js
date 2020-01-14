@@ -15,63 +15,59 @@ export default class RoomItem extends Component {
   }
 
   componentDidMount() {
-    this.exportLivingTimeToString(moment().valueOf(), this.props.timeIn)
   }
 
   componentDidUpdate() {
-    if (this.props.tag != '') {
-      setInterval(() => this.exportLivingTimeToString(moment().valueOf(), this.props.timeIn), 60000)
-    }
+   
   }
 
-  calculateLivingTime = (newTime, oldTime) => {
-    let diffTimestamp = newTime - oldTime
-    const diffDays = Math.floor(moment.duration(diffTimestamp).asDays())
-    if (diffDays > 0) {
-      diffTimestamp = diffTimestamp - diffDays * 24 * 60 * 60 * 1000
-    }
-    const diffHours = Math.floor(moment.duration(diffTimestamp).asHours())
-    if (diffHours > 0) {
-      diffTimestamp = diffTimestamp - diffHours * 60 * 60 * 1000
-    }
-    const diffMinutes = Math.floor(moment.duration(diffTimestamp).asMinutes())
-    const durationObj = {
-      days: diffDays,
-      hours: diffHours,
-      minutes: diffMinutes
-    }
-    return durationObj
-  }
+  // calculateLivingTime = (newTime, oldTime) => {
+  //   let diffTimestamp = newTime - oldTime
+  //   const diffDays = Math.floor(moment.duration(diffTimestamp).asDays())
+  //   if (diffDays > 0) {
+  //     diffTimestamp = diffTimestamp - diffDays * 24 * 60 * 60 * 1000
+  //   }
+  //   const diffHours = Math.floor(moment.duration(diffTimestamp).asHours())
+  //   if (diffHours > 0) {
+  //     diffTimestamp = diffTimestamp - diffHours * 60 * 60 * 1000
+  //   }
+  //   const diffMinutes = Math.floor(moment.duration(diffTimestamp).asMinutes())
+  //   const durationObj = {
+  //     days: diffDays,
+  //     hours: diffHours,
+  //     minutes: diffMinutes
+  //   }
+  //   return durationObj
+  // }
 
-  exportLivingTimeToString = (newTime, oldTime) => {
-    let livingTimeObj = this.calculateLivingTime(newTime, oldTime)
-    const { days, hours, minutes } = livingTimeObj
-    let livingTime = ''
-    if (days > 0) {
-      livingTime += days + ' ngày '
-    }
-    if (hours > 0) {
-      livingTime += hours + ' giờ '
-    }
-    livingTime += minutes + ' phút'
-    this.setState({ livingTimeString: livingTime })
-  }
+  // exportLivingTimeToString = (newTime, oldTime) => {
+  //   let livingTimeObj = this.calculateLivingTime(newTime, oldTime)
+  //   const { days, hours, minutes } = livingTimeObj
+  //   let livingTime = ''
+  //   if (days > 0) {
+  //     livingTime += days + ' ngày '
+  //   }
+  //   if (hours > 0) {
+  //     livingTime += hours + ' giờ '
+  //   }
+  //   livingTime += minutes + ' phút'
+  //   this.setState({ livingTimeString: livingTime })
+  // }
 
   clickRoom = () => {
-    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, sectionRoom, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = this.props
+    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, sectionRoom, air_hour_price, overnight_price, limitMidnight, type } = this.props
     if (roomStatus == 'available') {
       // get room
       this.props.onGetRoom(id, roomName)
     } else {
       // see room detail
-      this.props.showRoomDetail({ id, roomName, timeIn, chargedItems, note, tag, sectionRoom, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type })
+      this.props.showRoomDetail({ id, roomName, timeIn, chargedItems, note, tag, sectionRoom, air_hour_price, overnight_price, limitMidnight, type })
     }
   }
 
   render() {
     console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
-    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, fan_hour_price, air_hour_price, overnight_price, limitSection, limitMidnight, type } = this.props
-    const { livingTimeString } = this.state
+    const { id, roomName, roomStatus, tag, overnight_price, type, duration } = this.props
     return (
       <TouchableOpacity style={[styles.roomContainer, { backgroundColor: roomStatus == 'available' ? 'white' : '#F1948A' }]} onPress={this.clickRoom}>
         <View style={styles.roomNumberWrapper}>
@@ -123,7 +119,7 @@ export default class RoomItem extends Component {
                 }
               </View>
               <View style={styles.part}>
-                <Text style={styles.tagTxt}>{livingTimeString}</Text>
+                <Text style={styles.tagTxt}>{duration}</Text>
               </View>
             </View>
             :
