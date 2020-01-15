@@ -1,157 +1,66 @@
 import React, { Component } from 'react'
 import { Text, View, TouchableOpacity, Image, TextInput, Platform } from 'react-native'
-import { Icon, CheckBox, Container } from 'native-base'
+import { Icon } from 'native-base'
 import styles from './styles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
+import { makeGetRoomInfo } from '../../redux/selectors/index'
+import { getRoomInfoRequest } from '../../redux/actions/index'
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { appConfig } from '../../utils'
+import { calculateRoomCostPerHour, calculateRoomCostOvernight } from '../../utils/Helpers'
+import _ from 'lodash'
 
-export default class DetailRoom extends Component {
+class DetailRoom extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      payload: null,
       tag: null,
-      selectedSectionType: null,
-      price: 0,
-      overnight_price: null,
+      sectionRoom: null,
+      sectionPrice: 0,
+      additionalPrice: 0,
+
       roomCost: 0,
       waterQuantity: 0,
       beerQuantity: 0,
       softdrinkQuantity: 0,
       instantNoodleQuantity: 0,
       additionalCost: 0,
-      livingTimeString: null,
     }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextprops) {
+    this.setState({
+      tag: nextprops.roomInfo.tag,
+      sectionRoom: nextprops.roomInfo.sectionRoom,
+    }, () => this.checkAddtionalHourPrice())
   }
 
   componentDidMount() {
     const payload = this.props.navigation.getParam('payload')
-    console.log(JSON.stringify(payload, null, 2))
-    this.setState({
-      payload: payload,
-      tag: payload.tag,
-      selectedSectionType: payload.sectionRoom,
-      price: payload.sectionRoom == 'quat' ? payload.fan_hour_price : payload.air_hour_price,
-      overnight_price: payload.overnight_price
-    }, () => {
-      this.exportLivingTimeToString(moment().valueOf(), this.state.payload.timeIn, this.state.tag)
-      if (this.state.tag == 'QD') {
-        let roomCostOvernight = this.calculateRoomCostOvernight(this.state.payload.timeIn)
-        this.setState({
-          roomCost: roomCostOvernight
-        })
+    this.props.getRoomInfoRequestHandler(payload)
+  }
+
+  checkAddtionalHourPrice = () => {
+    const {sectionRoom, tag } = this.state
+    const { roomInfo } = this.props
+    const additionalPriceValue = sectionRoom == 'quat' ? appConfig.fanHourAdditionalPrice : appConfig.airHourAdditionalPrice
+    console.log("TCL: DetailRoom -> checkAddtionalHourPrice -> additionalPriceValue", additionalPriceValue)
+    const sectionPriceValue = sectionRoom == 'quat' ? appConfig.fanSectionPrice : appConfig.airSectionPrice
+    console.log("TCL: DetailRoom -> checkAddtionalHourPrice -> sectionPriceValue", sectionPriceValue)
+    this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue}, () => {
+      if(tag == 'QD'){
+        let roomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
+        this.setState({roomCost})
       } else {
-        let roomCostPerHour = this.calculateRoomCostPerHour(this.state.payload.timeIn, this.state.payload.timeIn)
-        this.setState({
-          roomCost: roomCostPerHour
-        })
+        let roomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
+        this.setState({roomCost})
       }
-    })
-  }
-
-  calculateLivingTime = (newTime, oldTime) => {
-    let diffTimestamp = newTime - oldTime
-    const diffDays = Math.floor(moment.duration(diffTimestamp).asDays())
-    if (diffDays > 0) {
-      diffTimestamp = diffTimestamp - diffDays * 24 * 60 * 60 * 1000
-    }
-    const diffHours = Math.floor(moment.duration(diffTimestamp).asHours())
-    if (diffHours > 0) {
-      diffTimestamp = diffTimestamp - diffHours * 60 * 60 * 1000
-    }
-    const diffMinutes = Math.floor(moment.duration(diffTimestamp).asMinutes())
-    const durationObj = {
-      days: diffDays,
-      hours: diffHours,
-      minutes: diffMinutes
-    }
-    console.log(JSON.stringify(durationObj, null, 2));
-    return durationObj
-  }
-
-  exportLivingTimeToString = (newTime, oldTime, type) => {
-    let livingTimeObj = this.calculateLivingTime(newTime, oldTime)
-    const { days, hours, minutes } = livingTimeObj
-    let livingTime = ''
-    if (days > 0) {
-      livingTime += days + ' ngày '
-    }
-    if (hours > 0) {
-      livingTime += hours + ' giờ '
-    }
-    livingTime += minutes + ' phút'
-    this.setState({ livingTimeString: livingTime })
-  }
-
-  calculateRoomCostPerHour = (timeIn, type) => {
-    const { overnight_price, payload, price } = this.state
-    let livingTimeObj = this.calculateLivingTime(moment().valueOf(), timeIn)
-    const { days, hours, minutes } = livingTimeObj
-    const livingTimeToSecs = hours * 3600 + minutes * 60
-    const limitSectionToSecs = payload.limitSection * 3600
-    const limit6hrs15minsToSecs = 6 * 3600 + 15 * 60
-    let additionalHourPrice = Math.floor(price / 3) - (Math.floor(price / 3) % 10)
-    console.log("TCL: calculateRoomCostPerHour -> additionalHourPrice", additionalHourPrice)
-    let bufferSectionMinutes = (payload.limitSection - Math.floor(payload.limitSection)) * 60
-    console.log("TCL: calculateRoomCostPerHour -> bufferSectionMinutes", bufferSectionMinutes)
-    if (livingTimeToSecs > limitSectionToSecs) {
-      if (livingTimeToSecs > limit6hrs15minsToSecs) {
-        return overnight_price
-      } else {
-        if (minutes > bufferSectionMinutes) {
-          return (hours - Math.floor(payload.limitSection) + 1) * additionalHourPrice + price
-        }
-        return (hours - Math.floor(payload.limitSection)) * additionalHourPrice + price
-      }
-    } else {
-      if (type == 'additionalOverNight') {
-        let additionalHour = hours
-        if (minutes > bufferSectionMinutes) {
-          additionalHour += 1
-        }
-        return additionalHour * additionalHourPrice
-      }
-      return price
-    }
-  }
-
-  calculateNumsNight = (timeIn) => {
-    const dateValue = moment(timeIn).date()
-    const monthValue = moment(timeIn).month()
-    const yearValue = moment(timeIn).year()
-    const timeInMoment = moment([yearValue, monthValue, dateValue])
-    const currentTimeMoment = moment([moment().year(), moment().month(), moment().date()])
-    const numsNights = currentTimeMoment.diff(timeInMoment, 'days')
-    return numsNights
-  }
-
-  calculateRoomCostOvernight = (timeIn) => {
-    console.log('%c⧭', 'color: #00bf00', 'calculateRoomCostOvernight');
-    const { payload, overnight_price, price } = this.state
-    let numsNight = this.calculateNumsNight(timeIn)
-    console.log('%c⧭', 'color: #917399', 'So dem o: ' + numsNight);
-    if (numsNight == 0) {
-      // without charge additional hour
-      return overnight_price
-    } else {
-      const currentDate = moment(moment().valueOf()).format('YYYY-MM-DD')
-      let bufferSectionMinutes = (payload.limitSection - Math.floor(payload.limitSection)) * 60
-      const generatedTimeThreshold = currentDate + ' 12:' + bufferSectionMinutes + ':00'
-      const generatedTimestampThreshold = moment(generatedTimeThreshold).valueOf()
-      let additionalHourPrice = Math.floor(price / 3) - (Math.floor(price / 3) % 10)
-      if (moment().valueOf() > generatedTimestampThreshold) {
-        let additionalHourCost = this.calculateRoomCostPerHour(moment(currentDate + ' 12:00:00').valueOf(), 'additionalOverNight')
-        console.log("TCL: DetailRoom -> calculateRoomCostOvernight -> additionalHourCost", additionalHourCost)
-        this.setState({ livingTime: numsNight + ' đêm ' + Math.floor(additionalHourCost / additionalHourPrice) + ' giờ' })
-        return numsNight * overnight_price + additionalHourCost
-      }
-      this.setState({ livingTime: numsNight + ' đêm' })
-      return numsNight * overnight_price
-    }
-
+    });
   }
 
   decreaseQuantity = (itemID, currentValue) => {
@@ -183,23 +92,22 @@ export default class DetailRoom extends Component {
   }
 
   render() {
-    const { payload, tag, selectedSectionType, roomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, livingTimeString } = this.state
-    // const livingTime = payload && this.exportLivingTimeToString(moment().valueOf(), payload.timeIn, tag)
+    const { tag, sectionRoom, roomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
     return (
       <View style={styles.container}>
         {
-          payload &&
+          this.props.roomInfo &&
           <View style={styles.navigationBar}>
             <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
               <Icon type='AntDesign' name='arrowleft' style={{ color: 'white' }} />
             </TouchableOpacity>
             <View style={styles.headerTitle}>
-              <Text style={styles.headerTitleTxt}>Chi tiết phòng {payload.roomName}</Text>
+              <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
             </View>
           </View>
         }
         {
-          payload &&
+          this.props.roomInfo &&
           <KeyboardAwareScrollView
             keyboardShouldPersistTaps="handled"
             // extraScrollHeight={200}
@@ -216,7 +124,7 @@ export default class DetailRoom extends Component {
                       <Text style={styles.titleTxt}>Giờ Vào:</Text>
                     </View>
                     <View style={styles.InfoRowWrapper}>
-                      <Text style={styles.titleTxt}>{moment(payload.timeIn).format('HH:mm (DD/MM/YYYY)')}</Text>
+                      <Text style={styles.titleTxt}>{moment(this.props.roomInfo.timeIn).format('HH:mm (DD/MM/YYYY)')}</Text>
                     </View>
                   </View>
                   <View style={styles.rowInfoContainer}>
@@ -224,7 +132,7 @@ export default class DetailRoom extends Component {
                       <Text style={styles.titleTxt}>Thời gian ở:</Text>
                     </View>
                     <View style={styles.InfoRowWrapper}>
-                      <Text style={styles.titleTxt}>{livingTimeString}</Text>
+                      <Text style={styles.titleTxt}>{this.props.roomInfo.duration}</Text>
                     </View>
                   </View>
                   <View style={styles.rowInfoContainer}>
@@ -278,9 +186,9 @@ export default class DetailRoom extends Component {
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
-                          checked={selectedSectionType == 'quat'}
+                          checked={sectionRoom == 'quat'}
                           title={'Quạt'}
-                          selectOption={() => this.setState({ selectedSectionType: 'quat' })}
+                          selectOption={() => this.setState({ sectionRoom: 'quat' })}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -289,9 +197,9 @@ export default class DetailRoom extends Component {
                           height='80%'
                           selectedBackground={'#EC7063'}
                           unSelectedBackground={'#FDFEFE'}
-                          checked={selectedSectionType == 'lanh'}
+                          checked={sectionRoom == 'lanh'}
                           title={'Lạnh'}
-                          selectOption={() => this.setState({ selectedSectionType: 'lanh' })}
+                          selectOption={() => this.setState({ sectionRoom: 'lanh' })}
                         />
                       </View>
                     </View>
@@ -331,8 +239,8 @@ export default class DetailRoom extends Component {
                   <ChargedItemRow
                     title={'Tiền phòng'}
                     totalPrice={roomCost}
-                    duration={livingTimeString}
-                    // quantity={roomCost}
+                    duration={this.props.roomInfo.duration}
+                  // quantity={roomCost}
                   />
                   <ChargedItemRow
                     title={'Nước suối'}
@@ -394,4 +302,14 @@ export default class DetailRoom extends Component {
       </View>
     )
   }
-}        
+}
+
+const mapStateToProps = createStructuredSelector({
+  roomInfo: makeGetRoomInfo()
+})
+
+const mapDispatchToProps = dispatch => ({
+  getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)

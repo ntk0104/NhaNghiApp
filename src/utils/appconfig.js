@@ -221,5 +221,12 @@ export default (appConfig = {
       type: '1bed',
       cmnd: null
     }
-  ]
+  ],
+  bufferTimeInMinutes: 30,
+  limitHourSectionTimeInHour: 3,
+  limitHourSectionToOvernightInHour: 6,
+  fanSectionPrice: 60,
+  airSectionPrice: 100,
+  fanHourAdditionalPrice: 20,
+  airHourAdditionalPrice: 30
 })

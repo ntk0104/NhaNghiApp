@@ -8,7 +8,7 @@ import { Icon, CheckBox } from 'native-base'
 import Realm from 'realm'
 import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
 import moment from 'moment'
-import { Storage, constants, appConfig, Helpers } from '../../utils'
+import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
@@ -120,8 +120,6 @@ class Home extends PureComponent {
         imageUrl: source,
         imageData: "data:image/jpeg;base64," + data
       })
-
-
     });
   }
 
@@ -130,18 +128,19 @@ class Home extends PureComponent {
     if (isSecond == true) {
       // is not first init
       console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
-      // this.updateAllRoomsInfo()
       this.props.getRoomsDataRequestHandler()
+      console.log("TCL: Home -> checkFirstInitApp wrong -> getRoomsDataRequestHandler")
     } else {
       console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
-      await Storage.shared().setStorage(constants.bufferTimeInMinutes, 30)
-      await Storage.shared().setStorage(constants.limitHourSectionTimeInHour, 3)
-      await Storage.shared().setStorage(constants.fanSectionPrice, 60)
-      await Storage.shared().setStorage(constants.airSectionPrice, 100)
-      await Storage.shared().setStorage(constants.fanHourAdditionalPrice, 20)
-      await Storage.shared().setStorage(constants.airHourAdditionalPrice, 30)
+      // await Storage.shared().setStorage(constants.bufferTimeInMinutes, 30)
+      // await Storage.shared().setStorage(constants.limitHourSectionTimeInHour, 3)
+      // await Storage.shared().setStorage(constants.limitHourSectionToOvernightInHour, 6)
+      // await Storage.shared().setStorage(constants.fanSectionPrice, 60)
+      // await Storage.shared().setStorage(constants.airSectionPrice, 100)
+      // await Storage.shared().setStorage(constants.fanHourAdditionalPrice, 20)
+      // await Storage.shared().setStorage(constants.airHourAdditionalPrice, 30)
       const listRooms = appConfig.listRooms
       let addRoomQueues = []
       listRooms.forEach(room => {
@@ -150,17 +149,10 @@ class Home extends PureComponent {
       Promise.all(addRoomQueues)
         .then(rs => {
           this.props.getRoomsDataRequestHandler()
+          console.log("TCL: Home -> checkFirstInitApp true -> getRoomsDataRequestHandler")
         })
         .catch(err => console.log(err))
     }
-  }
-
-  updateAllRoomsInfo = () => {
-    getAllRoomsInfo()
-      .then(roomsInfo => {
-        this.setState({ roomsData: roomsInfo })
-      })
-      .catch(err => console.log(err))
   }
 
   closeGetRoomModal = () => {
@@ -200,7 +192,8 @@ class Home extends PureComponent {
     updateRoom(updatedInfo)
       .then(() => {
         this.closeGetRoomModal()
-        // this.updateAllRoomsInfo()
+        this.props.getRoomsDataRequestHandler()
+        console.log("TCL: Home -> onSubmitGetRoom -> getRoomsDataRequestHandler")
       })
       .catch((err) => {
         console.log('%c%s', 'color: #00e600', err);

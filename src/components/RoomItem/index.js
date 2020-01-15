@@ -1,67 +1,26 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import styles from './styles'
 import { Icon } from 'native-base'
 import _ from 'lodash'
 import moment from 'moment'
 
-export default class RoomItem extends Component {
+export default class RoomItem extends PureComponent {
 
   constructor(props) {
     super(props)
     this.state = {
-      livingTimeString: null
     }
   }
 
-  componentDidMount() {
-  }
-
-  componentDidUpdate() {
-   
-  }
-
-  // calculateLivingTime = (newTime, oldTime) => {
-  //   let diffTimestamp = newTime - oldTime
-  //   const diffDays = Math.floor(moment.duration(diffTimestamp).asDays())
-  //   if (diffDays > 0) {
-  //     diffTimestamp = diffTimestamp - diffDays * 24 * 60 * 60 * 1000
-  //   }
-  //   const diffHours = Math.floor(moment.duration(diffTimestamp).asHours())
-  //   if (diffHours > 0) {
-  //     diffTimestamp = diffTimestamp - diffHours * 60 * 60 * 1000
-  //   }
-  //   const diffMinutes = Math.floor(moment.duration(diffTimestamp).asMinutes())
-  //   const durationObj = {
-  //     days: diffDays,
-  //     hours: diffHours,
-  //     minutes: diffMinutes
-  //   }
-  //   return durationObj
-  // }
-
-  // exportLivingTimeToString = (newTime, oldTime) => {
-  //   let livingTimeObj = this.calculateLivingTime(newTime, oldTime)
-  //   const { days, hours, minutes } = livingTimeObj
-  //   let livingTime = ''
-  //   if (days > 0) {
-  //     livingTime += days + ' ngày '
-  //   }
-  //   if (hours > 0) {
-  //     livingTime += hours + ' giờ '
-  //   }
-  //   livingTime += minutes + ' phút'
-  //   this.setState({ livingTimeString: livingTime })
-  // }
-
   clickRoom = () => {
-    const { id, roomName, roomStatus, timeIn, chargedItems, note, tag, sectionRoom, air_hour_price, overnight_price, limitMidnight, type } = this.props
+    const { id, roomName, roomStatus, duration, tag, sectionRoom, overnight_price, type } = this.props
     if (roomStatus == 'available') {
       // get room
       this.props.onGetRoom(id, roomName)
     } else {
       // see room detail
-      this.props.showRoomDetail({ id, roomName, timeIn, chargedItems, note, tag, sectionRoom, air_hour_price, overnight_price, limitMidnight, type })
+      this.props.showRoomDetail({ id })
     }
   }
 
@@ -125,7 +84,6 @@ export default class RoomItem extends Component {
             :
             <View style={{ flex: 4, width: '100%' }} />
         }
-
       </TouchableOpacity>
     )
   }

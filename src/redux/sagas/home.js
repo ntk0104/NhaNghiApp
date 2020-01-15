@@ -3,26 +3,10 @@ import { put, takeLatest, fork, call } from 'redux-saga/effects';
 import { getRoomsDataSuccess, getRoomsDataFailure } from '../actions'
 import realm from '../../database/configRealm'
 import moment from 'moment'
-import { Helpers } from '../../utils/index'
+// import { Helpers } from '../../utils/index'
+import { generateLivingDuration } from '../../utils/Helpers'
 
-
-const generateLivingDuration = (timestampIn, timestampOut) => {
-  const durationObj = Helpers.calculateLivingTime(timestampIn, timestampOut)
-  const { nights, hours, minutes } = durationObj
-  let durationString = ''
-  if (nights > 0) {
-    durationString += nights + ' đêm '
-  }
-  if (hours > 0) {
-    durationString += hours + ' giờ '
-  }
-  if (minutes > 0) {
-    durationString += minutes + ' phút'
-  }
-  return durationString
-}
-
-const getRoomsDataAPI = () => {
+const getRoomsDataAPI = async () => {
   return new Promise((resolve, reject) => {
     try {
       let rooms = realm.objects('Room')
@@ -32,9 +16,11 @@ const getRoomsDataAPI = () => {
           id: room.id,
           roomName: room.roomName,
           currentStatus: room.currentStatus,
+          // duration: Helpers.generateLivingDuration(room.timeIn, moment().valueOf()),
           duration: generateLivingDuration(room.timeIn, moment().valueOf()),
           tag: room.tag,
-          type: room.type
+          type: room.type,
+          overnight_price: room.overnight_price
         }
         roomsData[room.id] = roomData
       }
@@ -61,10 +47,10 @@ export function* getRoomsDataRequest() {
 /**
  * Catch action request
  */
-function* watchCategory() {
+function* watchHome() {
   yield takeLatest(GET_ROOMS_DATA_REQUEST, getRoomsDataRequest);
 }
 
 export default function* rootChild() {
-  yield fork(watchCategory);
+  yield fork(watchHome);
 }
