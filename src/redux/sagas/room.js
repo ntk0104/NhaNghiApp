@@ -1,17 +1,16 @@
-import { GET_ROOM_INFO_REQUEST } from '../types'
+import { GET_ROOM_INFO_REQUEST, UPDATE_ROOM_INFO_REQUEST } from '../types'
 import { put, takeLatest, fork, call } from 'redux-saga/effects';
-import { getRoomInfoSuccess, getRoomInfoFailure } from '../actions'
+import { getRoomInfoSuccess, getRoomInfoFailure, updateRoomInfoSuccess, updateRoomInfoFailure } from '../actions'
 import realm from '../../database/configRealm'
 import moment from 'moment'
-// import { Helpers } from '../../utils/index'
 import { generateLivingDuration } from '../../utils/Helpers'
+import { updateRoom } from '../../database/index'
 
-const getRoomInfoAPI = async({id}) => {
+const getRoomInfoAPI = async ({ id }) => {
   return new Promise((resolve, reject) => {
     try {
       const query = "id = '" + id + "'"
       let roomInfo = realm.objects('Room').filtered(query)
-      console.log("TCL: getRoomInfoAPI -> roomInfo", JSON.stringify(roomInfo, null, 2))
       let roomData = {
         id: roomInfo[0].id,
         roomName: roomInfo[0].roomName,
@@ -34,16 +33,38 @@ const getRoomInfoAPI = async({id}) => {
   })
 }
 
+const updateRoomInfoAPI = (payload) => {
+  return new Promise((resolve, reject) => {
+    updateRoom(payload)
+      .then(() => {
+        resolve()
+      })
+      .catch((err) => {
+        console.log("TCL: updateRoomInfoAPI -> err", err)
+        reject(err)
+      })
+  })
+}
+
 /**
  * Dispatch action success or failure
  * @param {*} obj params
  */
 export function* getRoomInfoRequest(obj) {
-  try { 
+  try {
     const roomInfo = yield call(getRoomInfoAPI, obj.payload);
     yield put(getRoomInfoSuccess(roomInfo));
   } catch (err) {
     yield put(getRoomInfoFailure(err));
+  }
+}
+
+export function* updateRoomInfoRequest(obj) {
+  try {
+    const updatedroomInfo = yield call(updateRoomInfoAPI, obj.payload);
+    yield put(updateRoomInfoSuccess(updatedroomInfo));
+  } catch (err) {
+    yield put(updateRoomInfoFailure(err));
   }
 }
 
@@ -52,6 +73,7 @@ export function* getRoomInfoRequest(obj) {
  */
 function* watchRoom() {
   yield takeLatest(GET_ROOM_INFO_REQUEST, getRoomInfoRequest);
+  yield takeLatest(UPDATE_ROOM_INFO_REQUEST, updateRoomInfoRequest);
 }
 
 export default function* rootChild() {

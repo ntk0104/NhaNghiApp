@@ -54,7 +54,6 @@ export const calculateLivingTime = (timestampIn, timestampOut) => {
       minutes: 0
     }
   }
-  console.log(JSON.stringify(durationObj, null, 2));
   return durationObj
 }
 

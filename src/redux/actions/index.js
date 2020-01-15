@@ -4,7 +4,10 @@ import {
   GET_ROOMS_DATA_FAILURE,
   GET_ROOM_INFO_REQUEST,
   GET_ROOM_INFO_SUCCESS,
-  GET_ROOM_INFO_FAILURE
+  GET_ROOM_INFO_FAILURE,
+  UPDATE_ROOM_INFO_REQUEST,
+  UPDATE_ROOM_INFO_SUCCESS,
+  UPDATE_ROOM_INFO_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -40,6 +43,23 @@ export const getRoomInfoSuccess = payload => ({
 
 export const getRoomInfoFailure = errors => ({
   type: GET_ROOM_INFO_FAILURE,
+  errors
+});
+
+// ==================================================== UPDATE ROOM INFO
+
+export const updateRoomInfoRequest = payload => ({
+  type: UPDATE_ROOM_INFO_REQUEST,
+  payload
+});
+
+export const updateRoomInfoSuccess = payload => ({
+  type: UPDATE_ROOM_INFO_SUCCESS,
+  payload
+});
+
+export const updateRoomInfoFailure = errors => ({
+  type: UPDATE_ROOM_INFO_FAILURE,
   errors
 });
 

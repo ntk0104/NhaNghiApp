@@ -13,8 +13,7 @@ import RoomMap from './RoomMap'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import ImagePicker from 'react-native-image-picker'
-// import { makeGetRoomsData } from '../../redux/selectors/index'
-import { getRoomsDataRequest } from '../../redux/actions/index'
+import { getRoomsDataRequest, updateRoomInfoRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 
 import { createStructuredSelector } from 'reselect';
@@ -129,18 +128,10 @@ class Home extends PureComponent {
       // is not first init
       console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
-      console.log("TCL: Home -> checkFirstInitApp wrong -> getRoomsDataRequestHandler")
     } else {
       console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
-      // await Storage.shared().setStorage(constants.bufferTimeInMinutes, 30)
-      // await Storage.shared().setStorage(constants.limitHourSectionTimeInHour, 3)
-      // await Storage.shared().setStorage(constants.limitHourSectionToOvernightInHour, 6)
-      // await Storage.shared().setStorage(constants.fanSectionPrice, 60)
-      // await Storage.shared().setStorage(constants.airSectionPrice, 100)
-      // await Storage.shared().setStorage(constants.fanHourAdditionalPrice, 20)
-      // await Storage.shared().setStorage(constants.airHourAdditionalPrice, 30)
       const listRooms = appConfig.listRooms
       let addRoomQueues = []
       listRooms.forEach(room => {
@@ -149,7 +140,6 @@ class Home extends PureComponent {
       Promise.all(addRoomQueues)
         .then(rs => {
           this.props.getRoomsDataRequestHandler()
-          console.log("TCL: Home -> checkFirstInitApp true -> getRoomsDataRequestHandler")
         })
         .catch(err => console.log(err))
     }
@@ -189,15 +179,10 @@ class Home extends PureComponent {
       sectionRoom: this.state.selectedRoomType,
       cmnd: null
     }
-    updateRoom(updatedInfo)
-      .then(() => {
-        this.closeGetRoomModal()
-        this.props.getRoomsDataRequestHandler()
-        console.log("TCL: Home -> onSubmitGetRoom -> getRoomsDataRequestHandler")
-      })
-      .catch((err) => {
-        console.log('%c%s', 'color: #00e600', err);
-      })
+
+    this.props.updateRoomInfoRequestHandler(updatedInfo)
+    this.closeGetRoomModal()
+    setTimeout(() => this.props.getRoomsDataRequestHandler(), 200)
   }
 
   selectSectionType = (sectionType) => {
@@ -339,11 +324,11 @@ class Home extends PureComponent {
 }
 
 const mapStateToProps = createStructuredSelector({
-  // roomsData: makeGetRoomsData()
 })
 
 const mapDispatchToProps = dispatch => ({
-  getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest())
+  getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

@@ -34,7 +34,6 @@ class RoomMap extends Component {
 
   componentDidMount(){
     this.timer = setInterval(() => {this.props.getRoomsDataRequestHandler()}, 60000)
-    console.log("TCL: RoomMap -> this.timer -> getRoomsDataRequestHandler")
   }
 
   // componentWillUnmount(){
