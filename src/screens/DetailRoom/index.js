@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateChargedItemRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -21,7 +21,7 @@ class DetailRoom extends Component {
     this.state = {
       tag: null,
       sectionRoom: null,
-      
+
       sectionPrice: 0,
       additionalPrice: 0,
       calculatedRoomCost: 0,
@@ -49,9 +49,9 @@ class DetailRoom extends Component {
       waterCost: chargedItems.water ? chargedItems.water.total : 0,
       beerQuantity: chargedItems.beer ? chargedItems.beer.quantity : 0,
       beerCost: chargedItems.beer ? chargedItems.beer.total : 0,
-      softdrinkQuantity: chargedItems.softdrink ? chargedItems.softdrink.quantity: 0,
+      softdrinkQuantity: chargedItems.softdrink ? chargedItems.softdrink.quantity : 0,
       softdrinkCost: chargedItems.softdrink ? chargedItems.softdrink.total : 0,
-      instantNoodleQuantity: chargedItems.instantNoodle ? chargedItems.instantNoodle.quantity: 0,
+      instantNoodleQuantity: chargedItems.instantNoodle ? chargedItems.instantNoodle.quantity : 0,
       instantNoodleCost: chargedItems.instantNoodle ? chargedItems.instantNoodle.total : 0,
       additionalCost: chargedItems.anotherCost ? chargedItems.anotherCost.total : 0,
       roomCost: chargedItems.roomcost ? chargedItems.roomcost.total : 0,
@@ -65,17 +65,17 @@ class DetailRoom extends Component {
   }
 
   calculateRoomCost = () => {
-    const {sectionRoom, tag } = this.state
+    const { sectionRoom, tag } = this.state
     const { roomInfo } = this.props
     const additionalPriceValue = sectionRoom == 'quat' ? appConfig.fanHourAdditionalPrice : appConfig.airHourAdditionalPrice
     const sectionPriceValue = sectionRoom == 'quat' ? appConfig.fanSectionPrice : appConfig.airSectionPrice
-    this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue}, () => {
-      if(tag == 'QD'){
+    this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue }, () => {
+      if (tag == 'QD') {
         let calculatedRoomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
-        this.setState({calculatedRoomCost})
+        this.setState({ calculatedRoomCost })
       } else {
         let calculatedRoomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
-        this.setState({calculatedRoomCost})
+        this.setState({ calculatedRoomCost })
       }
     });
   }
@@ -85,12 +85,36 @@ class DetailRoom extends Component {
       currentValue -= 1
       if (itemID == 'water') {
         this.setState({ waterQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_water',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitWaterPrice
+        })
       } else if (itemID == 'beer') {
         this.setState({ beerQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_beer',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitBeerPrice
+        })
       } else if (itemID == 'softdrink') {
         this.setState({ softdrinkQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_softdrink',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitSoftDrinkPrice
+        })
       } else if (itemID == 'instantNoodle') {
         this.setState({ instantNoodleQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_instantNoodle',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitInstantNoodle
+        })
       }
     }
   }
@@ -99,17 +123,42 @@ class DetailRoom extends Component {
     currentValue += 1
     if (itemID == 'water') {
       this.setState({ waterQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_water',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitWaterPrice
+      })
     } else if (itemID == 'beer') {
       this.setState({ beerQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_beer',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitBeerPrice
+      })
     } else if (itemID == 'softdrink') {
       this.setState({ softdrinkQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_softdrink',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitSoftDrinkPrice
+      })
     } else if (itemID == 'instantNoodle') {
       this.setState({ instantNoodleQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_instantNoodle',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitInstantNoodle
+      })
     }
   }
 
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
+    const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
     return (
       <View style={styles.container}>
         {
@@ -258,35 +307,35 @@ class DetailRoom extends Component {
                   />
                   <ChargedItemRow
                     title={'Nước suối'}
-                    totalPrice={'1000K'}
+                    totalPrice={waterQuantity * appConfig.unitWaterPrice}
                     quantity={waterQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('water', waterQuantity)}
                     increaseQuantity={() => this.increaseQuantity('water', waterQuantity)}
                   />
                   <ChargedItemRow
                     title={'Bia'}
-                    totalPrice={'1000K'}
+                    totalPrice={beerQuantity * appConfig.unitBeerPrice}
                     quantity={beerQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('beer', beerQuantity)}
                     increaseQuantity={() => this.increaseQuantity('beer', beerQuantity)}
                   />
                   <ChargedItemRow
                     title={'Nước ngọt'}
-                    totalPrice={'1000K'}
+                    totalPrice={softdrinkQuantity * appConfig.unitSoftDrinkPrice}
                     quantity={softdrinkQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('softdrink', softdrinkQuantity)}
                     increaseQuantity={() => this.increaseQuantity('softdrink', softdrinkQuantity)}
                   />
                   <ChargedItemRow
                     title={'Mỳ gói'}
-                    totalPrice={'1000K'}
+                    totalPrice={instantNoodleQuantity * appConfig.unitInstantNoodle}
                     quantity={instantNoodleQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('instantNoodle', instantNoodleQuantity)}
                     increaseQuantity={() => this.increaseQuantity('instantNoodle', instantNoodleQuantity)}
                   />
                   <ChargedItemRow
                     title={'Chi Phí Khác'}
-                    totalPrice={'1000K'}
+                    totalPrice={additionalCost}
                     quantity={additionalCost}
                   />
                   <View style={styles.totalWrapper}>
@@ -294,7 +343,7 @@ class DetailRoom extends Component {
                       <Text style={styles.totalTxt}>Tổng:</Text>
                     </View>
                     <View style={styles.totalTxtWrapper}>
-                      <Text style={styles.totalTxt}>1.091 K</Text>
+                      <Text style={styles.totalTxt}>{totalPayment}.000</Text>
                     </View>
                   </View>
                 </View>
@@ -323,7 +372,8 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload))
+  getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload)),
+  updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)
