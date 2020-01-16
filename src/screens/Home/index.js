@@ -102,7 +102,7 @@ class Home extends PureComponent {
       selectedSectionType: 'CD',
       selectedRoomType: 'quat',
       gettingRoomName: null,
-      currentNote: null,
+      currentNote: '',
       gettingRoomID: null,
 
     }
@@ -151,7 +151,7 @@ class Home extends PureComponent {
       selectedSectionType: 'CD',
       selectedRoomType: 'quat',
       gettingRoomName: null,
-      currentNote: null,
+      currentNote: '',
       gettingRoomID: null,
     })
   }

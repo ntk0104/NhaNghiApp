@@ -7,7 +7,7 @@ import { generateLivingDuration } from '../../utils/Helpers'
 import { updateRoom, addChargedItem } from '../../database/index'
 import { getChargedItemsBySectionID } from '../../database/model/chargedItem'
 
-const getRoomInfoAPI = ({ id, timeIn }) => {
+const getRoomInfoAPI = ({ id }) => {
   return new Promise(async (resolve, reject) => {
     try {
       const query = "id = '" + id + "'"
@@ -18,7 +18,7 @@ const getRoomInfoAPI = ({ id, timeIn }) => {
         currentStatus: roomInfo[0].currentStatus,
         timeIn: roomInfo[0].timeIn,
         duration: generateLivingDuration(roomInfo[0].timeIn, moment().valueOf()),
-        chargedItems: await getChargedItemsBySectionID({sectionId: timeIn}),
+        chargedItems: await getChargedItemsBySectionID({sectionId: roomInfo[0].timeIn}),
         note: roomInfo[0].note,
         tag: roomInfo[0].tag,
         sectionRoom: roomInfo[0].sectionRoom,

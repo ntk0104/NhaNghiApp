@@ -20,7 +20,7 @@ export default class RoomItem extends PureComponent {
       this.props.onGetRoom(id, roomName)
     } else {
       // see room detail
-      this.props.showRoomDetail({ id, timeIn })
+      this.props.showRoomDetail({ id })
     }
   }
 
