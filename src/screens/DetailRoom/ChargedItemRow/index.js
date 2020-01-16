@@ -43,7 +43,7 @@ export default class ChargedItemRow extends PureComponent {
             </View>
         }
         <View style={styles.totalHeader}>
-          <Text style={styles.textTitle}>{totalPrice} K</Text>
+          <Text style={totalPrice > 0 ? styles.totalMoneyAmount : styles.textTitle}>{totalPrice} K</Text>
         </View>
       </View>
     )
