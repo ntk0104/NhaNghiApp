@@ -14,13 +14,13 @@ export default class RoomItem extends PureComponent {
   }
 
   clickRoom = () => {
-    const { id, roomName, roomStatus, duration, tag, sectionRoom, overnight_price, type } = this.props
+    const { id, roomName, timeIn, roomStatus, duration, tag, sectionRoom, overnight_price, type } = this.props
     if (roomStatus == 'available') {
       // get room
       this.props.onGetRoom(id, roomName)
     } else {
       // see room detail
-      this.props.showRoomDetail({ id })
+      this.props.showRoomDetail({ id, timeIn })
     }
   }
 

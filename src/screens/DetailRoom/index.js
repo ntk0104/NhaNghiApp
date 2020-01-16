@@ -42,6 +42,7 @@ class DetailRoom extends Component {
 
   componentDidMount() {
     const payload = this.props.navigation.getParam('payload')
+    const { id, timeIn } = payload
     this.props.getRoomInfoRequestHandler(payload)
   }
 

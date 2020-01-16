@@ -7,7 +7,10 @@ import {
   GET_ROOM_INFO_FAILURE,
   UPDATE_ROOM_INFO_REQUEST,
   UPDATE_ROOM_INFO_SUCCESS,
-  UPDATE_ROOM_INFO_FAILURE
+  UPDATE_ROOM_INFO_FAILURE,
+  ADD_CHARGED_ITEM_REQUEST,
+  ADD_CHARGED_ITEM_SUCCESS,
+  ADD_CHARGED_ITEM_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -60,6 +63,23 @@ export const updateRoomInfoSuccess = payload => ({
 
 export const updateRoomInfoFailure = errors => ({
   type: UPDATE_ROOM_INFO_FAILURE,
+  errors
+});
+
+// ==================================================== ADD CHARGED ITEM
+
+export const addChargedItemRequest = payload => ({
+  type: ADD_CHARGED_ITEM_REQUEST,
+  payload
+});
+
+export const addChargedItemSuccess = payload => ({
+  type: ADD_CHARGED_ITEM_SUCCESS,
+  payload
+});
+
+export const addChargedItemFailure = errors => ({
+  type: ADD_CHARGED_ITEM_FAILURE,
   errors
 });
 

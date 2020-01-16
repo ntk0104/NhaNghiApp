@@ -8,7 +8,10 @@ import {
   GET_ROOM_INFO_FAILURE,
   UPDATE_ROOM_INFO_REQUEST,
   UPDATE_ROOM_INFO_SUCCESS,
-  UPDATE_ROOM_INFO_FAILURE
+  UPDATE_ROOM_INFO_FAILURE,
+  ADD_CHARGED_ITEM_REQUEST,
+  ADD_CHARGED_ITEM_SUCCESS,
+  ADD_CHARGED_ITEM_FAILURE
 } from '../types/index';
 
 
@@ -26,27 +29,33 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_ROOMS_DATA_REQUEST:
     case GET_ROOM_INFO_REQUEST:
     case UPDATE_ROOM_INFO_REQUEST:
+    case ADD_CHARGED_ITEM_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
     case GET_ROOMS_DATA_SUCCESS:
       return { ...draft, roomsData: payload }
 
-    case GET_ROOMS_DATA_FAILURE:
-      return { ...draft, error: payload }
-
     // ===================ROOM_INFO
     case GET_ROOM_INFO_SUCCESS:
       return { ...draft, currentRoom: payload }
-
-    case GET_ROOM_INFO_FAILURE:
-      return { ...draft, error: payload }
 
     // ===================UPDATE ROOM_INFO
     case UPDATE_ROOM_INFO_SUCCESS:
       return draft;
 
+    // ===================ADD CHARGED_ITEM
+    case ADD_CHARGED_ITEM_SUCCESS:
+      return draft;
+
+    // ===================ADD CHARGED_ITEM
+    case ADD_CHARGED_ITEM_REQUEST:
+      return draft;
+
+    case GET_ROOMS_DATA_FAILURE:
+    case GET_ROOM_INFO_FAILURE:
     case UPDATE_ROOM_INFO_FAILURE:
+    case ADD_CHARGED_ITEM_FAILURE:
       return { ...draft, error: payload }
 
     default:

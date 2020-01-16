@@ -10,7 +10,8 @@ Room.schema = {
     roomName: 'string',
     currentStatus: { type: 'string', default: 'available' },
     timeIn: 'int',
-    chargedItems: 'ChargedItem[]', 
+    // chargedItems: { type: 'object', default: [] },
+    // chargedItems: 'ChargedItem[]',
     note: 'string?',
     tag: { type: 'string', default: 'DG' }, // DG/CD/QD
     sectionRoom: { type: 'string', default: 'quat' }, //quat / lanh

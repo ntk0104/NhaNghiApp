@@ -13,7 +13,7 @@ import RoomMap from './RoomMap'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import ImagePicker from 'react-native-image-picker'
-import { getRoomsDataRequest, updateRoomInfoRequest } from '../../redux/actions/index'
+import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 
 import { createStructuredSelector } from 'reselect';
@@ -181,6 +181,18 @@ class Home extends PureComponent {
     }
 
     this.props.updateRoomInfoRequestHandler(updatedInfo)
+
+    const newChargedItem = {
+      addedTime: updatedInfo.timeIn,
+      sectionID: updatedInfo.timeIn,
+      itemKey: 'roomcost',
+      roomID: this.state.gettingRoomID,
+      quantity: 1,
+      unitPrice: 0,
+      total: 0,
+      payStatus: 'pending'
+    }
+    this.props.addChargedItemRequestHandler(newChargedItem)
     this.closeGetRoomModal()
     setTimeout(() => this.props.getRoomsDataRequestHandler(), 200)
   }
@@ -328,7 +340,8 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
-  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload))
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
+  addChargedItemRequestHandler: payload => dispatch(addChargedItemRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

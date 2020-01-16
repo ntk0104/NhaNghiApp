@@ -17,7 +17,7 @@ export const checkRoomExisted = (id) => {
   }
 }
 
-export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, note, tag, sectionRoom, air_hour_price, overnight_price, type, cmnd }) => {
+export const addRoom = ({ id, roomName, currentStatus, timeIn, note, tag, sectionRoom, overnight_price, type, cmnd }) => {
   console.log('%c%s', 'color: #f2ceb6', "added Room " + id);
   return new Promise((resolve, reject) => {
     try {
@@ -27,7 +27,6 @@ export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, not
           roomName,
           currentStatus,
           timeIn,
-          chargedItems,
           note,
           tag,
           sectionRoom,
@@ -43,7 +42,7 @@ export const addRoom = ({ id, roomName, currentStatus, timeIn, chargedItems, not
   });
 }
 
-export const updateRoom = ({ id, currentStatus, timeIn, chargedItems, note, tag, sectionRoom, cmnd }) => {
+export const updateRoom = ({ id, currentStatus, timeIn, note, tag, sectionRoom, cmnd }) => {
   return new Promise((resolve, reject) => {
     try {
       realm.write(() => {
@@ -51,7 +50,6 @@ export const updateRoom = ({ id, currentStatus, timeIn, chargedItems, note, tag,
           id,
           currentStatus,
           timeIn,
-          chargedItems,
           note,
           tag,
           sectionRoom,
@@ -89,7 +87,6 @@ export const getAllRoomsInfo = (i) => {
           roomName: room.roomName,
           currentStatus: room.currentStatus,
           timeIn: room.timeIn,
-          chargedItems: room.chargedItems,
           note: room.note,
           tag: room.tag,
           sectionRoom: room.sectionRoom,
