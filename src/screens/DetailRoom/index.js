@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -62,6 +62,10 @@ class DetailRoom extends Component {
     const payload = this.props.navigation.getParam('payload')
     const { id, timeIn } = payload
     this.props.getRoomInfoRequestHandler(payload)
+  }
+
+  componentWillUnmount(){
+    this.props.getRoomsDataRequestHandler()
   }
 
   calculateRoomCost = () => {
@@ -167,6 +171,17 @@ class DetailRoom extends Component {
     })
   }
 
+  editSectionRoomType = (sectionID) => {
+    this.setState({
+      sectionRoom: sectionID
+    }, () => this.calculateRoomCost())
+    //update room
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      sectionRoom: sectionID
+    })
+  }
+
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
     const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
@@ -265,7 +280,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={sectionRoom == 'quat'}
                           title={'Quạt'}
-                          selectOption={() => this.setState({ sectionRoom: 'quat' })}
+                          selectOption={() => this.editSectionRoomType('quat')}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -276,7 +291,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={sectionRoom == 'lanh'}
                           title={'Lạnh'}
-                          selectOption={() => this.setState({ sectionRoom: 'lanh' })}
+                          selectOption={() => this.editSectionRoomType('lanh')}
                         />
                       </View>
                     </View>
@@ -385,7 +400,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch => ({
   getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload)),
   updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload)),
-  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload))
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
+  getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)
