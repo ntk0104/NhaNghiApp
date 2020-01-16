@@ -21,23 +21,41 @@ class DetailRoom extends Component {
     this.state = {
       tag: null,
       sectionRoom: null,
+      
       sectionPrice: 0,
       additionalPrice: 0,
+      calculatedRoomCost: 0,
 
       roomCost: 0,
       waterQuantity: 0,
+      waterCost: 0,
       beerQuantity: 0,
+      beerCost: 0,
       softdrinkQuantity: 0,
+      softdrinkCost: 0,
       instantNoodleQuantity: 0,
+      instantNoodleCost: 0,
       additionalCost: 0,
     }
   }
 
   UNSAFE_componentWillReceiveProps(nextprops) {
+    const { roomInfo } = nextprops
+    const { chargedItems } = roomInfo
     this.setState({
-      tag: nextprops.roomInfo.tag,
-      sectionRoom: nextprops.roomInfo.sectionRoom,
-    }, () => this.checkAddtionalHourPrice())
+      tag: roomInfo.tag,
+      sectionRoom: roomInfo.sectionRoom,
+      waterQuantity: chargedItems.water ? chargedItems.water.quantity : 0,
+      waterCost: chargedItems.water ? chargedItems.water.total : 0,
+      beerQuantity: chargedItems.beer ? chargedItems.beer.quantity : 0,
+      beerCost: chargedItems.beer ? chargedItems.beer.total : 0,
+      softdrinkQuantity: chargedItems.softdrink ? chargedItems.softdrink.quantity: 0,
+      softdrinkCost: chargedItems.softdrink ? chargedItems.softdrink.total : 0,
+      instantNoodleQuantity: chargedItems.instantNoodle ? chargedItems.instantNoodle.quantity: 0,
+      instantNoodleCost: chargedItems.instantNoodle ? chargedItems.instantNoodle.total : 0,
+      additionalCost: chargedItems.anotherCost ? chargedItems.anotherCost.total : 0,
+      roomCost: chargedItems.roomcost ? chargedItems.roomcost.total : 0,
+    }, () => this.calculateRoomCost())
   }
 
   componentDidMount() {
@@ -46,18 +64,18 @@ class DetailRoom extends Component {
     this.props.getRoomInfoRequestHandler(payload)
   }
 
-  checkAddtionalHourPrice = () => {
+  calculateRoomCost = () => {
     const {sectionRoom, tag } = this.state
     const { roomInfo } = this.props
     const additionalPriceValue = sectionRoom == 'quat' ? appConfig.fanHourAdditionalPrice : appConfig.airHourAdditionalPrice
     const sectionPriceValue = sectionRoom == 'quat' ? appConfig.fanSectionPrice : appConfig.airSectionPrice
     this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue}, () => {
       if(tag == 'QD'){
-        let roomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
-        this.setState({roomCost})
+        let calculatedRoomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
+        this.setState({calculatedRoomCost})
       } else {
-        let roomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
-        this.setState({roomCost})
+        let calculatedRoomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
+        this.setState({calculatedRoomCost})
       }
     });
   }
@@ -91,7 +109,7 @@ class DetailRoom extends Component {
   }
 
   render() {
-    const { tag, sectionRoom, roomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
+    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
     return (
       <View style={styles.container}>
         {
@@ -226,8 +244,6 @@ class DetailRoom extends Component {
                     autoCompleteType='off'
                     autoCorrect={Platform.OS != 'ios'}
                     autoFocus={false}
-                  // defaultValue=""
-                  // multiline={Platform.OS != 'ios'}
                   />
                 </View>
               </View>
@@ -237,9 +253,8 @@ class DetailRoom extends Component {
                 <View style={styles.menuWrapper}>
                   <ChargedItemRow
                     title={'Tiền phòng'}
-                    totalPrice={roomCost}
+                    totalPrice={calculatedRoomCost}
                     duration={this.props.roomInfo.duration}
-                  // quantity={roomCost}
                   />
                   <ChargedItemRow
                     title={'Nước suối'}

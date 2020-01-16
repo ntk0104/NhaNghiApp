@@ -182,7 +182,7 @@ class Home extends PureComponent {
 
     this.props.updateRoomInfoRequestHandler(updatedInfo)
 
-    const newChargedItem = {
+    const roomCostItem = {
       addedTime: updatedInfo.timeIn,
       sectionID: updatedInfo.timeIn,
       itemKey: 'roomcost',
@@ -192,9 +192,66 @@ class Home extends PureComponent {
       total: 0,
       payStatus: 'pending'
     }
-    this.props.addChargedItemRequestHandler(newChargedItem)
+    const waterCostItem = {
+      addedTime: updatedInfo.timeIn,
+      sectionID: updatedInfo.timeIn,
+      itemKey: 'water',
+      roomID: this.state.gettingRoomID,
+      quantity: 0,
+      unitPrice: appConfig.unitWaterPrice,
+      total: 0,
+      payStatus: 'pending'
+    }
+    const softdrinkCostItem = {
+      addedTime: updatedInfo.timeIn,
+      sectionID: updatedInfo.timeIn,
+      itemKey: 'softdrink',
+      roomID: this.state.gettingRoomID,
+      quantity: 0,
+      unitPrice: appConfig.unitSoftDrinkPrice,
+      total: 0,
+      payStatus: 'pending'
+    }
+    const beerCostItem = {
+      addedTime: updatedInfo.timeIn,
+      sectionID: updatedInfo.timeIn,
+      itemKey: 'beer',
+      roomID: this.state.gettingRoomID,
+      quantity: 0,
+      unitPrice: appConfig.unitBeerPrice,
+      total: 0,
+      payStatus: 'pending'
+    }
+    const instantNoodleCostItem = {
+      addedTime: updatedInfo.timeIn,
+      sectionID: updatedInfo.timeIn,
+      itemKey: 'instantNoodle',
+      roomID: this.state.gettingRoomID,
+      quantity: 0,
+      unitPrice: appConfig.unitInstantNoodle,
+      total: 0,
+      payStatus: 'pending'
+    }
+    const anotherCostCostItem = {
+      addedTime: updatedInfo.timeIn,
+      sectionID: updatedInfo.timeIn,
+      itemKey: 'anotherCost',
+      roomID: this.state.gettingRoomID,
+      quantity: 0,
+      unitPrice: 0,
+      total: 0,
+      payStatus: 'pending'
+    }
+
+    this.props.addChargedItemRequestHandler(roomCostItem)
+    this.props.addChargedItemRequestHandler(waterCostItem)
+    this.props.addChargedItemRequestHandler(beerCostItem)
+    this.props.addChargedItemRequestHandler(softdrinkCostItem)
+    this.props.addChargedItemRequestHandler(instantNoodleCostItem)
+    this.props.addChargedItemRequestHandler(anotherCostCostItem)
+
     this.closeGetRoomModal()
-    setTimeout(() => this.props.getRoomsDataRequestHandler(), 200)
+    setTimeout(() => this.props.getRoomsDataRequestHandler(), 300)
   }
 
   selectSectionType = (sectionType) => {
