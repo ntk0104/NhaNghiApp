@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateChargedItemRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -156,6 +156,17 @@ class DetailRoom extends Component {
     }
   }
 
+  editTag = (tagID) => {
+    this.setState({
+      tag: tagID
+    }, () => this.calculateRoomCost())
+    //update room
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      tag: tagID
+    })
+  }
+
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
     const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
@@ -214,7 +225,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'DG'}
                           title={'DG'}
-                          selectOption={() => this.setState({ tag: 'DG' })}
+                          selectOption={() => this.editTag('DG')}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -225,7 +236,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'CD'}
                           title={'CD'}
-                          selectOption={() => this.setState({ tag: 'CD' })}
+                          selectOption={() => this.editTag('CD')}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -236,7 +247,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'QD'}
                           title={'Qua đêm'}
-                          selectOption={() => this.setState({ tag: 'QD' })}
+                          selectOption={() => this.editTag('QD')}
                         />
                       </View>
                     </View>
@@ -373,7 +384,8 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
   getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload)),
-  updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload))
+  updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload)),
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)
