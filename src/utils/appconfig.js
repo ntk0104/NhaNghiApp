@@ -228,5 +228,9 @@ export default (appConfig = {
   fanSectionPrice: 60,
   airSectionPrice: 100,
   fanHourAdditionalPrice: 20,
-  airHourAdditionalPrice: 30
+  airHourAdditionalPrice: 30,
+  unitWaterPrice: 5,
+  unitSoftDrinkPrice: 15,
+  unitBeerPrice: 15,
+  unitInstantNoodle: 15
 })

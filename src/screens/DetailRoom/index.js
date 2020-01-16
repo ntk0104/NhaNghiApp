@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -21,44 +21,65 @@ class DetailRoom extends Component {
     this.state = {
       tag: null,
       sectionRoom: null,
+
       sectionPrice: 0,
       additionalPrice: 0,
+      calculatedRoomCost: 0,
 
       roomCost: 0,
       waterQuantity: 0,
+      waterCost: 0,
       beerQuantity: 0,
+      beerCost: 0,
       softdrinkQuantity: 0,
+      softdrinkCost: 0,
       instantNoodleQuantity: 0,
+      instantNoodleCost: 0,
       additionalCost: 0,
     }
   }
 
   UNSAFE_componentWillReceiveProps(nextprops) {
+    const { roomInfo } = nextprops
+    const { chargedItems } = roomInfo
     this.setState({
-      tag: nextprops.roomInfo.tag,
-      sectionRoom: nextprops.roomInfo.sectionRoom,
-    }, () => this.checkAddtionalHourPrice())
+      tag: roomInfo.tag,
+      sectionRoom: roomInfo.sectionRoom,
+      waterQuantity: chargedItems.water ? chargedItems.water.quantity : 0,
+      waterCost: chargedItems.water ? chargedItems.water.total : 0,
+      beerQuantity: chargedItems.beer ? chargedItems.beer.quantity : 0,
+      beerCost: chargedItems.beer ? chargedItems.beer.total : 0,
+      softdrinkQuantity: chargedItems.softdrink ? chargedItems.softdrink.quantity : 0,
+      softdrinkCost: chargedItems.softdrink ? chargedItems.softdrink.total : 0,
+      instantNoodleQuantity: chargedItems.instantNoodle ? chargedItems.instantNoodle.quantity : 0,
+      instantNoodleCost: chargedItems.instantNoodle ? chargedItems.instantNoodle.total : 0,
+      additionalCost: chargedItems.anotherCost ? chargedItems.anotherCost.total : 0,
+      roomCost: chargedItems.roomcost ? chargedItems.roomcost.total : 0,
+    }, () => this.calculateRoomCost())
   }
 
   componentDidMount() {
     const payload = this.props.navigation.getParam('payload')
+    const { id, timeIn } = payload
     this.props.getRoomInfoRequestHandler(payload)
   }
 
-  checkAddtionalHourPrice = () => {
-    const {sectionRoom, tag } = this.state
+  componentWillUnmount(){
+    this.props.getRoomsDataRequestHandler()
+  }
+
+  calculateRoomCost = () => {
+    const { sectionRoom, tag } = this.state
     const { roomInfo } = this.props
     const additionalPriceValue = sectionRoom == 'quat' ? appConfig.fanHourAdditionalPrice : appConfig.airHourAdditionalPrice
-    console.log("TCL: DetailRoom -> checkAddtionalHourPrice -> additionalPriceValue", additionalPriceValue)
     const sectionPriceValue = sectionRoom == 'quat' ? appConfig.fanSectionPrice : appConfig.airSectionPrice
-    console.log("TCL: DetailRoom -> checkAddtionalHourPrice -> sectionPriceValue", sectionPriceValue)
-    this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue}, () => {
-      if(tag == 'QD'){
-        let roomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
-        this.setState({roomCost})
+    this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue }, () => {
+      if (tag == 'QD') {
+        let calculatedRoomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
+        this.setState({ calculatedRoomCost })
       } else {
-        let roomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
-        this.setState({roomCost})
+        let calculatedRoomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
+        this.setState({ calculatedRoomCost })
       }
     });
   }
@@ -68,12 +89,36 @@ class DetailRoom extends Component {
       currentValue -= 1
       if (itemID == 'water') {
         this.setState({ waterQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_water',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitWaterPrice
+        })
       } else if (itemID == 'beer') {
         this.setState({ beerQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_beer',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitBeerPrice
+        })
       } else if (itemID == 'softdrink') {
         this.setState({ softdrinkQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_softdrink',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitSoftDrinkPrice
+        })
       } else if (itemID == 'instantNoodle') {
         this.setState({ instantNoodleQuantity: currentValue })
+        this.props.updateChargedItemRequestHandler({
+          id: this.props.roomInfo.timeIn + '_instantNoodle',
+          addedTime: moment().valueOf(),
+          quantity: currentValue,
+          total: currentValue * appConfig.unitInstantNoodle
+        })
       }
     }
   }
@@ -82,17 +127,64 @@ class DetailRoom extends Component {
     currentValue += 1
     if (itemID == 'water') {
       this.setState({ waterQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_water',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitWaterPrice
+      })
     } else if (itemID == 'beer') {
       this.setState({ beerQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_beer',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitBeerPrice
+      })
     } else if (itemID == 'softdrink') {
       this.setState({ softdrinkQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_softdrink',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitSoftDrinkPrice
+      })
     } else if (itemID == 'instantNoodle') {
       this.setState({ instantNoodleQuantity: currentValue })
+      this.props.updateChargedItemRequestHandler({
+        id: this.props.roomInfo.timeIn + '_instantNoodle',
+        addedTime: moment().valueOf(),
+        quantity: currentValue,
+        total: currentValue * appConfig.unitInstantNoodle
+      })
     }
   }
 
+  editTag = (tagID) => {
+    this.setState({
+      tag: tagID
+    }, () => this.calculateRoomCost())
+    //update room
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      tag: tagID
+    })
+  }
+
+  editSectionRoomType = (sectionID) => {
+    this.setState({
+      sectionRoom: sectionID
+    }, () => this.calculateRoomCost())
+    //update room
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      sectionRoom: sectionID
+    })
+  }
+
   render() {
-    const { tag, sectionRoom, roomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
+    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
+    const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
     return (
       <View style={styles.container}>
         {
@@ -148,7 +240,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'DG'}
                           title={'DG'}
-                          selectOption={() => this.setState({ tag: 'DG' })}
+                          selectOption={() => this.editTag('DG')}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -159,7 +251,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'CD'}
                           title={'CD'}
-                          selectOption={() => this.setState({ tag: 'CD' })}
+                          selectOption={() => this.editTag('CD')}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -170,7 +262,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={tag == 'QD'}
                           title={'Qua đêm'}
-                          selectOption={() => this.setState({ tag: 'QD' })}
+                          selectOption={() => this.editTag('QD')}
                         />
                       </View>
                     </View>
@@ -188,7 +280,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={sectionRoom == 'quat'}
                           title={'Quạt'}
-                          selectOption={() => this.setState({ sectionRoom: 'quat' })}
+                          selectOption={() => this.editSectionRoomType('quat')}
                         />
                       </View>
                       <View style={styles.optionSectionType}>
@@ -199,7 +291,7 @@ class DetailRoom extends Component {
                           unSelectedBackground={'#FDFEFE'}
                           checked={sectionRoom == 'lanh'}
                           title={'Lạnh'}
-                          selectOption={() => this.setState({ sectionRoom: 'lanh' })}
+                          selectOption={() => this.editSectionRoomType('lanh')}
                         />
                       </View>
                     </View>
@@ -227,8 +319,6 @@ class DetailRoom extends Component {
                     autoCompleteType='off'
                     autoCorrect={Platform.OS != 'ios'}
                     autoFocus={false}
-                  // defaultValue=""
-                  // multiline={Platform.OS != 'ios'}
                   />
                 </View>
               </View>
@@ -238,41 +328,40 @@ class DetailRoom extends Component {
                 <View style={styles.menuWrapper}>
                   <ChargedItemRow
                     title={'Tiền phòng'}
-                    totalPrice={roomCost}
+                    totalPrice={calculatedRoomCost}
                     duration={this.props.roomInfo.duration}
-                  // quantity={roomCost}
                   />
                   <ChargedItemRow
                     title={'Nước suối'}
-                    totalPrice={'1000K'}
+                    totalPrice={waterQuantity * appConfig.unitWaterPrice}
                     quantity={waterQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('water', waterQuantity)}
                     increaseQuantity={() => this.increaseQuantity('water', waterQuantity)}
                   />
                   <ChargedItemRow
                     title={'Bia'}
-                    totalPrice={'1000K'}
+                    totalPrice={beerQuantity * appConfig.unitBeerPrice}
                     quantity={beerQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('beer', beerQuantity)}
                     increaseQuantity={() => this.increaseQuantity('beer', beerQuantity)}
                   />
                   <ChargedItemRow
                     title={'Nước ngọt'}
-                    totalPrice={'1000K'}
+                    totalPrice={softdrinkQuantity * appConfig.unitSoftDrinkPrice}
                     quantity={softdrinkQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('softdrink', softdrinkQuantity)}
                     increaseQuantity={() => this.increaseQuantity('softdrink', softdrinkQuantity)}
                   />
                   <ChargedItemRow
                     title={'Mỳ gói'}
-                    totalPrice={'1000K'}
+                    totalPrice={instantNoodleQuantity * appConfig.unitInstantNoodle}
                     quantity={instantNoodleQuantity}
                     decreaseQuantity={() => this.decreaseQuantity('instantNoodle', instantNoodleQuantity)}
                     increaseQuantity={() => this.increaseQuantity('instantNoodle', instantNoodleQuantity)}
                   />
                   <ChargedItemRow
                     title={'Chi Phí Khác'}
-                    totalPrice={'1000K'}
+                    totalPrice={additionalCost}
                     quantity={additionalCost}
                   />
                   <View style={styles.totalWrapper}>
@@ -280,7 +369,7 @@ class DetailRoom extends Component {
                       <Text style={styles.totalTxt}>Tổng:</Text>
                     </View>
                     <View style={styles.totalTxtWrapper}>
-                      <Text style={styles.totalTxt}>1.091 K</Text>
+                      <Text style={styles.totalTxt}>{totalPayment}.000</Text>
                     </View>
                   </View>
                 </View>
@@ -309,7 +398,10 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload))
+  getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload)),
+  updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload)),
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
+  getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)

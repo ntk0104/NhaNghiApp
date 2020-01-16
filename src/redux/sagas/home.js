@@ -16,7 +16,7 @@ const getRoomsDataAPI = async () => {
           id: room.id,
           roomName: room.roomName,
           currentStatus: room.currentStatus,
-          // duration: Helpers.generateLivingDuration(room.timeIn, moment().valueOf()),
+          timeIn: room.timeIn,
           duration: generateLivingDuration(room.timeIn, moment().valueOf()),
           tag: room.tag,
           type: room.type,
