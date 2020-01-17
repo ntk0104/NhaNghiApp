@@ -44,7 +44,9 @@ class DetailRoom extends Component {
       modalNoteTitle: 'Ghi chú khoản thêm',
       anotherCostNoteText: '',
       anotherCostValue: 0,
-      currentAddedType: 'add'
+      currentAddedType: 'add',
+
+      alertReturnRoomModal: false
     }
   }
 
@@ -238,8 +240,7 @@ class DetailRoom extends Component {
     this.props.navigation.goBack()
   }
 
-  formatVND = () => {
-    const { anotherCostValue } = this.state
+  formatVND = (anotherCostValue) => {
     try {
       let intMoney = parseInt(anotherCostValue) * 1000
       intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
@@ -353,15 +354,20 @@ class DetailRoom extends Component {
       total: this.state.calculatedRoomCost,
       payStatus: 'paid'
     })
-    this.props.navigation.goBack()
+
+    this.setState({ alertReturnRoomModal: false }, () => {
+      this.props.navigation.goBack()
+    })
+
   }
 
   render() {
-    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue } = this.state
+    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal } = this.state
     const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
     const noteList = note.split(',')
     const generatedNote = noteList.join('\n')
     const formatedVND = this.formatVND(anotherCostValue)
+    const formatedTotalPayment = this.formatVND(totalPayment)
     return (
       <View style={styles.container}>
         {
@@ -541,7 +547,7 @@ class DetailRoom extends Component {
                     <Text style={styles.totalTxt}>Tổng:</Text>
                   </View>
                   <View style={styles.totalTxtWrapper}>
-                    <Text style={styles.totalTxt}>{totalPayment}.000</Text>
+                    <Text style={styles.totalTxt}>{formatedTotalPayment}</Text>
                   </View>
                 </View>
               </View>
@@ -555,7 +561,7 @@ class DetailRoom extends Component {
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: totalPayment > 0 ? '#F1C40F' : 'gray' }]} onPress={() => this.payAdvanced(totalPayment)} disabled={totalPayment == 0}>
             <Text style={styles.headerTitleTxt}>Trả tiền trước</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={this.returnRoom}>
+          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true })}>
             {
               totalPayment > 0 ?
                 <Text style={styles.headerTitleTxt}>Trả phòng & Thanh Toán</Text>
@@ -566,7 +572,7 @@ class DetailRoom extends Component {
         </View>
         <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer} onBackdropPress={this.closeEditAnotherCostModal}>
           <View style={styles.modalWrapper}>
-            <View style={[styles.modalHeaderWrapper, {backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
+            <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={styles.modalHeaderTxt}>{modalAnotherCostHeader}</Text>
               </View>
@@ -619,6 +625,38 @@ class DetailRoom extends Component {
             <View style={styles.modalFooterWrapper}>
               <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.submitAnotherCost}>
                 <Text style={styles.modalHeaderTxt}>Nhập</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer} onBackdropPress={() => this.setState({ alertReturnRoomModal: false })}>
+          <View style={styles.modalReturnRoomWrapper}>
+            <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={styles.modalHeaderTxt}>Xác nhận trả phòng {this.props.roomInfo.roomName}</Text>
+              </View>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={() => this.setState({ alertReturnRoomModal: false })}>
+                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.modalBodyWrapper, { padding: 10, justifyContent: 'space-around' }]}>
+              <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: {formatedTotalPayment}</Text>
+              {
+                totalPayment < 500 &&
+                <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: {this.formatVND(500 - totalPayment)}</Text>
+              }
+              {
+                totalPayment < 200 &&
+                <Text style={styles.titleTxt}>Khách đưa 200.000 thối lại: {this.formatVND(200 - totalPayment)}</Text>
+              }
+              {
+                totalPayment < 100 &&
+                <Text style={styles.titleTxt}>Khách đưa 100.000 thối lại: {this.formatVND(100 - totalPayment)}</Text>
+              }
+            </View>
+            <View style={styles.modalFooterWrapper}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.returnRoom}>
+                <Text style={styles.modalHeaderTxt}>OK</Text>
               </TouchableOpacity>
             </View>
           </View>

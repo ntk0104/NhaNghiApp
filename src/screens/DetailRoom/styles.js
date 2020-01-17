@@ -165,9 +165,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start'
   },
+  modalReturnContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   modalWrapper: {
     width: screen.width * 0.6,
     height: screen.height * 0.4,
+    backgroundColor: 'white'
+  },
+  modalReturnRoomWrapper: {
+    width: screen.width * 0.6,
+    height: screen.height * 0.6,
     backgroundColor: 'white'
   },
   modalHeaderWrapper: {
