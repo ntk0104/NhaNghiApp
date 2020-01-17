@@ -27,6 +27,8 @@ export default class RoomItem extends PureComponent {
   render() {
     console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
     const { id, roomName, roomStatus, tag, overnight_price, type, duration } = this.props
+    const durationLong = duration && duration.split('-')
+    const durationTxt = duration && durationLong.join('\n')
     return (
       <TouchableOpacity style={[styles.roomContainer, { backgroundColor: roomStatus == 'available' ? 'white' : '#F1948A' }]} onPress={this.clickRoom}>
         <View style={styles.roomNumberWrapper}>
@@ -78,7 +80,7 @@ export default class RoomItem extends PureComponent {
                 }
               </View>
               <View style={styles.part}>
-                <Text style={styles.tagTxt}>{duration}</Text>
+                <Text style={styles.tagTxt}>{durationTxt}</Text>
               </View>
             </View>
             :

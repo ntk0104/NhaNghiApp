@@ -83,13 +83,14 @@ class DetailRoom extends Component {
     const { roomInfo } = this.props
     const additionalPriceValue = sectionRoom == 'quat' ? appConfig.fanHourAdditionalPrice : appConfig.airHourAdditionalPrice
     const sectionPriceValue = sectionRoom == 'quat' ? appConfig.fanSectionPrice : appConfig.airSectionPrice
+    let calculatedRoomCost = 0
     this.setState({ additionalPrice: additionalPriceValue, sectionPrice: sectionPriceValue }, () => {
       if (tag == 'QD') {
-        let calculatedRoomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
+        calculatedRoomCost = calculateRoomCostOvernight(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.additionalPrice, this.state.sectionPrice)
         this.setState({ calculatedRoomCost })
       } else {
-        let calculatedRoomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
-        this.setState({ calculatedRoomCost })
+        calculatedRoomCost = calculateRoomCostPerHour(roomInfo.timeIn, moment().valueOf(), roomInfo.overnight_price, this.state.sectionPrice, this.state.additionalPrice)
+        this.setState({ calculatedRoomCost: calculatedRoomCost })
       }
     });
   }
