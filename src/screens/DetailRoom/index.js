@@ -317,6 +317,45 @@ class DetailRoom extends Component {
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 
+  returnRoom = () => {
+    const { roomInfo } = this.props
+    this.props.updateRoomInfoRequestHandler({
+      id: roomInfo.id,
+      currentStatus: 'available',
+      tag: '',
+      timeIn: 0,
+      sectionRoom: '',
+      cmnd: null
+    })
+
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_water',
+      payStatus: 'paid'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_beer',
+      payStatus: 'paid'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_softdrink',
+      payStatus: 'paid'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_instantNoodle',
+      payStatus: 'paid'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_anotherCost',
+      payStatus: 'paid'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_roomcost',
+      total: this.state.calculatedRoomCost,
+      payStatus: 'paid'
+    })
+    this.props.navigation.goBack()
+  }
+
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue } = this.state
     const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
@@ -338,14 +377,6 @@ class DetailRoom extends Component {
         }
         {
           this.props.roomInfo &&
-          // <KeyboardAwareScrollView
-          //   keyboardShouldPersistTaps="handled"
-          //   // extraScrollHeight={200}
-          //   extraHeight={1000}
-          //   enableAutomaticScroll={true}
-          //   scrollEnabled={true}
-          //   style={{ flex: 1 }}
-          // >
           <View style={styles.bodyContainer}>
             <View style={styles.leftBodyContainer}>
               <View style={styles.topLeftBodyContainer}>
@@ -516,7 +547,6 @@ class DetailRoom extends Component {
               </View>
             </View>
           </View>
-          // </KeyboardAwareScrollView>
         }
         <View style={styles.bottomBar}>
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#E74C3C' }]}>
@@ -525,7 +555,7 @@ class DetailRoom extends Component {
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: totalPayment > 0 ? '#F1C40F' : 'gray' }]} onPress={() => this.payAdvanced(totalPayment)} disabled={totalPayment == 0}>
             <Text style={styles.headerTitleTxt}>Trả tiền trước</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]}>
+          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={this.returnRoom}>
             {
               totalPayment > 0 ?
                 <Text style={styles.headerTitleTxt}>Trả phòng & Thanh Toán</Text>
