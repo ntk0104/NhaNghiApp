@@ -39,7 +39,12 @@ class DetailRoom extends Component {
       instantNoodleCost: 0,
       additionalCost: 0,
 
-      anotherCostModalVisible: true
+      anotherCostModalVisible: false,
+      modalAnotherCostHeader: 'Cộng thêm chi phí khác',
+      modalNoteTitle: 'Ghi chú khoản thêm',
+      anotherCostNoteText: '',
+      anotherCostValue: 0,
+      currentAddedType: 'add'
     }
   }
 
@@ -232,11 +237,91 @@ class DetailRoom extends Component {
     this.props.navigation.goBack()
   }
 
+  formatVND = () => {
+    const { anotherCostValue } = this.state
+    try {
+      let intMoney = parseInt(anotherCostValue) * 1000
+      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      return intMoney
+    } catch (error) {
+      console.log("TCL: formatVND -> error", error)
+    }
+  }
+
+  closeAnotherCostModal = () => {
+    this.setState({
+      anotherCostModalVisible: false,
+      modalAnotherCostHeader: 'Cộng thêm chi phí khác',
+      modalNoteTitle: 'Ghi chú khoản thêm',
+      anotherCostNoteText: '',
+      anotherCostValue: 0
+    })
+  }
+
+  addAnotherCost = () => {
+    this.setState({
+      anotherCostModalVisible: true,
+      modalAnotherCostHeader: 'Cộng thêm chi phí khác',
+      modalNoteTitle: 'Ghi chú khoản thêm',
+      anotherCostNoteText: '',
+      anotherCostValue: 0,
+      currentAddedType: 'add'
+    })
+  }
+
+  minusAnotherCost = () => {
+    this.setState({
+      anotherCostModalVisible: true,
+      modalAnotherCostHeader: 'Trừ đi chi phí khác',
+      modalNoteTitle: 'Ghi chú khoản trừ',
+      anotherCostNoteText: '',
+      anotherCostValue: 0,
+      currentAddedType: 'minus'
+    })
+  }
+
+  closeEditAnotherCostModal = () => {
+    this.setState({
+      anotherCostModalVisible: false,
+      modalAnotherCostHeader: 'Cộng thêm chi phí khác',
+      modalNoteTitle: 'Ghi chú khoản thêm',
+      anotherCostNoteText: '',
+      anotherCostValue: 0
+    })
+  }
+
+  submitAnotherCost = () => {
+    const { roomInfo } = this.props
+    let addedNote = ''
+    if (this.state.currentAddedType == 'add') {
+      this.props.updateChargedItemRequestHandler({
+        id: roomInfo.timeIn + '_anotherCost',
+        addedTime: moment().valueOf(),
+        total: parseInt(this.state.additionalCost) + parseInt(this.state.anotherCostValue)
+      })
+      addedNote = moment().format('DD/MM/YY HH:mm') + ' CỘNG thêm vào chi phí khác (' + this.state.anotherCostNoteText + ') thêm: ' + this.state.anotherCostValue + ' K'
+    } else {
+      this.props.updateChargedItemRequestHandler({
+        id: roomInfo.timeIn + '_anotherCost',
+        addedTime: moment().valueOf(),
+        total: parseInt(this.state.additionalCost) - parseInt(this.state.anotherCostValue)
+      })
+      addedNote = moment().format('DD/MM/YY HH:mm') + ' GIẢM chi phí khác "(' + this.state.anotherCostNoteText + ')" bớt đi: ' + this.state.anotherCostValue + ' K'
+    }
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      note: this.state.note + ',' + addedNote
+    })
+    this.closeAnotherCostModal()
+    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+  }
+
   render() {
-    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note } = this.state
+    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue } = this.state
     const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
     const noteList = note.split(',')
     const generatedNote = noteList.join('\n')
+    const formatedVND = this.formatVND(anotherCostValue)
     return (
       <View style={styles.container}>
         {
@@ -416,6 +501,8 @@ class DetailRoom extends Component {
                   title={'Chi Phí Khác'}
                   totalPrice={additionalCost}
                   quantity={additionalCost}
+                  decreaseQuantity={() => this.minusAnotherCost()}
+                  increaseQuantity={() => this.addAnotherCost()}
                 />
                 <View style={styles.totalWrapper}>
                   <View style={styles.totalHeaderWrapper}>
@@ -446,11 +533,65 @@ class DetailRoom extends Component {
             }
           </TouchableOpacity>
         </View>
-        {/* <Modal isVisible={anotherCostModalVisible}>
-          <View style>
-
+        <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer} onBackdropPress={this.closeEditAnotherCostModal}>
+          <View style={styles.modalWrapper}>
+            <View style={[styles.modalHeaderWrapper, {backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={styles.modalHeaderTxt}>{modalAnotherCostHeader}</Text>
+              </View>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeAnotherCostModal}>
+                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBodyWrapper}>
+              <View style={styles.modalBodyRow}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.modalTitleRowTxt}>{modalNoteTitle}:</Text>
+                </View>
+                <View style={{ flex: 2.5, justifyContent: 'center', alignItems: 'flex-start' }}>
+                  <TextInput
+                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    placeholder="Tên khoản thêm"
+                    returnKeyType="next"
+                    keyboardType="default"
+                    blurOnSubmit={true}
+                    autoCapitalize='none'
+                    autoCompleteType='off'
+                    autoCorrect={Platform.OS != 'ios'}
+                    autoFocus={true}
+                    onChangeText={(text) => this.setState({ anotherCostNoteText: text })}
+                  />
+                </View>
+              </View>
+              <View style={styles.modalBodyRow}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.modalTitleRowTxt}>Số tiền thu:</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
+                  <TextInput
+                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    placeholder="Tên khoản thêm"
+                    keyboardType='numeric'
+                    blurOnSubmit={true}
+                    autoCapitalize='none'
+                    autoCompleteType='off'
+                    autoCorrect={Platform.OS != 'ios'}
+                    onChangeText={(text) => this.setState({ anotherCostValue: text })}
+                  />
+                </View>
+                <View style={{ flex: 1.5, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
+                  <Text style={styles.modalTitleRowTxt}>x 1.000 = </Text>
+                  <Text style={[styles.modalTitleRowTxt, { fontSize: 20 }]}>{formatedVND}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.modalFooterWrapper}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.submitAnotherCost}>
+                <Text style={styles.modalHeaderTxt}>Nhập</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </Modal> */}
+        </Modal>
       </View>
     )
   }

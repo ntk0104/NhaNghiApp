@@ -174,7 +174,7 @@ class Home extends PureComponent {
       currentStatus: 'busy',
       timeIn: moment().valueOf(),
       chargedItems: [],
-      note: this.state.currentNote,
+      note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,
       sectionRoom: this.state.selectedRoomType,
       cmnd: null
