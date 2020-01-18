@@ -226,16 +226,18 @@ class DetailRoom extends Component {
   }
 
   payAdvanced = (totalPayment) => {
-    this.props.updateChargedItemRequestHandler({
-      id: this.props.roomInfo.timeIn + '_anotherCost',
-      addedTime: moment().valueOf(),
-      quantity: 1,
-      total: -totalPayment
-    })
+    const { calculatedRoomCost, waterCost, anotherCost, additionalCost, beerCost, softdrinkCost, instantNoodleCost } = this.state
+    // this.props.updateChargedItemRequestHandler({
+    //   id: this.props.roomInfo.timeIn + '_anotherCost',
+    //   addedTime: moment().valueOf(),
+    //   quantity: 1,
+    //   total: -totalPayment + additionalCost
+    // })
     const addedNote = moment().format('DD/MM/YY HH:mm') + ' Trả tiền trước ' + totalPayment + '.000'
     this.props.updateRoomInfoRequestHandler({
       id: this.props.roomInfo.id,
-      note: this.state.note + ',' + addedNote
+      note: this.state.note + ',' + addedNote,
+      advancedPay: totalPayment + this.props.roomInfo.advancedPay
     })
     this.props.navigation.goBack()
   }
@@ -308,7 +310,7 @@ class DetailRoom extends Component {
         addedTime: moment().valueOf(),
         total: parseInt(this.state.additionalCost) - parseInt(this.state.anotherCostValue)
       })
-      addedNote = moment().format('DD/MM/YY HH:mm') + ' GIẢM chi phí khác "(' + this.state.anotherCostNoteText + ')" bớt đi: ' + this.state.anotherCostValue + ' K'
+      addedNote = moment().format('DD/MM/YY HH:mm') + ' GIẢM chi phí khác (' + this.state.anotherCostNoteText + ') bớt đi: ' + this.state.anotherCostValue + ' K'
     }
     this.props.updateRoomInfoRequestHandler({
       id: this.props.roomInfo.id,
@@ -326,7 +328,8 @@ class DetailRoom extends Component {
       tag: '',
       timeIn: 0,
       sectionRoom: '',
-      cmnd: null
+      cmnd: null,
+      advancedPay: 0
     })
 
     this.props.updateChargedItemRequestHandler({
@@ -363,7 +366,7 @@ class DetailRoom extends Component {
 
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal } = this.state
-    const totalPayment = calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost
+    const totalPayment = this.props.roomInfo && calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost - this.props.roomInfo.advancedPay
     const noteList = note.split(',')
     const generatedNote = noteList.join('\n')
     const formatedVND = this.formatVND(anotherCostValue)
@@ -607,7 +610,7 @@ class DetailRoom extends Component {
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
                     style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
-                    placeholder="Tên khoản thêm"
+                    placeholder="Số tiền thu"
                     keyboardType='numeric'
                     blurOnSubmit={true}
                     autoCapitalize='none'
@@ -629,38 +632,42 @@ class DetailRoom extends Component {
             </View>
           </View>
         </Modal>
-        <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer} onBackdropPress={() => this.setState({ alertReturnRoomModal: false })}>
-          <View style={styles.modalReturnRoomWrapper}>
-            <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
-              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={styles.modalHeaderTxt}>Xác nhận trả phòng {this.props.roomInfo.roomName}</Text>
+        {
+          this.props.roomInfo &&
+          <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer} onBackdropPress={() => this.setState({ alertReturnRoomModal: false })}>
+            <View style={styles.modalReturnRoomWrapper}>
+              <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={styles.modalHeaderTxt}>Xác nhận trả phòng {this.props.roomInfo.roomName}</Text>
+                </View>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={() => this.setState({ alertReturnRoomModal: false })}>
+                  <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={() => this.setState({ alertReturnRoomModal: false })}>
-                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
-              </TouchableOpacity>
+              <View style={[styles.modalBodyWrapper, { padding: 10, justifyContent: 'space-around' }]}>
+                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: {formatedTotalPayment}</Text>
+                {
+                  totalPayment < 500 &&
+                  <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: <Text style={{color: 'blue'}}>{this.formatVND(500 - totalPayment)}</Text></Text>
+                }
+                {
+                  totalPayment < 200 &&
+                  <Text style={styles.titleTxt}>Khách đưa 200.000 thối lại: <Text style={{color: 'blue'}}>{this.formatVND(200 - totalPayment)}</Text></Text>
+                }
+                {
+                  totalPayment < 100 &&
+                  <Text style={styles.titleTxt}>Khách đưa 100.000 thối lại: <Text style={{color: 'blue'}}>{this.formatVND(100 - totalPayment)}</Text></Text>
+                }
+                  <Text style={styles.titleTxt}>Nhớ trả <Text style={{color: 'red'}}>CHỨNG MINH</Text> <Icon type='AntDesign' name='idcard' style={{ color: 'green', fontSize: 40}} />  và đòi <Text style={{color: 'red'}}>CHÌA KHÓA</Text> <Icon type='FontAwesome5' name='key' style={{ color: '#B7950B', fontSize: 40 }} /></Text>
+              </View>
+              <View style={styles.modalFooterWrapper}>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.returnRoom}>
+                  <Text style={styles.modalHeaderTxt}>OK</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={[styles.modalBodyWrapper, { padding: 10, justifyContent: 'space-around' }]}>
-              <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: {formatedTotalPayment}</Text>
-              {
-                totalPayment < 500 &&
-                <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: {this.formatVND(500 - totalPayment)}</Text>
-              }
-              {
-                totalPayment < 200 &&
-                <Text style={styles.titleTxt}>Khách đưa 200.000 thối lại: {this.formatVND(200 - totalPayment)}</Text>
-              }
-              {
-                totalPayment < 100 &&
-                <Text style={styles.titleTxt}>Khách đưa 100.000 thối lại: {this.formatVND(100 - totalPayment)}</Text>
-              }
-            </View>
-            <View style={styles.modalFooterWrapper}>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.returnRoom}>
-                <Text style={styles.modalHeaderTxt}>OK</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+          </Modal>
+        }
       </View>
     )
   }

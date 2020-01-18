@@ -26,7 +26,7 @@ export default class RoomItem extends PureComponent {
 
   render() {
     console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
-    const { id, roomName, roomStatus, tag, overnight_price, type, duration } = this.props
+    const { id, roomName, roomStatus, tag, overnight_price, type, duration, advancedPay } = this.props
     const durationLong = duration && duration.split('-')
     const durationTxt = duration && durationLong.join('\n')
     return (
@@ -63,6 +63,10 @@ export default class RoomItem extends PureComponent {
                   tag == 'DG' &&
                   <View style={[styles.tagWrapper, { backgroundColor: '#7D3C98' }]}>
                     <Text style={styles.tagTxt}>{tag}</Text>
+                    {
+                      advancedPay > 0 &&
+                      <Text style={styles.tagTxt}>TT</Text>
+                    }
                   </View>
                 }
                 {

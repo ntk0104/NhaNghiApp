@@ -10,6 +10,7 @@ import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
 import moment from 'moment'
 import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
+import CashBox from './CashBox'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import ImagePicker from 'react-native-image-picker'
@@ -279,15 +280,7 @@ class Home extends PureComponent {
               <Text style={styles.lableTxt}>Sơ đồ phòng</Text>
             </View>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
-            <View style={styles.totalContainer}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Tiền trong tủ: 3.570.000</Text>
-              <TouchableOpacity style={styles.btnWithDraw}>
-                <Text style={styles.withdrawTxt}>Rút tiền</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.btnWithDraw, { backgroundColor: '#3C8F36' }]}>
-                <Text style={styles.withdrawTxt}>Thêm tiền</Text>
-              </TouchableOpacity>
-            </View>
+            <CashBox />
           </View>
           <View style={styles.rightSideContent}>
             <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>

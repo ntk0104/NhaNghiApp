@@ -23,7 +23,8 @@ const getRoomInfoAPI = ({ id }) => {
         tag: roomInfo[0].tag,
         sectionRoom: roomInfo[0].sectionRoom,
         overnight_price: roomInfo[0].overnight_price,
-        cmnd: roomInfo[0].cmnd
+        cmnd: roomInfo[0].cmnd,
+        advancedPay: roomInfo[0].advancedPay
       }
       resolve(roomData)
     } catch (error) {

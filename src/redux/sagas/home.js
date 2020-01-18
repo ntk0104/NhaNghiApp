@@ -20,7 +20,8 @@ const getRoomsDataAPI = async () => {
           duration: generateLivingDuration(room.timeIn, moment().valueOf()),
           tag: room.tag,
           type: room.type,
-          overnight_price: room.overnight_price
+          overnight_price: room.overnight_price,
+          advancedPay: room.advancedPay
         }
         roomsData[room.id] = roomData
       }
