@@ -37,6 +37,12 @@ const styles = StyleSheet.create({
   textQuantity: {
     fontSize: 20,
     fontWeight: 'bold'
+  },
+  totalMoneyAmount: {
+    fontSize: 18,
+    color: 'red',
+    textDecorationStyle: 'dotted',
+    fontWeight: 'bold'
   }
 })
 

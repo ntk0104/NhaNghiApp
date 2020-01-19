@@ -36,23 +36,28 @@ export const calculateLivingTime = (timestampIn, timestampOut) => {
     const generatedTimeThreshold = checkOutDate + ' 12:' + appConfig.bufferTimeInMinutes + ':00'
     const generatedTimestampThreshold = moment(generatedTimeThreshold).valueOf()
     if (timestampOut > generatedTimestampThreshold) {
-      let diffTimestamp = moment(checkOutDate + ' 12:00:00').valueOf() - timestampIn
-      const diffHours = Math.floor(moment.duration(diffTimestamp).asHours())
-      if (diffHours > 0) {
-        diffTimestamp = diffTimestamp - diffHours * 60 * 60 * 1000
+      let tmpTimestamp = moment(checkOutDate + ' 12:00:00').valueOf()
+      console.log("TCL: calculateLivingTime -> tmpTimestamp", typeof(tmpTimestamp))
+      let diffTimestamp2 = timestampOut - tmpTimestamp
+      console.log("TCL: calculateLivingTime -> diffTimestamp2", diffTimestamp2)
+      const diffHours2 = Math.floor(moment.duration(diffTimestamp2).asHours())
+      if (diffHours2 > 0) {
+        diffTimestamp2 = diffTimestamp2 - diffHours2 * 60 * 60 * 1000
       }
-      const diffMinutes = Math.floor(moment.duration(diffTimestamp).asMinutes())
+      const diffMinutes2 = Math.floor(moment.duration(diffTimestamp2).asMinutes())
       durationObj = {
         nights: numberOfNights,
-        hours: diffHours,
-        minutes: diffMinutes
+        hours: diffHours2,
+        minutes: diffMinutes2
+      }
+    } else {
+      durationObj = {
+        nights: numberOfNights,
+        hours: 0,
+        minutes: 0
       }
     }
-    durationObj = {
-      nights: numberOfNights,
-      hours: 0,
-      minutes: 0
-    }
+
   }
   return durationObj
 }
@@ -63,10 +68,10 @@ export const generateLivingDuration = (timestampIn, timestampOut) => {
     const { nights, hours, minutes } = durationObj
     let durationString = ''
     if (nights > 0) {
-      durationString += nights + ' đêm '
+      durationString += nights + ' đêm - '
     }
     if (hours > 0) {
-      durationString += hours + ' giờ '
+      durationString += hours + ' giờ - '
     }
     durationString += minutes + ' phút'
     return durationString
@@ -81,34 +86,39 @@ export const calculateRoomCostPerHour = (timestampIn, timestampOut, overnight_pr
 
   let livingTimeObj = calculateLivingTime(timestampIn, timestampOut)
   const { nights, hours, minutes } = livingTimeObj
-  const livingTimeToSecs = hours * 3600 + minutes * 60
-  const limitSectionToSecs = limitHourOfSection1 * 3600 + bufferTime * 60
-  const limitSectionToOvernightToSecs = limitHourSectionToOvernightInHour * 3600 + bufferTime * 60
-  if (livingTimeToSecs > limitSectionToSecs) {
-    if (livingTimeToSecs > limitSectionToOvernightToSecs) {
-      return overnight_price
-    } else {
-      let roomCost = 0
-      if (minutes > bufferTime) {
-        roomCost = (hours - limitHourOfSection1 + 1) * additionalHourPrice + SectionHourCost
-      } else {
-        roomCost = (hours - limitHourOfSection1) * additionalHourPrice + SectionHourCost
-      }
-      if (roomCost > overnight_price) {
-        roomCost = overnight_price
-      }
-      return roomCost
-    }
+  if (nights > 0) {
+    return calculateRoomCostOvernight(timestampIn, timestampOut, overnight_price, additionalHourPrice, SectionHourCost)
   } else {
-    if (type == 'additionalOverNight') {
-      let additionalHour = hours
-      if (minutes > bufferTime) {
-        additionalHour += 1
+    const livingTimeToSecs = hours * 3600 + minutes * 60
+    const limitSectionToSecs = limitHourOfSection1 * 3600 + bufferTime * 60
+    const limitSectionToOvernightToSecs = limitHourSectionToOvernightInHour * 3600 + bufferTime * 60
+    if (livingTimeToSecs > limitSectionToSecs) {
+      if (livingTimeToSecs > limitSectionToOvernightToSecs) {
+        return overnight_price
+      } else {
+        let roomCost = 0
+        if (minutes > bufferTime) {
+          roomCost = (hours - limitHourOfSection1 + 1) * additionalHourPrice + SectionHourCost
+        } else {
+          roomCost = (hours - limitHourOfSection1) * additionalHourPrice + SectionHourCost
+        }
+        if (roomCost > overnight_price) {
+          roomCost = overnight_price
+        }
+        return roomCost
       }
-      return additionalHour * additionalHourPrice
+    } else {
+      if (type == 'additionalOverNight') {
+        let additionalHour = hours
+        if (minutes > bufferTime) {
+          additionalHour += 1
+        }
+        return additionalHour * additionalHourPrice
+      }
+      return SectionHourCost
     }
-    return SectionHourCost
   }
+
 }
 
 export const calculateRoomCostOvernight = (timestampIn, timestampOut, overnight_price, additionalHourPrice, SectionHourCost) => {

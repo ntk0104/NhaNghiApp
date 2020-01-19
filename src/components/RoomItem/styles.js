@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomWidth: 1,
+    padding: 5
   },
   tagWrapper: {
     padding: 10,

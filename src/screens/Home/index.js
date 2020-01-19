@@ -10,10 +10,11 @@ import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
 import moment from 'moment'
 import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
+import CashBox from './CashBox'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import ImagePicker from 'react-native-image-picker'
-import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest } from '../../redux/actions/index'
+import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 
 import { createStructuredSelector } from 'reselect';
@@ -102,9 +103,15 @@ class Home extends PureComponent {
       selectedSectionType: 'CD',
       selectedRoomType: 'quat',
       gettingRoomName: null,
-      currentNote: null,
+      currentNote: '',
       gettingRoomID: null,
 
+      changeCashBoxVisible: false,
+      changeCashBoxModalHeader: '',
+      modalCashBoxTitle: 'Ghi chú khoản thêm',
+      changeMoneyTxt: '',
+      changeMoneyValue: 0,
+      changeMoneyType: 'deposit',
     }
   }
 
@@ -128,6 +135,7 @@ class Home extends PureComponent {
       // is not first init
       console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
+      this.props.getCurrentMoneyInBoxHandler()
     } else {
       console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
@@ -145,13 +153,56 @@ class Home extends PureComponent {
     }
   }
 
+  closeChangeMoneyBoxModal = () => {
+    this.setState({
+      changeCashBoxVisible: false,
+      changeCashBoxModalHeader: 'Thêm tiền vào tủ',
+      modalCashBoxTitle: 'Ghi chú khoản thêm',
+      changeMoneyTxt: '',
+      changeMoneyValue: 0
+    })
+  }
+
+  showDepositModal = () => {
+    this.setState({
+      changeCashBoxVisible: true,
+      changeCashBoxModalHeader: 'Thêm tiền vào tủ',
+      modalCashBoxTitle: 'Ghi chú khoản thêm',
+      changeMoneyTxt: '',
+      changeMoneyValue: 0,
+      changeMoneyType: 'deposit'
+    })
+  }
+
+  showWithdrawModal = () => {
+    this.setState({
+      changeCashBoxVisible: true,
+      changeCashBoxModalHeader: 'Rút tiền khỏi tủ',
+      modalCashBoxTitle: 'Ghi chú khoản lấy ra',
+      changeMoneyTxt: '',
+      changeMoneyValue: 0,
+      changeMoneyType: 'withdraw'
+    })
+  }
+
+  submitChangeCashInBox = () => {
+    const {changeMoneyValue, changeMoneyType, changeMoneyTxt} = this.state
+    this.props.updateCashBoxRequestHandler({
+      type: changeMoneyType,
+      title: changeMoneyTxt,
+      total: parseInt(changeMoneyValue)
+    })
+    this.closeChangeMoneyBoxModal()
+    this.props.getCurrentMoneyInBoxHandler()
+  }
+
   closeGetRoomModal = () => {
     this.setState({
       modalGetRoomVisible: false,
       selectedSectionType: 'CD',
       selectedRoomType: 'quat',
       gettingRoomName: null,
-      currentNote: null,
+      currentNote: '',
       gettingRoomID: null,
     })
   }
@@ -168,13 +219,24 @@ class Home extends PureComponent {
     this.props.navigation.navigate('DetailRoom', { payload })
   }
 
+  formatVND = (anotherCostValue) => {
+    try {
+      let intMoney = parseInt(anotherCostValue) * 1000
+      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      return intMoney
+    } catch (error) {
+      console.log("TCL: formatVND -> error", error)
+    }
+  }
+
+
   onSubmitGetRoom = () => {
     const updatedInfo = {
       id: this.state.gettingRoomID,
       currentStatus: 'busy',
       timeIn: moment().valueOf(),
       chargedItems: [],
-      note: this.state.currentNote,
+      note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,
       sectionRoom: this.state.selectedRoomType,
       cmnd: null
@@ -250,6 +312,19 @@ class Home extends PureComponent {
     this.props.addChargedItemRequestHandler(instantNoodleCostItem)
     this.props.addChargedItemRequestHandler(anotherCostCostItem)
 
+    this.props.addHistoryItemRequestHandler({
+      roomID: this.state.gettingRoomID,
+      roomName: this.state.gettingRoomName,
+      status: 'in',
+      total: 0,
+      sectionID: updatedInfo.timeIn,
+      timeIn: updatedInfo.timeIn,
+      note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
+      tag: this.state.selectedSectionType,
+      sectionRoom: this.state.selectedRoomType,
+      cmnd: null
+    })
+
     this.closeGetRoomModal()
     setTimeout(() => this.props.getRoomsDataRequestHandler(), 300)
   }
@@ -269,7 +344,7 @@ class Home extends PureComponent {
   render() {
 
     console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
-    const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, roomsData } = this.state
+    const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
         <MenuBar />
@@ -279,15 +354,7 @@ class Home extends PureComponent {
               <Text style={styles.lableTxt}>Sơ đồ phòng</Text>
             </View>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
-            <View style={styles.totalContainer}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Tiền trong tủ: 3.570.000</Text>
-              <TouchableOpacity style={styles.btnWithDraw}>
-                <Text style={styles.withdrawTxt}>Rút tiền</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.btnWithDraw, { backgroundColor: '#3C8F36' }]}>
-                <Text style={styles.withdrawTxt}>Thêm tiền</Text>
-              </TouchableOpacity>
-            </View>
+            <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} />
           </View>
           <View style={styles.rightSideContent}>
             <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>
@@ -387,6 +454,71 @@ class Home extends PureComponent {
             </View>
           </ScrollView>
         </Modal>
+
+        <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} onBackdropPress={this.closeChangeMoneyBoxModal}>
+          <View style={styles.modalWrapper}>
+            <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.changeMoneyType == 'withdraw' ? '#F5B041' : '#2A6C97' }]}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={styles.modalHeaderTxt}>{changeCashBoxModalHeader}</Text>
+              </View>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeChangeMoneyBoxModal}>
+                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBodyWrapper}>
+              <View style={styles.modalBodyRow}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.modalTitleRowTxt}>{modalCashBoxTitle}:</Text>
+                </View>
+                <View style={{ flex: 2.5, justifyContent: 'center', alignItems: 'flex-start' }}>
+                  <TextInput
+                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    placeholder="Tên khoản thêm"
+                    returnKeyType="next"
+                    keyboardType="default"
+                    blurOnSubmit={true}
+                    autoCapitalize='none'
+                    autoCompleteType='off'
+                    autoCorrect={Platform.OS != 'ios'}
+                    autoFocus={true}
+                    onChangeText={(text) => this.setState({ changeMoneyTxt: text })}
+                  />
+                </View>
+              </View>
+              <View style={styles.modalBodyRow}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.modalTitleRowTxt}>Số tiền thu:</Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
+                  <TextInput
+                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    placeholder="Số tiền thu"
+                    keyboardType='numeric'
+                    blurOnSubmit={true}
+                    autoCapitalize='none'
+                    autoCompleteType='off'
+                    autoCorrect={Platform.OS != 'ios'}
+                    onChangeText={(text) => this.setState({ changeMoneyValue: text })}
+                  />
+                </View>
+                <View style={{ flex: 1.5, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
+                  <Text style={styles.modalTitleRowTxt}>x 1.000 = </Text>
+                  <Text style={[styles.modalTitleRowTxt, { fontSize: 20 }]}>{this.formatVND(changeMoneyValue)}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.modalFooterWrapper}>
+              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, {backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C'}]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
+                {
+                  changeMoneyType === 'deposit' ?
+                    <Text style={styles.modalHeaderTxt}>Bỏ {this.formatVND(changeMoneyValue)} vào tủ</Text>
+                    :
+                    <Text style={styles.modalHeaderTxt}>Rút {this.formatVND(changeMoneyValue)} khỏi tủ</Text>
+                }
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -398,7 +530,10 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch => ({
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
   updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
-  addChargedItemRequestHandler: payload => dispatch(addChargedItemRequest(payload))
+  addChargedItemRequestHandler: payload => dispatch(addChargedItemRequest(payload)),
+  getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
+  updateCashBoxRequestHandler: payload => dispatch(updateCashBoxRequest(payload)),
+  addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

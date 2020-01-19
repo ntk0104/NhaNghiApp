@@ -20,13 +20,15 @@ export default class RoomItem extends PureComponent {
       this.props.onGetRoom(id, roomName)
     } else {
       // see room detail
-      this.props.showRoomDetail({ id, timeIn })
+      this.props.showRoomDetail({ id })
     }
   }
 
   render() {
     console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
-    const { id, roomName, roomStatus, tag, overnight_price, type, duration } = this.props
+    const { id, roomName, roomStatus, tag, overnight_price, type, duration, advancedPay } = this.props
+    const durationLong = duration && duration.split('-')
+    const durationTxt = duration && durationLong.join('\n')
     return (
       <TouchableOpacity style={[styles.roomContainer, { backgroundColor: roomStatus == 'available' ? 'white' : '#F1948A' }]} onPress={this.clickRoom}>
         <View style={styles.roomNumberWrapper}>
@@ -61,24 +63,38 @@ export default class RoomItem extends PureComponent {
                   tag == 'DG' &&
                   <View style={[styles.tagWrapper, { backgroundColor: '#7D3C98' }]}>
                     <Text style={styles.tagTxt}>{tag}</Text>
+                    {
+                      advancedPay > 0 &&
+                      <Text style={styles.tagTxt}>TT</Text>
+                    }
                   </View>
                 }
                 {
                   tag == 'CD' &&
                   <View style={[styles.tagWrapper, { backgroundColor: '#28B463' }]}>
                     <Text style={styles.tagTxt}>{tag}</Text>
+                    {
+                      advancedPay > 0 &&
+                      <Text style={styles.tagTxt}>TT</Text>
+                    }
                   </View>
                 }
                 {
                   tag == 'QD' &&
-                  <View style={[styles.tagWrapper, { backgroundColor: '#3498DB', flexDirection: 'row' }]}>
-                    <Text style={styles.tagTxt}>{tag}</Text>
-                    <Icon type='MaterialCommunityIcons' name='power-sleep' style={{ color: 'white', fontSize: 15 }} />
+                  <View style={[styles.tagWrapper, { backgroundColor: '#3498DB' }]}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.tagTxt}>{tag}</Text>
+                      <Icon type='MaterialCommunityIcons' name='power-sleep' style={{ color: 'white', fontSize: 15 }} />
+                    </View>
+                    {
+                      advancedPay > 0 &&
+                      <Text style={styles.tagTxt}>TT</Text>
+                    }
                   </View>
                 }
               </View>
               <View style={styles.part}>
-                <Text style={styles.tagTxt}>{duration}</Text>
+                <Text style={styles.tagTxt}>{durationTxt}</Text>
               </View>
             </View>
             :

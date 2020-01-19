@@ -57,6 +57,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[18].type}
             overnight_price={roomsData && roomsData[18].overnight_price}
+            advancedPay={roomsData && roomsData[18].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[9].id}
@@ -69,6 +70,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[9].type}
             overnight_price={roomsData && roomsData[9].overnight_price}
+            advancedPay={roomsData && roomsData[9].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[10].id}
@@ -81,6 +83,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[10].type}
             overnight_price={roomsData && roomsData[10].overnight_price}
+            advancedPay={roomsData && roomsData[10].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[11].id}
@@ -93,6 +96,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[11].type}
             overnight_price={roomsData && roomsData[11].overnight_price}
+            advancedPay={roomsData && roomsData[11].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[12].id}
@@ -105,6 +109,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[12].type}
             overnight_price={roomsData && roomsData[12].overnight_price}
+            advancedPay={roomsData && roomsData[12].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[13].id}
@@ -117,6 +122,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[13].type}
             overnight_price={roomsData && roomsData[13].overnight_price}
+            advancedPay={roomsData && roomsData[13].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[14].id}
@@ -129,6 +135,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[14].type}
             overnight_price={roomsData && roomsData[14].overnight_price}
+            advancedPay={roomsData && roomsData[14].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[15].id}
@@ -141,6 +148,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[15].type}
             overnight_price={roomsData && roomsData[15].overnight_price}
+            advancedPay={roomsData && roomsData[15].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[16].id}
@@ -153,6 +161,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[16].type}
             overnight_price={roomsData && roomsData[16].overnight_price}
+            advancedPay={roomsData && roomsData[16].advancedPay}
           />
         </View>
         <View style={[styles.roomsLaneContainer, { marginTop: 10 }]}>
@@ -167,6 +176,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[17].type}
             overnight_price={roomsData && roomsData[17].overnight_price}
+            advancedPay={roomsData && roomsData[17].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[8].id}
@@ -179,6 +189,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[8].type}
             overnight_price={roomsData && roomsData[8].overnight_price}
+            advancedPay={roomsData && roomsData[8].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[7].id}
@@ -191,6 +202,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[7].type}
             overnight_price={roomsData && roomsData[7].overnight_price}
+            advancedPay={roomsData && roomsData[7].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[6].id}
@@ -203,6 +215,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[6].type}
             overnight_price={roomsData && roomsData[6].overnight_price}
+            advancedPay={roomsData && roomsData[6].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[5].id}
@@ -216,6 +229,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[5].type}
             overnight_price={roomsData && roomsData[5].overnight_price}
+            advancedPay={roomsData && roomsData[5].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[4].id}
@@ -228,6 +242,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[4].type}
             overnight_price={roomsData && roomsData[4].overnight_price}
+            advancedPay={roomsData && roomsData[4].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[3].id}
@@ -240,6 +255,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[3].type}
             overnight_price={roomsData && roomsData[3].overnight_price}
+            advancedPay={roomsData && roomsData[3].advancedPay}
           />
           <RoomItem
             id={roomsData && roomsData[2].id}
@@ -252,6 +268,7 @@ class RoomMap extends Component {
             showRoomDetail={this.props.showRoomDetail}
             type={roomsData && roomsData[2].type}
             overnight_price={roomsData && roomsData[2].overnight_price}
+            advancedPay={roomsData && roomsData[2].advancedPay}
           />
         </View>
       </View>

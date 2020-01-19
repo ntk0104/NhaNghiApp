@@ -25,25 +25,35 @@ export default class ChargedItemRow extends PureComponent {
           <Text style={styles.textTitle}>{title}:</Text>
         </View>
         {
-          title != 'Tiền phòng' ?
+          title == 'Tiền phòng' ?
             <View style={styles.bodyHeader}>
-              <TouchableOpacity style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.decreaseQuantity()}>
-                <Icon type='Entypo' name='circle-with-minus' style={{ color: 'red', fontSize: 35 }} />
-              </TouchableOpacity>
-              <View style={{ flex: 1.2, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.textQuantity}>{quantity}</Text>
-              </View>
-              <TouchableOpacity style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.increaseQuantity()} >
-                <Icon type='Entypo' name='circle-with-plus' style={{ color: 'green', fontSize: 35 }} />
-              </TouchableOpacity>
+              <Text style={[styles.textQuantity, { fontSize: 15 }]}>{duration}</Text>
             </View>
             :
-            <View style={styles.bodyHeader}>
-              <Text style={[styles.textQuantity, {fontSize: 15}]}>{duration}</Text>
-            </View>
+            title != 'Chi Phí Khác' ?
+              <View style={styles.bodyHeader}>
+                <TouchableOpacity style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.decreaseQuantity()}>
+                  <Icon type='Entypo' name='circle-with-minus' style={{ color: 'red', fontSize: 35 }} />
+                </TouchableOpacity>
+                <View style={{ flex: 1.2, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={styles.textQuantity}>{quantity}</Text>
+                </View>
+                <TouchableOpacity style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.increaseQuantity()} >
+                  <Icon type='Entypo' name='circle-with-plus' style={{ color: 'green', fontSize: 35 }} />
+                </TouchableOpacity>
+              </View>
+              :
+              <View style={styles.bodyHeader}>
+                <TouchableOpacity style={{ flex: 3, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.props.decreaseQuantity()}>
+                  <Icon type='Entypo' name='circle-with-minus' style={{ color: 'red', fontSize: 45 }} />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.increaseQuantity()} >
+                  <Icon type='Entypo' name='circle-with-plus' style={{ color: 'green', fontSize: 45 }} />
+                </TouchableOpacity>
+              </View>
         }
         <View style={styles.totalHeader}>
-          <Text style={styles.textTitle}>{totalPrice} K</Text>
+          <Text style={totalPrice > 0 ? styles.totalMoneyAmount : styles.textTitle}>{totalPrice} K</Text>
         </View>
       </View>
     )

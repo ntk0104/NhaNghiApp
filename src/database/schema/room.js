@@ -12,8 +12,9 @@ Room.schema = {
     timeIn: 'int',
     // chargedItems: { type: 'object', default: [] },
     // chargedItems: 'ChargedItem[]',
-    note: 'string?',
+    note: { type: 'string', default: '' },
     tag: { type: 'string', default: 'DG' }, // DG/CD/QD
+    advancedPay: { type: 'int', default: 0 }, // DG/CD/QD
     sectionRoom: { type: 'string', default: 'quat' }, //quat / lanh
     overnight_price: 'int',
     type: { type: 'string', default: '1bed' },

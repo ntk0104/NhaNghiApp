@@ -42,7 +42,7 @@ export const addRoom = ({ id, roomName, currentStatus, timeIn, note, tag, sectio
   });
 }
 
-export const updateRoom = ({ id, currentStatus, timeIn, note, tag, sectionRoom, cmnd }) => {
+export const updateRoom = ({ id, currentStatus, timeIn, note, tag, sectionRoom, cmnd, advancedPay }) => {
   return new Promise((resolve, reject) => {
     try {
       realm.write(() => {
@@ -53,7 +53,8 @@ export const updateRoom = ({ id, currentStatus, timeIn, note, tag, sectionRoom, 
           note,
           tag,
           sectionRoom,
-          cmnd
+          cmnd,
+          advancedPay
         }, 'modified');
         resolve()
       })
@@ -91,7 +92,8 @@ export const getAllRoomsInfo = (i) => {
           tag: room.tag,
           sectionRoom: room.sectionRoom,
           overnight_price: room.overnight_price,
-          type: room.type
+          type: room.type,
+          advancedPay: tooth.advancedPay
         }
         roomsData[room.id] = roomData
       }
