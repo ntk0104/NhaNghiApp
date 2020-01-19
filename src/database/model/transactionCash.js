@@ -27,6 +27,12 @@ export const getTotalPaidMoney = () => {
       for (let section of sections) {
         totalPaidMoney += section.total
       }
+
+      let advancedPayments = realm.objects('Room').filtered('advancedPay > 0')
+      for (let payment of advancedPayments) {
+        totalPaidMoney += payment.advancedPay
+      }
+
       resolve(totalPaidMoney)
     } catch (error) {
       console.log("TCL: getTotalPaidMoney -> error", error)

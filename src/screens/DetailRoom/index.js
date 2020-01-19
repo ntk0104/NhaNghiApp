@@ -226,7 +226,6 @@ class DetailRoom extends Component {
   }
 
   payAdvanced = (totalPayment) => {
-    const { calculatedRoomCost, waterCost, anotherCost, additionalCost, beerCost, softdrinkCost, instantNoodleCost } = this.state
     const addedNote = moment().format('DD/MM/YY HH:mm') + ' Trả tiền trước ' + totalPayment + '.000'
     this.props.updateRoomInfoRequestHandler({
       id: this.props.roomInfo.id,

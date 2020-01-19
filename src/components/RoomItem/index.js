@@ -73,13 +73,23 @@ export default class RoomItem extends PureComponent {
                   tag == 'CD' &&
                   <View style={[styles.tagWrapper, { backgroundColor: '#28B463' }]}>
                     <Text style={styles.tagTxt}>{tag}</Text>
+                    {
+                      advancedPay > 0 &&
+                      <Text style={styles.tagTxt}>TT</Text>
+                    }
                   </View>
                 }
                 {
                   tag == 'QD' &&
-                  <View style={[styles.tagWrapper, { backgroundColor: '#3498DB', flexDirection: 'row' }]}>
-                    <Text style={styles.tagTxt}>{tag}</Text>
-                    <Icon type='MaterialCommunityIcons' name='power-sleep' style={{ color: 'white', fontSize: 15 }} />
+                  <View style={[styles.tagWrapper, { backgroundColor: '#3498DB' }]}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.tagTxt}>{tag}</Text>
+                      <Icon type='MaterialCommunityIcons' name='power-sleep' style={{ color: 'white', fontSize: 15 }} />
+                    </View>
+                    {
+                      advancedPay > 0 &&
+                      <Text style={styles.tagTxt}>TT</Text>
+                    }
                   </View>
                 }
               </View>
