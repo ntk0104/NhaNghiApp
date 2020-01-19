@@ -1,5 +1,5 @@
 import { UPDATE_CHARGED_ITEM_REQUEST } from '../types'
-import { put, takeLatest, fork, call } from 'redux-saga/effects';
+import { put, takeLatest, fork, call, takeEvery } from 'redux-saga/effects';
 import { updateChargedItemSuccess, updateChargedItemFailure } from '../actions'
 import realm from '../../database/configRealm'
 import moment from 'moment'
@@ -35,7 +35,7 @@ export function* updateChargedItemRequest(obj) {
  * Catch action request
  */
 function* watchChargedItems() {
-  yield takeLatest(UPDATE_CHARGED_ITEM_REQUEST, updateChargedItemRequest);
+  yield takeEvery(UPDATE_CHARGED_ITEM_REQUEST, updateChargedItemRequest);
 }
 
 export default function* rootChild() {

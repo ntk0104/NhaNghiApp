@@ -70,11 +70,11 @@ const mainReducer = produce((draft = initialState, action) => {
       return draft;
 
     // ===================GET CASH BOX
-    case GET_CASH_BOX_REQUEST:
+    case GET_CASH_BOX_SUCCESS:
       return { ...draft, currentMoneyInBox: payload };
 
     // ===================UPDATE CASH BOX
-    case UPDATE_CASH_BOX_REQUEST:
+    case UPDATE_CASH_BOX_SUCCESS:
       return { ...draft, currentMoneyInBox: payload };
 
     case GET_ROOMS_DATA_FAILURE:

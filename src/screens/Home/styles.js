@@ -168,6 +168,59 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   },
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+  modalWrapper: {
+    width: screen.width * 0.6,
+    height: screen.height * 0.4,
+    backgroundColor: 'white'
+  },
+  modalHeaderWrapper: {
+    flex: 1,
+    backgroundColor: '#2A6C97',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  modalHeaderTxt: {
+    textTransform: 'uppercase',
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 30
+  },
+  modalBodyWrapper: {
+    flex: 2,
+  },
+  modalBodyRow: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%'
+  },
+  modalTitleRowTxt: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'black',
+    textTransform: 'capitalize'
+  },
+  modalFooterWrapper: {
+    flex: 1,
+    borderTopWidth: 1,
+    borderTopColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  btnInput: {
+    paddingHorizontal: 20,
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#28B463',
+    borderRadius: 5
+  },
 })
 
 export default styles;

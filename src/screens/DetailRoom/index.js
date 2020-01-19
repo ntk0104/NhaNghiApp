@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -227,12 +227,6 @@ class DetailRoom extends Component {
 
   payAdvanced = (totalPayment) => {
     const { calculatedRoomCost, waterCost, anotherCost, additionalCost, beerCost, softdrinkCost, instantNoodleCost } = this.state
-    // this.props.updateChargedItemRequestHandler({
-    //   id: this.props.roomInfo.timeIn + '_anotherCost',
-    //   addedTime: moment().valueOf(),
-    //   quantity: 1,
-    //   total: -totalPayment + additionalCost
-    // })
     const addedNote = moment().format('DD/MM/YY HH:mm') + ' Trả tiền trước ' + totalPayment + '.000'
     this.props.updateRoomInfoRequestHandler({
       id: this.props.roomInfo.id,
@@ -240,6 +234,7 @@ class DetailRoom extends Component {
       advancedPay: totalPayment + this.props.roomInfo.advancedPay
     })
     this.props.navigation.goBack()
+    this.props.getCurrentMoneyInBoxHandler()
   }
 
   formatVND = (anotherCostValue) => {
@@ -360,6 +355,7 @@ class DetailRoom extends Component {
 
     this.setState({ alertReturnRoomModal: false }, () => {
       this.props.navigation.goBack()
+      this.props.getCurrentMoneyInBoxHandler()
     })
 
   }
@@ -682,6 +678,7 @@ const mapDispatchToProps = dispatch => ({
   updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload)),
   updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
+  getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)
