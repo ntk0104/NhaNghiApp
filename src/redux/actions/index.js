@@ -19,7 +19,10 @@ import {
   GET_CASH_BOX_FAILURE,
   UPDATE_CASH_BOX_REQUEST,
   UPDATE_CASH_BOX_SUCCESS,
-  UPDATE_CASH_BOX_FAILURE
+  UPDATE_CASH_BOX_FAILURE,
+  ADD_HISTORY_ITEM_REQUEST,
+  ADD_HISTORY_ITEM_SUCCESS,
+  ADD_HISTORY_ITEM_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -129,17 +132,34 @@ export const getCashBoxFailure = errors => ({
 // ==================================================== UPDATE CASH BOX INFO
 
 export const updateCashBoxRequest = payload => ({
-  type:  UPDATE_CASH_BOX_REQUEST,
+  type: UPDATE_CASH_BOX_REQUEST,
   payload
 });
 
 export const udpateCashBoxSuccess = payload => ({
-  type:  UPDATE_CASH_BOX_SUCCESS,
+  type: UPDATE_CASH_BOX_SUCCESS,
   payload
 });
 
 export const updateCashBoxFailure = errors => ({
-  type:  UPDATE_CASH_BOX_FAILURE,
+  type: UPDATE_CASH_BOX_FAILURE,
+  errors
+});
+
+// ==================================================== UPDATE CASH BOX INFO
+
+export const addHistoryItemRequest = payload => ({
+  type: ADD_HISTORY_ITEM_REQUEST,
+  payload
+});
+
+export const addHistoryItemSuccess = payload => ({
+  type: ADD_HISTORY_ITEM_SUCCESS,
+  payload
+});
+
+export const addHistoryItemFailure = errors => ({
+  type: ADD_HISTORY_ITEM_FAILURE,
   errors
 });
 

@@ -14,7 +14,7 @@ import CashBox from './CashBox'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import ImagePicker from 'react-native-image-picker'
-import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest } from '../../redux/actions/index'
+import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 
 import { createStructuredSelector } from 'reselect';
@@ -312,6 +312,19 @@ class Home extends PureComponent {
     this.props.addChargedItemRequestHandler(instantNoodleCostItem)
     this.props.addChargedItemRequestHandler(anotherCostCostItem)
 
+    this.props.addHistoryItemRequestHandler({
+      roomID: this.state.gettingRoomID,
+      roomName: this.state.gettingRoomName,
+      status: 'in',
+      total: 0,
+      sectionID: updatedInfo.timeIn,
+      timeIn: updatedInfo.timeIn,
+      note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
+      tag: this.state.selectedSectionType,
+      sectionRoom: this.state.selectedRoomType,
+      cmnd: null
+    })
+
     this.closeGetRoomModal()
     setTimeout(() => this.props.getRoomsDataRequestHandler(), 300)
   }
@@ -519,7 +532,8 @@ const mapDispatchToProps = dispatch => ({
   updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
   addChargedItemRequestHandler: payload => dispatch(addChargedItemRequest(payload)),
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
-  updateCashBoxRequestHandler: payload => dispatch(updateCashBoxRequest(payload))
+  updateCashBoxRequestHandler: payload => dispatch(updateCashBoxRequest(payload)),
+  addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

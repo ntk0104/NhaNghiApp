@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -316,6 +316,7 @@ class DetailRoom extends Component {
 
   returnRoom = () => {
     const { roomInfo } = this.props
+    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, sectionRoom, tag } = this.state
     this.props.updateRoomInfoRequestHandler({
       id: roomInfo.id,
       currentStatus: 'available',
@@ -348,13 +349,25 @@ class DetailRoom extends Component {
     })
     this.props.updateChargedItemRequestHandler({
       id: roomInfo.timeIn + '_roomcost',
-      total: this.state.calculatedRoomCost,
+      total: calculatedRoomCost,
       payStatus: 'paid'
     })
 
     this.setState({ alertReturnRoomModal: false }, () => {
       this.props.navigation.goBack()
       this.props.getCurrentMoneyInBoxHandler()
+      this.props.addHistoryItemRequestHandler({
+        roomID: roomInfo.id,
+        roomName: roomInfo.roomName,
+        status: 'out',
+        total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
+        sectionID: roomInfo.timeIn,
+        timeIn: roomInfo.timeIn,
+        note: roomInfo.note,
+        tag: tag,
+        sectionRoom: sectionRoom,
+        cmnd: null
+      })
     })
 
   }
@@ -643,17 +656,17 @@ class DetailRoom extends Component {
                 <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: {formatedTotalPayment}</Text>
                 {
                   totalPayment < 500 &&
-                  <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: <Text style={{color: 'blue'}}>{this.formatVND(500 - totalPayment)}</Text></Text>
+                  <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: <Text style={{ color: 'blue' }}>{this.formatVND(500 - totalPayment)}</Text></Text>
                 }
                 {
                   totalPayment < 200 &&
-                  <Text style={styles.titleTxt}>Khách đưa 200.000 thối lại: <Text style={{color: 'blue'}}>{this.formatVND(200 - totalPayment)}</Text></Text>
+                  <Text style={styles.titleTxt}>Khách đưa 200.000 thối lại: <Text style={{ color: 'blue' }}>{this.formatVND(200 - totalPayment)}</Text></Text>
                 }
                 {
                   totalPayment < 100 &&
-                  <Text style={styles.titleTxt}>Khách đưa 100.000 thối lại: <Text style={{color: 'blue'}}>{this.formatVND(100 - totalPayment)}</Text></Text>
+                  <Text style={styles.titleTxt}>Khách đưa 100.000 thối lại: <Text style={{ color: 'blue' }}>{this.formatVND(100 - totalPayment)}</Text></Text>
                 }
-                  <Text style={styles.titleTxt}>Nhớ trả <Text style={{color: 'red'}}>CHỨNG MINH</Text> <Icon type='AntDesign' name='idcard' style={{ color: 'green', fontSize: 40}} />  và đòi <Text style={{color: 'red'}}>CHÌA KHÓA</Text> <Icon type='FontAwesome5' name='key' style={{ color: '#B7950B', fontSize: 40 }} /></Text>
+                <Text style={styles.titleTxt}>Nhớ trả <Text style={{ color: 'red' }}>CHỨNG MINH</Text> <Icon type='AntDesign' name='idcard' style={{ color: 'green', fontSize: 40 }} />  và đòi <Text style={{ color: 'red' }}>CHÌA KHÓA</Text> <Icon type='FontAwesome5' name='key' style={{ color: '#B7950B', fontSize: 40 }} /></Text>
               </View>
               <View style={styles.modalFooterWrapper}>
                 <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.returnRoom}>
@@ -677,7 +690,8 @@ const mapDispatchToProps = dispatch => ({
   updateChargedItemRequestHandler: payload => dispatch(updateChargedItemRequest(payload)),
   updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
-  getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest())
+  getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
+  addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)
