@@ -24,7 +24,7 @@ class Home extends PureComponent {
     super(props)
     this.state = {
       modalGetRoomVisible: false,
-      selectedSectionType: 'CD',
+      selectedSectionType: 'DG',
       selectedRoomType: 'quat',
       gettingRoomName: null,
       currentNote: '',
@@ -111,7 +111,7 @@ class Home extends PureComponent {
   }
 
   submitChangeCashInBox = () => {
-    const {changeMoneyValue, changeMoneyType, changeMoneyTxt} = this.state
+    const { changeMoneyValue, changeMoneyType, changeMoneyTxt } = this.state
     this.props.updateCashBoxRequestHandler({
       type: changeMoneyType,
       title: changeMoneyTxt,
@@ -259,9 +259,22 @@ class Home extends PureComponent {
   }
 
   selectSectionType = (sectionType) => {
-    this.setState({
-      selectedSectionType: sectionType
-    })
+    if (sectionType == 'DG') {
+      this.setState({
+        selectedSectionType: sectionType,
+        selectedRoomType: 'quat'
+      })
+    } else if (sectionType == 'CD'){
+      this.setState({
+        selectedSectionType: sectionType,
+        selectedRoomType: 'lanh'
+      })
+    } else {
+      this.setState({
+        selectedSectionType: sectionType,
+        selectedRoomType: 'lanh'
+      })
+    }
   }
 
   selectRoomType = (roomType) => {
@@ -289,94 +302,94 @@ class Home extends PureComponent {
 
         <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} onBackdropPress={this.closeGetRoomModal}>
           {/* <ScrollView keyboardShouldPersistTaps='handled'> */}
-            <View style={styles.modalContent}>
-              <View style={styles.modalTopBar}>
-                <View style={styles.modalHeaderTxtWrapper}>
-                  <Text style={[styles.headerTxt, { marginRight: 20 }]}>Nhận Phòng</Text>
-                  <View style={styles.roomNumber}>
-                    <Text style={styles.roomNumberTxt}>{gettingRoomName}</Text>
-                  </View>
-                </View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
-                  <Icon type="AntDesign" name="close" style={styles.iconClose} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.modalBody}>
-                <View style={styles.leftBodyContainer}>
-                  <View style={styles.typeContainer}>
-                    <Text style={styles.titleTxt}>Loại:</Text>
-                    <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 10 }]}>DG</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 10 }]}>CD</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 10 }]}>Qua đêm</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.typeContainer}>
-                    <Text style={styles.titleTxt}>Phòng:</Text>
-                    <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedRoomType == 'quat'} color="green" onPress={() => this.selectRoomType('quat')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('lanh')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.typeContainer}>
-                    <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
-                    <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
-                        <View style={styles.optionBtnWrapper}>
-                          <Icon type="Entypo" name="camera" style={[styles.iconClose, { color: 'black' }]} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.rightBodyContainer}>
-                  <Text style={styles.titleTxt}>Ghi chú:</Text>
-                  <TextInput
-                    style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
-                    placeholder="Nhập ghi chú"
-                    onChangeText={(text) => this.setState({ currentNote: text })}
-                    multiline
-                    keyboardType="default"
-                    blurOnSubmit={true}
-                    returnKeyType="done"
-                  />
+          <View style={styles.modalContent}>
+            <View style={styles.modalTopBar}>
+              <View style={styles.modalHeaderTxtWrapper}>
+                <Text style={[styles.headerTxt, { marginRight: 20 }]}>Nhận Phòng</Text>
+                <View style={styles.roomNumber}>
+                  <Text style={styles.roomNumberTxt}>{gettingRoomName}</Text>
                 </View>
               </View>
-              <View style={styles.modalFooter}>
-                <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
-                  <Text style={styles.headerTxt}>Hủy</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnOK} onPress={this.onSubmitGetRoom}>
-                  <Text style={styles.headerTxt}>OK</Text>
-                </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
+                <Icon type="AntDesign" name="close" style={styles.iconClose} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBody}>
+              <View style={styles.leftBodyContainer}>
+                <View style={styles.typeContainer}>
+                  <Text style={styles.titleTxt}>Loại:</Text>
+                  <View style={styles.typeOptionsWrapper}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>DG</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>CD</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>Qua đêm</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.typeContainer}>
+                  <Text style={styles.titleTxt}>Phòng:</Text>
+                  <View style={styles.typeOptionsWrapper}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedRoomType == 'quat'} color="green" onPress={() => this.selectRoomType('quat')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('lanh')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.typeContainer}>
+                  <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
+                  <View style={styles.typeOptionsWrapper}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
+                      <View style={styles.optionBtnWrapper}>
+                        <Icon type="Entypo" name="camera" style={[styles.iconClose, { color: 'black' }]} />
+                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.rightBodyContainer}>
+                <Text style={styles.titleTxt}>Ghi chú:</Text>
+                <TextInput
+                  style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
+                  placeholder="Nhập ghi chú"
+                  onChangeText={(text) => this.setState({ currentNote: text })}
+                  multiline
+                  keyboardType="default"
+                  blurOnSubmit={true}
+                  returnKeyType="done"
+                />
               </View>
             </View>
+            <View style={styles.modalFooter}>
+              <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
+                <Text style={styles.headerTxt}>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnOK} onPress={this.onSubmitGetRoom}>
+                <Text style={styles.headerTxt}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           {/* </ScrollView> */}
         </Modal>
 
@@ -433,7 +446,7 @@ class Home extends PureComponent {
               </View>
             </View>
             <View style={styles.modalFooterWrapper}>
-              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, {backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C'}]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
+              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C' }]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
                 {
                   changeMoneyType === 'deposit' ?
                     <Text style={styles.modalHeaderTxt}>Bỏ {this.formatVND(changeMoneyValue)} vào tủ</Text>
