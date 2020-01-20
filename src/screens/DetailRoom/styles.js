@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   btnAction: {
     width: '30%',
-    height: '80%',
+    height: '90%',
     backgroundColor: '#E74C3C',
     justifyContent: 'center',
     alignItems: 'center',
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     width: '100%',
-    height: screen.height * 0.1,
+    height: screen.height * 0.15,
     backgroundColor: '#EAFAF1',
     flexDirection: 'row',
     alignItems: 'center',

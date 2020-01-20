@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native'
+import { Text, View, TouchableOpacity, TextInput, ScrollView, StatusBar } from 'react-native'
 import styles from './styles'
 import MenuBar from '../../components/MenuBar/index'
 import Modal from 'react-native-modal'
@@ -288,6 +288,7 @@ class Home extends PureComponent {
     const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
+        <StatusBar hidden={true} />
         <MenuBar />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
