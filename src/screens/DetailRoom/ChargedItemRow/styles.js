@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
 const screen = Dimensions.get('window')
 
@@ -31,18 +32,38 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textTitle: {
-    fontSize: 16,
+    fontSize: RFValue(12, 790),
     fontWeight: 'bold'
   },
   textQuantity: {
-    fontSize: 20,
+    fontSize: RFValue(15, 790),
+    fontWeight: 'bold'
+  },
+  durationTxt: {
+    fontSize: RFValue(12, 790),
     fontWeight: 'bold'
   },
   totalMoneyAmount: {
-    fontSize: 18,
+    fontSize: RFValue(15, 790),
     color: 'red',
     textDecorationStyle: 'dotted',
     fontWeight: 'bold'
+  },
+  btnDecrease: {
+    color: 'red', 
+    fontSize: RFValue(30, 790),
+  },
+  btnIncrease: {
+    color: 'green', 
+    fontSize: RFValue(30, 790),
+  },
+  btnDecreaseBig: {
+    color: 'red', 
+    fontSize: RFValue(35, 790),
+  },
+  btnIncreaseBig: {
+    color: 'green', 
+    fontSize: RFValue(35, 790),
   }
 })
 

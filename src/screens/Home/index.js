@@ -271,7 +271,6 @@ class Home extends PureComponent {
   }
 
   render() {
-
     console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
     const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (

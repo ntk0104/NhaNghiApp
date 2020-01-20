@@ -369,8 +369,8 @@ class DetailRoom extends Component {
         sectionRoom: sectionRoom,
         cmnd: null
       })
-      setTimeout(() => this.props.getHistoryListRequestHandler() , 300)
-      
+      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
+
     })
 
   }
@@ -388,7 +388,7 @@ class DetailRoom extends Component {
           this.props.roomInfo &&
           <View style={styles.navigationBar}>
             <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
-              <Icon type='AntDesign' name='arrowleft' style={{ color: 'white' }} />
+              <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
             </TouchableOpacity>
             <View style={styles.headerTitle}>
               <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
@@ -490,26 +490,35 @@ class DetailRoom extends Component {
                     <Text style={styles.titleTxt}>CMND:</Text>
                   </View>
                   <View style={styles.InfoCMNDWrapper}>
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={{ width: 80, height: 60, resizeMode: 'contain' }} />
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={{ width: 80, height: 60, resizeMode: 'contain', marginLeft: 20 }} />
+                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={styles.imgCMND} />
+                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={[styles.imgCMND, { marginLeft: 20 }]} />
                   </View>
                 </View>
               </View>
               <View style={styles.bottomLeftBodyContainer}>
-                <Text style={[styles.titleTxt, { alignSelf: 'flex-start', marginLeft: 20 }]}>Ghi chú:</Text>
-                <TextInput
-                  style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
-                  placeholder="Nhập ghi chú"
-                  keyboardType="default"
-                  blurOnSubmit={true}
-                  value={generatedNote}
-                  autoCapitalize='none'
-                  autoCompleteType='off'
-                  autoCorrect={Platform.OS != 'ios'}
-                  autoFocus={false}
-                  multiline
-                  editable={false}
-                />
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                  <Text style={[styles.titleTxt, { alignSelf: 'flex-start', marginLeft: 20 }]}>Note:</Text>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 5.5, paddingVertical: 5 }}>
+                  <TextInput
+                    style={styles.historyNote}
+                    placeholder="Nhập ghi chú"
+                    keyboardType="default"
+                    blurOnSubmit={true}
+                    value={generatedNote}
+                    autoCapitalize='none'
+                    autoCompleteType='off'
+                    autoCorrect={Platform.OS != 'ios'}
+                    autoFocus={false}
+                    multiline
+                    scrollEnabled={true}
+                    // setFocusableInTouchMode={false}
+                    focusable={false}
+                    focusableInTouchMode={false}
+                    // editable={false}
+                  />
+                </View>
+
               </View>
             </View>
 
@@ -578,7 +587,7 @@ class DetailRoom extends Component {
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true })}>
             {
               totalPayment > 0 ?
-                <Text style={styles.headerTitleTxt}>Trả phòng & Thanh Toán</Text>
+                <Text style={styles.headerTitleTxt}>Trả phòng&Thanh Toán</Text>
                 :
                 <Text style={styles.headerTitleTxt}>Trả phòng</Text>
             }
@@ -591,7 +600,7 @@ class DetailRoom extends Component {
                 <Text style={styles.modalHeaderTxt}>{modalAnotherCostHeader}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeAnotherCostModal}>
-                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                <Icon type="AntDesign" name="close"style={styles.iconClose} />
               </TouchableOpacity>
             </View>
             <View style={styles.modalBodyWrapper}>
@@ -601,7 +610,7 @@ class DetailRoom extends Component {
                 </View>
                 <View style={{ flex: 2.5, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtTextInput}
                     placeholder="Tên khoản thêm"
                     returnKeyType="next"
                     keyboardType="default"
@@ -620,7 +629,7 @@ class DetailRoom extends Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtTextInput}
                     placeholder="Số tiền thu"
                     keyboardType='numeric'
                     blurOnSubmit={true}
@@ -632,7 +641,7 @@ class DetailRoom extends Component {
                 </View>
                 <View style={{ flex: 1.5, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
                   <Text style={styles.modalTitleRowTxt}>x 1.000 = </Text>
-                  <Text style={[styles.modalTitleRowTxt, { fontSize: 20 }]}>{formatedVND}</Text>
+                  <Text style={styles.modalTitleRowTxt}>{formatedVND}</Text>
                 </View>
               </View>
             </View>
