@@ -283,13 +283,13 @@ class Home extends PureComponent {
             <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} />
           </View>
           <View style={styles.rightSideContent}>
-            <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>
+            <Text style={styles.historyTitleTxt}>Danh sách vào / ra</Text>
             <HistoryList />
           </View>
         </View>
 
-        <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} style={{ justifyContent: 'center', alignItems: 'center' }} onBackdropPress={this.closeGetRoomModal}>
-          <ScrollView keyboardShouldPersistTaps='handled'>
+        <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} onBackdropPress={this.closeGetRoomModal}>
+          {/* <ScrollView keyboardShouldPersistTaps='handled'> */}
             <View style={styles.modalContent}>
               <View style={styles.modalTopBar}>
                 <View style={styles.modalHeaderTxtWrapper}>
@@ -299,7 +299,7 @@ class Home extends PureComponent {
                   </View>
                 </View>
                 <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
-                  <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                  <Icon type="AntDesign" name="close" style={styles.iconClose} />
                 </TouchableOpacity>
               </View>
               <View style={styles.modalBody}>
@@ -310,19 +310,19 @@ class Home extends PureComponent {
                       <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
                         <View style={styles.optionBtnWrapper}>
                           <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>DG</Text>
+                          <Text style={[styles.titleTxt, { marginLeft: 10 }]}>DG</Text>
                         </View>
                       </TouchableOpacity>
                       <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
                         <View style={styles.optionBtnWrapper}>
                           <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>CD</Text>
+                          <Text style={[styles.titleTxt, { marginLeft: 10 }]}>CD</Text>
                         </View>
                       </TouchableOpacity>
                       <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
                         <View style={styles.optionBtnWrapper}>
                           <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Qua đêm</Text>
+                          <Text style={[styles.titleTxt, { marginLeft: 10 }]}>Qua đêm</Text>
                         </View>
                       </TouchableOpacity>
                     </View>
@@ -349,7 +349,7 @@ class Home extends PureComponent {
                     <View style={styles.typeOptionsWrapper}>
                       <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
                         <View style={styles.optionBtnWrapper}>
-                          <Icon type="Entypo" name="camera" size={30} style={{ color: 'black' }} />
+                          <Icon type="Entypo" name="camera" style={[styles.iconClose, { color: 'black' }]} />
                           <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
                         </View>
                       </TouchableOpacity>
@@ -378,7 +378,7 @@ class Home extends PureComponent {
                 </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
+          {/* </ScrollView> */}
         </Modal>
 
         <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} onBackdropPress={this.closeChangeMoneyBoxModal}>
@@ -388,7 +388,7 @@ class Home extends PureComponent {
                 <Text style={styles.modalHeaderTxt}>{changeCashBoxModalHeader}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeChangeMoneyBoxModal}>
-                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                <Icon type="AntDesign" name="close" style={styles.iconClose} />
               </TouchableOpacity>
             </View>
             <View style={styles.modalBodyWrapper}>
@@ -398,7 +398,7 @@ class Home extends PureComponent {
                 </View>
                 <View style={{ flex: 2.5, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtInput}
                     placeholder="Tên khoản thêm"
                     returnKeyType="next"
                     keyboardType="default"
@@ -417,7 +417,7 @@ class Home extends PureComponent {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtInput}
                     placeholder="Số tiền thu"
                     keyboardType='numeric'
                     blurOnSubmit={true}
@@ -429,7 +429,7 @@ class Home extends PureComponent {
                 </View>
                 <View style={{ flex: 1.5, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
                   <Text style={styles.modalTitleRowTxt}>x 1.000 = </Text>
-                  <Text style={[styles.modalTitleRowTxt, { fontSize: 20 }]}>{this.formatVND(changeMoneyValue)}</Text>
+                  <Text style={[styles.modalTitleRowTxt]}>{this.formatVND(changeMoneyValue)}</Text>
                 </View>
               </View>
             </View>

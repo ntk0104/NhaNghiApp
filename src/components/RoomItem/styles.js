@@ -1,18 +1,19 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
 const screen = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   roomNumberWrapper: {
-    flex: 1.5,
+    flex: 2,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     backgroundColor: 'gray',
     width: '100%'
   },
   roomNumberTxt: {
     color: 'white',
-    fontSize: 18,
+    fontSize: RFValue(18, 790),
     fontWeight: 'bold'
   },
   roomContainer: {
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     padding: 5
   },
   tagWrapper: {
-    padding: 10,
+    padding: 3,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'green',
@@ -40,10 +41,35 @@ const styles = StyleSheet.create({
   },
   tagTxt: {
     color: 'white',
-    fontSize: 15,
+    fontSize: RFValue(15, 790),
     fontWeight: 'bold',
     textAlign: 'center'
-  }
+  },
+  advancedPaidTxt: {
+    color: 'white',
+    fontSize: RFValue(12, 790),
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  durationTxt: {
+    color: 'white',
+    fontSize: RFValue(12, 790),
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  iconStyle: {
+    color: 'white',
+    fontSize: RFValue(13, 790),
+  },
+  iconHeartStyle: {
+    color: 'red',
+    fontSize: RFValue(13, 790),
+  },
+  overnightTxt: {
+    color: 'white',
+    fontSize: RFValue(13, 790),
+    fontWeight: 'bold'
+  },
 })
 
 export default styles;

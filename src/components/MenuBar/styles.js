@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
 const screen = Dimensions.get('window')
 
@@ -28,8 +29,12 @@ const styles = StyleSheet.create({
   },
   dateTxt: {
     color: 'white',
-    fontSize: 20,
+    // fontSize: 20,
+    fontSize: RFValue(20, 790),
     fontWeight: 'bold'
+  },
+  iconSetting: {
+    fontSize: RFValue(30, 790),
   }
 })
 

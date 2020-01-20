@@ -13,7 +13,7 @@ export default class MenuBar extends Component {
           <Text style={styles.dateTxt}>{currentDate}</Text>
         </View>
         <TouchableOpacity style={styles.btnSetting}>
-          <Icon type="AntDesign" name="setting" size={30} color="white" />
+          <Icon type="AntDesign" name="setting" color="white" style={styles.iconSetting} />
         </TouchableOpacity>
       </View>
     )

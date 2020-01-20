@@ -36,24 +36,24 @@ export default class RoomItem extends PureComponent {
           {
             type == '2beds' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>
-              <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
-              <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
+              <Icon type='FontAwesome' name='bed' style={styles.iconStyle} />
+              <Icon type='FontAwesome' name='bed' style={styles.iconStyle} />
             </View>
           }
           {
             type == '1bed' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>
-              <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
+              <Icon type='FontAwesome' name='bed' style={styles.iconStyle} />
             </View>
           }
           {
             type == 'special' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>
-              <Icon type='FontAwesome' name='bed' style={{ color: 'white', fontSize: 15 }} />
-              <Icon type='AntDesign' name='heart' style={{ color: 'red', fontSize: 15 }} />
+              <Icon type='FontAwesome' name='bed' style={styles.iconStyle} />
+              <Icon type='AntDesign' name='heart' style={styles.iconHeartStyle} />
             </View>
           }
-          <Text style={[styles.roomNumberTxt, { fontSize: 13 }]}>Giá:{overnight_price}</Text>
+          <Text style={styles.overnightTxt}>Giá:{overnight_price}</Text>
         </View>
         {
           tag != '' ?
@@ -65,7 +65,7 @@ export default class RoomItem extends PureComponent {
                     <Text style={styles.tagTxt}>{tag}</Text>
                     {
                       advancedPay > 0 &&
-                      <Text style={styles.tagTxt}>TT</Text>
+                      <Text style={styles.advancedPaidTxt}>TT</Text>
                     }
                   </View>
                 }
@@ -75,7 +75,7 @@ export default class RoomItem extends PureComponent {
                     <Text style={styles.tagTxt}>{tag}</Text>
                     {
                       advancedPay > 0 &&
-                      <Text style={styles.tagTxt}>TT</Text>
+                      <Text style={styles.advancedPaidTxt}>TT</Text>
                     }
                   </View>
                 }
@@ -83,8 +83,8 @@ export default class RoomItem extends PureComponent {
                   tag == 'QD' &&
                   <View style={[styles.tagWrapper, { backgroundColor: '#3498DB' }]}>
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={styles.tagTxt}>{tag}</Text>
-                      <Icon type='MaterialCommunityIcons' name='power-sleep' style={{ color: 'white', fontSize: 15 }} />
+                      <Text style={styles.advancedPaidTxt}>{tag}</Text>
+                      <Icon type='MaterialCommunityIcons' name='power-sleep' style={styles.iconStyle} />
                     </View>
                     {
                       advancedPay > 0 &&
@@ -94,7 +94,7 @@ export default class RoomItem extends PureComponent {
                 }
               </View>
               <View style={styles.part}>
-                <Text style={styles.tagTxt}>{durationTxt}</Text>
+                <Text style={styles.durationTxt}>{durationTxt}</Text>
               </View>
             </View>
             :

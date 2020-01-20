@@ -24,7 +24,7 @@ class CashBox extends PureComponent {
     const currentMoneyInBox = this.props.currentMoneyInBox || 0
     return (
       <View style={styles.totalContainer}>
-        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Tiền trong tủ: {this.formatVND(currentMoneyInBox)}</Text>
+        <Text style={styles.cashInBoxTitleTxt}>Tiền trong tủ: {this.formatVND(currentMoneyInBox)}</Text>
         <TouchableOpacity style={styles.btnWithDraw} onPress={() => this.props.showWithdrawModal()}>
           <Text style={styles.withdrawTxt}>Rút tiền</Text>
         </TouchableOpacity>
