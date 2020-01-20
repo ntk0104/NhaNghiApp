@@ -9,8 +9,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
 class RoomMap extends Component {
-
-
   constructor(props) {
     super(props)
     this.state = {
@@ -35,10 +33,6 @@ class RoomMap extends Component {
   componentDidMount(){
     this.timer = setInterval(() => {this.props.getRoomsDataRequestHandler()}, 60000)
   }
-
-  // componentWillUnmount(){
-  //   this.timer.remove()
-  // }
 
   render() {
     console.log('%c%s', 'color: #f2ceb6', 'Rendering RoomMap');

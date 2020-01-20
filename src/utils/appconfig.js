@@ -9,7 +9,7 @@ export default (appConfig = {
       note: '',
       tag: '', // DG/CD/QD
       sectionRoom: '', // quat/lanh
-      overnight_price: 180,
+      overnight_price: 120,
       type: '1bed',
       cmnd: null
     },
@@ -23,7 +23,7 @@ export default (appConfig = {
       tag: '',
       sectionRoom: '',
       overnight_price: 180,
-      type: '1bed',
+      type: 'special',
       cmnd: null
     },
     {
@@ -36,7 +36,7 @@ export default (appConfig = {
       tag: '',
       sectionRoom: '',
       overnight_price: 180,
-      type: '1bed',
+      type: 'special',
       cmnd: null
     },
     {
@@ -48,8 +48,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
-      type: '1bed',
+      overnight_price: 220,
+      type: '2beds',
       cmnd: null
     },
     {
@@ -61,8 +61,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
-      type: '1bed',
+      overnight_price: 220,
+      type: '2beds',
       cmnd: null
     },
     {
@@ -75,7 +75,7 @@ export default (appConfig = {
       tag: '',
       sectionRoom: '',
       overnight_price: 180,
-      type: '1bed',
+      type: 'special',
       cmnd: null
     },
     {
@@ -113,8 +113,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
-      type: '2beds',
+      overnight_price: 200,
+      type: 'special',
       cmnd: null
     },
     {
@@ -139,7 +139,7 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
+      overnight_price: 120,
       type: '1bed',
       cmnd: null
     },
@@ -153,7 +153,7 @@ export default (appConfig = {
       tag: '',
       sectionRoom: '',
       overnight_price: 180,
-      type: '1bed',
+      type: 'special',
       cmnd: null
     },
     {
@@ -165,8 +165,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
-      type: '1bed',
+      overnight_price: 220,
+      type: '2beds',
       cmnd: null
     },
     {
@@ -178,8 +178,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
-      type: '1bed',
+      overnight_price: 220,
+      type: '2beds',
       cmnd: null
     },
     {
@@ -192,7 +192,7 @@ export default (appConfig = {
       tag: '',
       sectionRoom: '',
       overnight_price: 180,
-      type: '1bed',
+      type: 'special',
       cmnd: null
     },
     {
@@ -205,7 +205,7 @@ export default (appConfig = {
       tag: '',
       sectionRoom: '',
       overnight_price: 180,
-      type: '1bed',
+      type: 'special',
       cmnd: null
     },
     {
@@ -217,8 +217,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 180,
-      type: '1bed',
+      overnight_price: 200,
+      type: 'special',
       cmnd: null
     }
   ],

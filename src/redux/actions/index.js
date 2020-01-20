@@ -22,7 +22,10 @@ import {
   UPDATE_CASH_BOX_FAILURE,
   ADD_HISTORY_ITEM_REQUEST,
   ADD_HISTORY_ITEM_SUCCESS,
-  ADD_HISTORY_ITEM_FAILURE
+  ADD_HISTORY_ITEM_FAILURE,
+  GET_HISTORY_LIST_REQUEST,
+  GET_HISTORY_LIST_SUCCESS,
+  GET_HISTORY_LIST_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -160,6 +163,23 @@ export const addHistoryItemSuccess = payload => ({
 
 export const addHistoryItemFailure = errors => ({
   type: ADD_HISTORY_ITEM_FAILURE,
+  errors
+});
+
+// ==================================================== UPDATE CASH BOX INFO
+
+export const getHistoryListRequest = payload => ({
+  type: GET_HISTORY_LIST_REQUEST,
+  payload
+});
+
+export const getHistoryListSuccess = payload => ({
+  type: GET_HISTORY_LIST_SUCCESS,
+  payload
+});
+
+export const getHistoryListFailure = errors => ({
+  type: GET_HISTORY_LIST_FAILURE,
   errors
 });
 

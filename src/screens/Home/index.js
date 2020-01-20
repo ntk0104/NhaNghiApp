@@ -1,21 +1,20 @@
 import React, { PureComponent } from 'react'
-import { Text, View, TouchableOpacity, FlatList, TextInput, ScrollView } from 'react-native'
+import { Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native'
 import styles from './styles'
 import MenuBar from '../../components/MenuBar/index'
-import HistoryItem from '../../components/HistoryItem/index'
 import Modal from 'react-native-modal'
 import { Icon, CheckBox } from 'native-base'
 import Realm from 'realm'
-import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
+import { addRoom } from '../../database/index'
 import moment from 'moment'
 import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
 import CashBox from './CashBox'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
-import ImagePicker from 'react-native-image-picker'
-import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
+import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
+import { makeGetHistoryRoom } from '../../redux/selectors/index'
 
 import { createStructuredSelector } from 'reselect';
 
@@ -24,81 +23,6 @@ class Home extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      // history: [
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 123,
-      //     time: '15h30',
-      //     tagName: 'DG',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 15,
-      //     itemID: 123,
-      //     time: '15h31',
-      //     tagName: 'DG',
-      //     status: 'out',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1223,
-      //     time: '15h30',
-      //     tagName: 'CD',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1233,
-      //     time: '15h30',
-      //     tagName: 'QD',
-      //     status: 'out',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1243,
-      //     time: '15h30',
-      //     tagName: 'DG',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1253,
-      //     time: '15h30',
-      //     tagName: 'QD',
-      //     status: 'out',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1263,
-      //     time: '15h30',
-      //     tagName: 'DG',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1273,
-      //     time: '15h30',
-      //     tagName: 'CD',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   }
-      // ],
-
       modalGetRoomVisible: false,
       selectedSectionType: 'CD',
       selectedRoomType: 'quat',
@@ -136,6 +60,7 @@ class Home extends PureComponent {
       console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
       this.props.getCurrentMoneyInBoxHandler()
+      this.props.getHistoryListRequestHandler()
     } else {
       console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
@@ -222,7 +147,8 @@ class Home extends PureComponent {
   formatVND = (anotherCostValue) => {
     try {
       let intMoney = parseInt(anotherCostValue) * 1000
-      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
       return intMoney
     } catch (error) {
       console.log("TCL: formatVND -> error", error)
@@ -326,7 +252,10 @@ class Home extends PureComponent {
     })
 
     this.closeGetRoomModal()
-    setTimeout(() => this.props.getRoomsDataRequestHandler(), 300)
+    setTimeout(() => {
+      this.props.getRoomsDataRequestHandler()
+      this.props.getHistoryListRequestHandler()
+    }, 300)
   }
 
   selectSectionType = (sectionType) => {
@@ -350,15 +279,12 @@ class Home extends PureComponent {
         <MenuBar />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
-            <View style={styles.labelWrapper}>
-              <Text style={styles.lableTxt}>Sơ đồ phòng</Text>
-            </View>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
             <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} />
           </View>
           <View style={styles.rightSideContent}>
             <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>
-            {/* <HistoryList data /> */}
+            <HistoryList />
           </View>
         </View>
 
@@ -534,6 +460,7 @@ const mapDispatchToProps = dispatch => ({
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
   updateCashBoxRequestHandler: payload => dispatch(updateCashBoxRequest(payload)),
   addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
+  getHistoryListRequestHandler: () => dispatch(getHistoryListRequest())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

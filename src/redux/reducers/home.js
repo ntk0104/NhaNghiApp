@@ -23,7 +23,10 @@ import {
   UPDATE_CASH_BOX_FAILURE,
   ADD_HISTORY_ITEM_REQUEST,
   ADD_HISTORY_ITEM_SUCCESS,
-  ADD_HISTORY_ITEM_FAILURE
+  ADD_HISTORY_ITEM_FAILURE,
+  GET_HISTORY_LIST_REQUEST,
+  GET_HISTORY_LIST_SUCCESS,
+  GET_HISTORY_LIST_FAILURE
 } from '../types/index';
 
 
@@ -48,6 +51,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_CASH_BOX_REQUEST:
     case UPDATE_CASH_BOX_REQUEST:
     case ADD_HISTORY_ITEM_REQUEST:
+    case GET_HISTORY_LIST_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
@@ -84,6 +88,10 @@ const mainReducer = produce((draft = initialState, action) => {
 
     // ===================ADD HISTORY ITEM 
     case ADD_HISTORY_ITEM_SUCCESS:
+      return draft
+
+    // ===================GET HISTORY LIST 
+    case GET_HISTORY_LIST_SUCCESS:
       return { ...draft, historyList: payload };
 
     case GET_ROOMS_DATA_FAILURE:
@@ -94,6 +102,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_CASH_BOX_FAILURE:
     case UPDATE_CASH_BOX_FAILURE:
     case ADD_HISTORY_ITEM_FAILURE:
+    case GET_HISTORY_LIST_FAILURE:
       return { ...draft, error: payload }
 
     default:

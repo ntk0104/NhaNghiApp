@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -239,7 +239,8 @@ class DetailRoom extends Component {
   formatVND = (anotherCostValue) => {
     try {
       let intMoney = parseInt(anotherCostValue) * 1000
-      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
       return intMoney
     } catch (error) {
       console.log("TCL: formatVND -> error", error)
@@ -368,6 +369,8 @@ class DetailRoom extends Component {
         sectionRoom: sectionRoom,
         cmnd: null
       })
+      setTimeout(() => this.props.getHistoryListRequestHandler() , 300)
+      
     })
 
   }
@@ -692,6 +695,7 @@ const mapDispatchToProps = dispatch => ({
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
   addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
+  getHistoryListRequestHandler: () => dispatch(getHistoryListRequest())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)

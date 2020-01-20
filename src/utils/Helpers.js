@@ -37,9 +37,7 @@ export const calculateLivingTime = (timestampIn, timestampOut) => {
     const generatedTimestampThreshold = moment(generatedTimeThreshold).valueOf()
     if (timestampOut > generatedTimestampThreshold) {
       let tmpTimestamp = moment(checkOutDate + ' 12:00:00').valueOf()
-      console.log("TCL: calculateLivingTime -> tmpTimestamp", typeof(tmpTimestamp))
       let diffTimestamp2 = timestampOut - tmpTimestamp
-      console.log("TCL: calculateLivingTime -> diffTimestamp2", diffTimestamp2)
       const diffHours2 = Math.floor(moment.duration(diffTimestamp2).asHours())
       if (diffHours2 > 0) {
         diffTimestamp2 = diffTimestamp2 - diffHours2 * 60 * 60 * 1000
