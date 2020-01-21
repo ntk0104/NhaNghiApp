@@ -25,7 +25,13 @@ import {
   ADD_HISTORY_ITEM_FAILURE,
   GET_HISTORY_LIST_REQUEST,
   GET_HISTORY_LIST_SUCCESS,
-  GET_HISTORY_LIST_FAILURE
+  GET_HISTORY_LIST_FAILURE,
+  GET_STATISTIC_OF_DAY_REQUEST,
+  GET_STATISTIC_OF_DAY_SUCCESS,
+  GET_STATISTIC_OF_DAY_FAILURE,
+  UPDATE_HISTORY_ROOM_REQUEST,
+  UPDATE_HISTORY_ROOM_SUCCESS,
+  UPDATE_HISTORY_ROOM_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -184,4 +190,37 @@ export const getHistoryListFailure = errors => ({
 });
 
 
+// ==================================================== GET STATISTIC OF DAY
+
+export const getStatisticOfDayRequest = payload => ({
+  type: GET_STATISTIC_OF_DAY_REQUEST,
+  payload
+});
+
+export const getStatisticOfDaySuccess = payload => ({
+  type: GET_STATISTIC_OF_DAY_SUCCESS,
+  payload
+});
+
+export const getStatisticOfDayFailure = errors => ({
+  type: GET_STATISTIC_OF_DAY_FAILURE,
+  errors
+});
+
+// ==================================================== UPDATE HISTORY ROOM 
+
+export const updateHistoryRoomRequest = payload => ({
+  type: UPDATE_HISTORY_ROOM_REQUEST,
+  payload
+});
+
+export const updateHistoryRoomSuccess = payload => ({
+  type: UPDATE_HISTORY_ROOM_SUCCESS,
+  payload
+});
+
+export const updateHistoryRoomFailure = errors => ({
+  type: UPDATE_HISTORY_ROOM_FAILURE,
+  errors
+});
 

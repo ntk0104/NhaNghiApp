@@ -231,6 +231,6 @@ export default (appConfig = {
   airHourAdditionalPrice: 30,
   unitWaterPrice: 5,
   unitSoftDrinkPrice: 15,
-  unitBeerPrice: 15,
+  unitBeerPrice: 20,
   unitInstantNoodle: 15
 })

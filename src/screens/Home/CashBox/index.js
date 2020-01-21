@@ -20,7 +20,7 @@ class CashBox extends PureComponent {
   }
 
   render() {
-    console.log("TCL: CashBox -> render -> render")
+    //console.log("TCL: CashBox -> render -> render")
     const currentMoneyInBox = this.props.currentMoneyInBox || 0
     return (
       <View style={styles.totalContainer}>

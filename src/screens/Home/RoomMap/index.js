@@ -35,7 +35,7 @@ class RoomMap extends Component {
   }
 
   render() {
-    console.log('%c%s', 'color: #f2ceb6', 'Rendering RoomMap');
+    //console.log('%c%s', 'color: #f2ceb6', 'Rendering RoomMap');
     const { roomsData } = this.state
     return (
       <View style={styles.roomMapContainer}>

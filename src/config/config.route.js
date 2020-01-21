@@ -2,6 +2,7 @@ import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator, 
 
 import Home from '../screens/Home/index'
 import DetailRoom from '../screens/DetailRoom/index'
+import StatisticDay from '../screens/StatisticDay'
 
 
 const AppNavigator = createStackNavigator(
@@ -11,6 +12,9 @@ const AppNavigator = createStackNavigator(
     },
     DetailRoom: {
       screen: DetailRoom
+    },
+    StatisticDay: {
+      screen: StatisticDay
     },
   },
   {

@@ -16,7 +16,7 @@ export default class HistoryItem extends Component {
 
   render() {
     const { addedTime, roomID, roomName, status, total, sectionID, timeIn, note, tag, sectionRoom, cmnd } = this.props.item
-    console.log("TCL: HistoryItem -> render -> render ", roomName)
+    //console.log("TCL: HistoryItem -> render -> render ", roomName)
     return (
       <View style={[styles.container, { backgroundColor: status == 'in' ? '#52BE80' : '#CB4335' }]}>
         <View style={{ flex: 1 }}>

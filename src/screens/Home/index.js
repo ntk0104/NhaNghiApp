@@ -40,7 +40,7 @@ class Home extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('%c%s', 'color: #22b6', Realm.defaultPath);
+    //console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
   }
 
@@ -57,12 +57,12 @@ class Home extends PureComponent {
     const isSecond = await Storage.shared().getStorage(constants.SecondStart);
     if (isSecond == true) {
       // is not first init
-      console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
+      //console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
       this.props.getCurrentMoneyInBoxHandler()
       this.props.getHistoryListRequestHandler()
     } else {
-      console.log('%c%s', 'color: #f2ceb6', 'Is first start');
+      //console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
       const listRooms = appConfig.listRooms
@@ -76,6 +76,10 @@ class Home extends PureComponent {
         })
         .catch(err => console.log(err))
     }
+  }
+
+  goToStatisticDay = () => {
+    this.props.navigation.navigate('StatisticDay')
   }
 
   closeChangeMoneyBoxModal = () => {
@@ -124,7 +128,7 @@ class Home extends PureComponent {
   closeGetRoomModal = () => {
     this.setState({
       modalGetRoomVisible: false,
-      selectedSectionType: 'CD',
+      selectedSectionType: 'DG',
       selectedRoomType: 'quat',
       gettingRoomName: null,
       currentNote: '',
@@ -284,12 +288,12 @@ class Home extends PureComponent {
   }
 
   render() {
-    console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
+    //console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
     const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
         <StatusBar hidden={true} />
-        <MenuBar />
+        <MenuBar goToStatisticDay={this.goToStatisticDay} />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />

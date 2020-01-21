@@ -17,7 +17,7 @@ class HistoryList extends Component {
 
 
   render() {
-    console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList');
+    //console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList');
     return (
       <View style={{ width: '100%', flex: 1 }}>
         <FlatList

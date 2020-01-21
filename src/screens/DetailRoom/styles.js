@@ -196,7 +196,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'black',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-around',
+    flexDirection: 'row'
   },
   modalHeaderTxt: {
     textTransform: 'uppercase',

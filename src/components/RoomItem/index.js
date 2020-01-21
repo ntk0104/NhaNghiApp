@@ -25,7 +25,7 @@ export default class RoomItem extends PureComponent {
   }
 
   render() {
-    console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
+    //console.log('%c%s', 'color: #00a3cc', "rendering room " + this.props.id);
     const { id, roomName, roomStatus, tag, overnight_price, type, duration, advancedPay } = this.props
     const durationLong = duration && duration.split('-')
     const durationTxt = duration && durationLong.join('\n')

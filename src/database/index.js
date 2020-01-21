@@ -1,7 +1,7 @@
 import { checkRoomExisted, addRoom, updateRoom, getRoomInfo, getAllRoomsInfo } from './model/room'
 import { addChargedItem, updateChargedItem, getChargedItemsBySectionID } from './model/chargedItem'
 import { addTransaction, getTotalPaidMoney, getCurrentMoneyInBox } from './model/transactionCash'
-import { addHistory, getHistory } from './model/historyRoom'
+import { addHistory, getHistory, getStatisticOfDay, updateHistoryItem } from './model/historyRoom'
 
 export {
     checkRoomExisted,
@@ -19,5 +19,7 @@ export {
     getCurrentMoneyInBox,
 
     addHistory,
-    getHistory
+    getHistory,
+    getStatisticOfDay,
+    updateHistoryItem
 }
