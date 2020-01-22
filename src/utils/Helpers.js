@@ -136,3 +136,14 @@ export const calculateRoomCostOvernight = (timestampIn, timestampOut, overnight_
     return numsNight * overnight_price
   }
 }
+
+export const formatVND = (anotherCostValue) => {
+  try {
+    let intMoney = parseInt(anotherCostValue) * 1000
+    // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+    intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    return intMoney
+  } catch (error) {
+    console.log("TCL: formatVND -> error", error)
+  }
+}

@@ -223,7 +223,6 @@ class StatisticDay extends Component {
     const { selectedDay, data } = this.state
     return (
       <View style={styles.container}>
-        <StatusBar hidden={true} />
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
             <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />

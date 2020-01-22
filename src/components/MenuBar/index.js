@@ -13,7 +13,7 @@ export default class MenuBar extends Component {
           <Text style={styles.dateTxt}>{currentDate}</Text>
         </View>
         <TouchableOpacity style={styles.btnSetting} onPress={() => this.props.goToStatisticDay()}>
-          <Icon type="AntDesign" name="setting" color="white" style={styles.iconSetting} />
+          <Icon type="Entypo" name="open-book" color="white" style={styles.iconSetting} />
         </TouchableOpacity>
       </View>
     )

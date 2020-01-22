@@ -3,6 +3,7 @@ import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator, 
 import Home from '../screens/Home/index'
 import DetailRoom from '../screens/DetailRoom/index'
 import StatisticDay from '../screens/StatisticDay'
+import ChangeCashHistory from '../screens/ChangeCashHistory/index'
 
 
 const AppNavigator = createStackNavigator(
@@ -15,6 +16,9 @@ const AppNavigator = createStackNavigator(
     },
     StatisticDay: {
       screen: StatisticDay
+    },
+    ChangeCashHistory: {
+      screen: ChangeCashHistory
     },
   },
   {

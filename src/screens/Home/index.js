@@ -14,7 +14,6 @@ import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
 import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
-import { makeGetHistoryRoom } from '../../redux/selectors/index'
 
 import { createStructuredSelector } from 'reselect';
 
@@ -40,7 +39,7 @@ class Home extends PureComponent {
   }
 
   componentDidMount() {
-    //console.log('%c%s', 'color: #22b6', Realm.defaultPath);
+    console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
   }
 
@@ -292,12 +291,11 @@ class Home extends PureComponent {
     const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
-        <StatusBar hidden={true} />
         <MenuBar goToStatisticDay={this.goToStatisticDay} />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
-            <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} />
+            <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} goToDetail={() => this.props.navigation.navigate('ChangeCashHistory')} />
           </View>
           <View style={styles.rightSideContent}>
             <Text style={styles.historyTitleTxt}>Danh sách vào / ra</Text>

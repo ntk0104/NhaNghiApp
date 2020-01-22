@@ -31,7 +31,10 @@ import {
   GET_STATISTIC_OF_DAY_FAILURE,
   UPDATE_HISTORY_ROOM_REQUEST,
   UPDATE_HISTORY_ROOM_SUCCESS,
-  UPDATE_HISTORY_ROOM_FAILURE
+  UPDATE_HISTORY_ROOM_FAILURE,
+  GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -221,6 +224,23 @@ export const updateHistoryRoomSuccess = payload => ({
 
 export const updateHistoryRoomFailure = errors => ({
   type: UPDATE_HISTORY_ROOM_FAILURE,
+  errors
+});
+
+// ==================================================== GET HISTORY WITHDRAW & DEPOSIT
+
+export const getHistoryWithdrawDepositRequest = payload => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  payload
+});
+
+export const getHistoryWithdrawDepositSuccess = payload => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  payload
+});
+
+export const getHistoryWithdrawDepositFailure = errors => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
   errors
 });
 

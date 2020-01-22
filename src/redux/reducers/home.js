@@ -32,7 +32,10 @@ import {
   GET_STATISTIC_OF_DAY_FAILURE,
   UPDATE_HISTORY_ROOM_REQUEST,
   UPDATE_HISTORY_ROOM_SUCCESS,
-  UPDATE_HISTORY_ROOM_FAILURE
+  UPDATE_HISTORY_ROOM_FAILURE,
+  GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE
 } from '../types/index';
 
 
@@ -42,6 +45,7 @@ const initialState = {
   currentMoneyInBox: 0, //current money in cash box
   historyList: [], // list of history in/out show in the right side of Home screen
   statisticOfDay: undefined, // statistic of 1 day
+  historyWithdrawAndDeposit: undefined, //history money cash in / out
 
   error: null
 };
@@ -61,6 +65,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_HISTORY_LIST_REQUEST:
     case GET_STATISTIC_OF_DAY_REQUEST:
     case UPDATE_HISTORY_ROOM_REQUEST:
+    case GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
@@ -111,6 +116,10 @@ const mainReducer = produce((draft = initialState, action) => {
     case UPDATE_HISTORY_ROOM_SUCCESS:
       return draft
 
+    // ===================GET HISTORY WITHDRAW & DEPOSIT SUCCESS
+    case GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS:
+      return { ...draft, historyWithdrawAndDeposit: payload };
+
     case GET_ROOMS_DATA_FAILURE:
     case GET_ROOM_INFO_FAILURE:
     case UPDATE_ROOM_INFO_FAILURE:
@@ -122,6 +131,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_HISTORY_LIST_FAILURE:
     case GET_STATISTIC_OF_DAY_FAILURE:
     case UPDATE_HISTORY_ROOM_FAILURE:
+    case GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE:
       return { ...draft, error: payload }
 
     default:

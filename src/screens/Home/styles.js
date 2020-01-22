@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   totalContainer: {
-    flex: 1.3,
+    flex: 0.8,
     backgroundColor: '#2A6C97',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -250,6 +250,10 @@ const styles = StyleSheet.create({
     fontSize: RFValue(15, 790),
     fontWeight: '600', 
     padding: 5 
+  },
+  iconSetting: {
+    fontSize: RFValue(30, 790),
+    color: 'white'
   }
 })
 
