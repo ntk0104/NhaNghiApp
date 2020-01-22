@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, Image, TextInput, Platform } from 'react-native'
+import { Text, View, TouchableOpacity, Image, TextInput, Platform, Alert } from 'react-native'
 import { Icon } from 'native-base'
 import styles from './styles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
@@ -465,15 +465,33 @@ class DetailRoom extends Component {
   }
 
   deleteRoom = () => {
-    const { roomInfo } = this.props
-    this.props.cancelCurrentRoomRequestHandler({
-      timeIn: roomInfo.timeIn,
-      roomID: roomInfo.id,
-    })
-    setTimeout(() => {
-      this.props.getHistoryListRequestHandler()
-      this.props.navigation.goBack()
-    }, 300)
+    Alert.alert(
+      'CHÚ Ý',
+      'Bạn có chắc muốn hủy phòng này không?',
+      [
+        {
+          text: 'Không',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Chắc chắn', onPress: () => {
+            const { roomInfo } = this.props
+            this.props.cancelCurrentRoomRequestHandler({
+              timeIn: roomInfo.timeIn,
+              roomID: roomInfo.id,
+            })
+            setTimeout(() => {
+              this.props.getHistoryListRequestHandler()
+              this.props.navigation.goBack()
+            }, 300)
+          }
+        }
+      ],
+      { cancelable: true },
+    );
+
+
 
   }
 

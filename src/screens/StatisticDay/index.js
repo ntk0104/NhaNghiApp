@@ -17,187 +17,6 @@ class StatisticDay extends Component {
     super(props)
     this.state = {
       selectedDay: moment().format('DD/MM/YYYY'),
-      data: {
-        '18': {
-          roomName: '18',
-          hourSection: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-          ],
-          overnight: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              total: 200,
-              guessName: 'Nguyễn Tuấn Kiệt'
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              total: 200,
-              guessName: 'Nguyễn Tuấn Kiệt'
-            }
-          ]
-        },
-        '17': {
-          roomName: '17',
-          hourSection: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-          ],
-          overnight: [{
-            timeIn: 123123123,
-            timeOut: 123123123,
-            total: 200,
-            guessName: 'Nguyễn Tuấn Kiệt'
-          }]
-        },
-        '16': {
-          roomName: '16',
-          hourSection: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            }
-          ],
-          overnight: [{
-            timeIn: 123123123,
-            timeOut: 123123123,
-            total: 200,
-            guessName: 'Nguyễn Tuấn Kiệt'
-          }]
-        }
-      }
     }
   }
 
@@ -249,7 +68,7 @@ class StatisticDay extends Component {
                 top: 12
               },
               dateInput: {
-                height: 32,
+                height: 50,
                 backgroundColor: 'white',
                 borderColor: 'gray',
                 marginLeft: 0,
@@ -260,7 +79,7 @@ class StatisticDay extends Component {
             onDateChange={date => this.selectDateFrom(date)}
           />
           <TouchableOpacity style={styles.btnOK} onPress={this.getStatisticOfDay}>
-            <Text style={[styles.normalTxt, {color: 'white'}]}>OK</Text>
+            <Text style={[styles.normalTxt, { color: 'white' }]}>OK</Text>
           </TouchableOpacity>
         </View>
         {

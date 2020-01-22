@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   btnOK: {
     height: '80%',
-    paddingHorizontal: 40,
+    paddingHorizontal: 150,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#28B463',

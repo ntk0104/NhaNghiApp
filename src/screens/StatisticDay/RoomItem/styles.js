@@ -39,7 +39,11 @@ const styles = StyleSheet.create({
   iconArrow: {
     fontSize: RFValue(15, 790),
     color: 'black'
-  }
+  },
+  normalTxt: {
+    fontSize: RFValue(18, 790),
+    fontWeight: 'bold'
+  },
 })
 
 export default styles;
