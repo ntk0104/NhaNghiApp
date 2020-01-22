@@ -35,7 +35,10 @@ import {
   UPDATE_HISTORY_ROOM_FAILURE,
   GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
   GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
-  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE
+  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE
 } from '../types/index';
 
 
@@ -66,6 +69,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_STATISTIC_OF_DAY_REQUEST:
     case UPDATE_HISTORY_ROOM_REQUEST:
     case GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST:
+    case DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
@@ -120,6 +124,10 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS:
       return { ...draft, historyWithdrawAndDeposit: payload };
 
+    // ===================DELETE HISTORY WITHDRAW & DEPOSIT SUCCESS
+    case DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS:
+      return draft
+
     case GET_ROOMS_DATA_FAILURE:
     case GET_ROOM_INFO_FAILURE:
     case UPDATE_ROOM_INFO_FAILURE:
@@ -132,6 +140,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_STATISTIC_OF_DAY_FAILURE:
     case UPDATE_HISTORY_ROOM_FAILURE:
     case GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE:
+    case DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE:
       return { ...draft, error: payload }
 
     default:

@@ -65,7 +65,7 @@ export const getHistoryWithdrawAndDeposit = (timestampOfDay) => {
   return new Promise(async (resolve, reject) => {
     try {
       let query = 'addedTime > ' + timestampOfDay
-      let transactions = realm.objects('TransactionCash').filtered(query)
+      let transactions = realm.objects('TransactionCash').filtered(query).sorted('addedTime', true)
       let returnedData = []
       for (let transaction of transactions) {
         returnedData.push({
@@ -78,6 +78,22 @@ export const getHistoryWithdrawAndDeposit = (timestampOfDay) => {
       resolve(returnedData)
     } catch (error) {
       console.log("TCL: getHistoryWithdrawAndDeposit -> error", error)
+      reject(error);
+    }
+  });
+}
+
+export const deleteTransaction = (transactionID) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let query = "addedTime = '" + transactionID + "'"
+      let transaction = realm.objects('TransactionCash').filtered(query)
+      realm.write(() => {
+        realm.delete(transaction)
+      })
+      resolve(transaction)
+    } catch (error) {
+      console.log("TCL: deleteTransaction -> error", error)
       reject(error);
     }
   });

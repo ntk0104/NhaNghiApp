@@ -34,7 +34,10 @@ import {
   UPDATE_HISTORY_ROOM_FAILURE,
   GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
   GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
-  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE
+  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -240,6 +243,23 @@ export const getHistoryWithdrawDepositSuccess = payload => ({
 });
 
 export const getHistoryWithdrawDepositFailure = errors => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  errors
+});
+
+// ==================================================== GET HISTORY WITHDRAW & DEPOSIT
+
+export const deleteHistoryWithdrawDepositRequest = payload => ({
+  type: DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  payload
+});
+
+export const deleteHistoryWithdrawDepositSuccess = payload => ({
+  type: DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  payload
+});
+
+export const deleteHistoryWithdrawDepositFailure = errors => ({
   type: GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
   errors
 });

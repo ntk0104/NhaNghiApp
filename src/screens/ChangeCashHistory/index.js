@@ -100,7 +100,7 @@ class ChangeCashHistory extends Component {
               scrollEnabled
               bounces={true}
               keyExtractor={item => item.addedTime + ''}
-              renderItem={({ item, index }) => <ChangeCashItem item={item} />}
+              renderItem={({ item, index }) => <ChangeCashItem item={item} navigation={this.props.navigation} updateHistory={this.getHistory} />}
             />
           </View>
         }

@@ -3,15 +3,19 @@ import { Text, View, TouchableOpacity } from 'react-native'
 import { Icon } from 'native-base'
 import styles from './styles'
 import moment from 'moment'
-
 import { formatVND } from '../../../utils/Helpers'
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { deleteHistoryWithdrawDepositRequest, getCashBoxRequest } from '../../../redux/actions/index'
 
-export default class ChangeCashItem extends PureComponent {
+class ChangeCashItem extends PureComponent {
 
   deleteItem = () => {
-
+    this.props.deleteHistoryWithdrawDepositRequestHandler({ transactionID: this.props.item.addedTime })
+    this.props.updateHistory()
+    this.props.getCurrentMoneyInBoxHandler()
   }
-  
+
   render() {
     const { addedTime, type, title, total } = this.props.item
     return (
@@ -36,7 +40,7 @@ export default class ChangeCashItem extends PureComponent {
             <Text style={styles.titleTxt}>{title}</Text>
           </View>
           <View style={styles.totalWrapper}>
-            <Text style={[styles.titleTxt, {color: type == 'withdraw' ? 'red' : 'green'}]}>{formatVND(total)}</Text>
+            <Text style={[styles.titleTxt, { color: type == 'withdraw' ? 'red' : 'green' }]}>{formatVND(total)}</Text>
           </View>
           <View style={styles.totalWrapper}>
             <TouchableOpacity style={styles.btnBack} onPress={this.deleteItem}>
@@ -48,3 +52,13 @@ export default class ChangeCashItem extends PureComponent {
     )
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+})
+
+const mapDispatchToProps = dispatch => ({
+  deleteHistoryWithdrawDepositRequestHandler: (payload) => dispatch(deleteHistoryWithdrawDepositRequest(payload)),
+  getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangeCashItem)

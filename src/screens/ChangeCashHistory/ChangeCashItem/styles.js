@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   normalTxt: {
-    fontSize: RFValue(18, 790),
+    fontSize: RFValue(15, 790),
     color: 'black',
   },
   typeView: {

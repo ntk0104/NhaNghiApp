@@ -1,9 +1,9 @@
-import { GET_CASH_BOX_REQUEST, UPDATE_CASH_BOX_REQUEST, GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST } from '../types'
+import { GET_CASH_BOX_REQUEST, UPDATE_CASH_BOX_REQUEST, GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST, DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST } from '../types'
 import { put, takeLatest, fork, call } from 'redux-saga/effects';
-import { getCashBoxSuccess, getCashBoxFailure, udpateCashBoxSuccess, updateCashBoxFailure, getHistoryWithdrawDepositSuccess, getHistoryWithdrawDepositFailure } from '../actions'
+import { getCashBoxSuccess, getCashBoxFailure, udpateCashBoxSuccess, updateCashBoxFailure, getHistoryWithdrawDepositSuccess, getHistoryWithdrawDepositFailure, deleteHistoryWithdrawDepositSuccess, deleteHistoryWithdrawDepositFailure } from '../actions'
 import realm from '../../database/configRealm'
 import moment from 'moment'
-import { getCurrentMoneyInBox, addTransaction, getHistoryWithdrawAndDeposit } from '../../database/model/transactionCash'
+import { getCurrentMoneyInBox, addTransaction, getHistoryWithdrawAndDeposit, deleteTransaction } from '../../database/model/transactionCash'
 
 const getCashInBoxAPI = () => {
   return new Promise(async (resolve, reject) => {
@@ -44,6 +44,19 @@ const getHistoryWithdrawAndDepositAPI = ({ startTime }) => {
   })
 }
 
+const deleteHistoryWithdrawAndDepositAPI = ({ transactionID }) => {
+  return new Promise(async (resolve, reject) => {
+    deleteTransaction(transactionID)
+      .then((rs) => {
+        resolve(rs)
+      })
+      .catch(err => {
+        console.log("TCL: deleteHistoryWithdrawAndDepositAPI -> err", err)
+        reject(err)
+      })
+  })
+}
+
 /**
  * Dispatch action success or failure
  * @param {*} obj params
@@ -75,6 +88,15 @@ export function* getHistoryWithdrawAndDepositRequest(obj) {
   }
 }
 
+export function* deleteHistoryWithdrawAndDepositRequest(obj) {
+  try {
+    const deletedTransaction = yield call(deleteHistoryWithdrawAndDepositAPI, obj.payload);
+    yield put(deleteHistoryWithdrawDepositSuccess(deletedTransaction));
+  } catch (err) {
+    yield put(deleteHistoryWithdrawDepositFailure(err));
+  }
+}
+
 /**
  * Catch action request
  */
@@ -82,6 +104,7 @@ function* watchCashInBox() {
   yield takeLatest(GET_CASH_BOX_REQUEST, getCashInBoxRequest);
   yield takeLatest(UPDATE_CASH_BOX_REQUEST, updateCashInBoxRequest);
   yield takeLatest(GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST, getHistoryWithdrawAndDepositRequest);
+  yield takeLatest(DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST, deleteHistoryWithdrawAndDepositRequest);
 }
 
 export default function* rootChild() {

@@ -24,7 +24,7 @@ class CashBox extends PureComponent {
     const currentMoneyInBox = this.props.currentMoneyInBox || 0
     return (
       <View style={styles.totalContainer}>
-        <TouchableOpacity style={[styles.btnWithDraw, {backgroundColor: '#7B8A00'}]} onPress={() => this.props.goToDetail()}>
+        <TouchableOpacity style={[styles.btnWithDraw, { backgroundColor: '#7B8A00' }]} onPress={() => this.props.goToDetail()}>
           <Icon type="FontAwesome5" name="history" color="white" style={styles.iconSetting} />
         </TouchableOpacity>
         <Text style={styles.cashInBoxTitleTxt}>Tiền trong tủ: {this.formatVND(currentMoneyInBox)}</Text>
