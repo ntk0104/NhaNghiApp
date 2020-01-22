@@ -1,11 +1,13 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
-const screen = Dimensions.get('screen')
+const screen = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
     width: screen.width,
-    height: 60,
+    // height: 60,
+    height: screen.height * 0.1,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
@@ -27,8 +29,12 @@ const styles = StyleSheet.create({
   },
   dateTxt: {
     color: 'white',
-    fontSize: 20,
+    // fontSize: 20,
+    fontSize: RFValue(20, 790),
     fontWeight: 'bold'
+  },
+  iconSetting: {
+    fontSize: RFValue(30, 790),
   }
 })
 

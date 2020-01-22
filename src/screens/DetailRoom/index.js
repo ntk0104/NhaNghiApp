@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest, getHistoryListRequest, updateHistoryRoomRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -196,14 +196,42 @@ class DetailRoom extends Component {
   }
 
   editTag = (tagID) => {
-    this.setState({
-      tag: tagID
-    }, () => this.calculateRoomCost())
+    const { sectionRoom } = this.state
+    const { roomInfo } = this.props
+    if (tagID == 'DG') {
+      this.setState({
+        tag: tagID,
+        sectionRoom: 'quat'
+      })
+    } else if (tagID == 'CD') {
+      this.setState({
+        tag: tagID,
+        sectionRoom: 'lanh'
+      })
+    } else {
+      this.setState({
+        tag: tagID,
+        sectionRoom: 'lanh'
+      })
+    }
     //update room
     this.props.updateRoomInfoRequestHandler({
-      id: this.props.roomInfo.id,
+      id: roomInfo.id,
       tag: tagID
     })
+    setTimeout(() => {
+      this.calculateRoomCost()
+      this.props.updateHistoryRoomRequestHandler({
+        addedTime: roomInfo.timeIn,
+        tag: tagID,
+        sectionRoom: sectionRoom
+      })
+    }, 300)
+    setTimeout(() => {
+      this.props.getHistoryListRequestHandler()
+    }, 500)
+
+
   }
 
   editSectionRoomType = (sectionID) => {
@@ -222,6 +250,10 @@ class DetailRoom extends Component {
       sectionRoom: sectionID,
       note: this.state.note + ',' + addedNote
     })
+    this.props.updateHistoryRoomRequestHandler({
+      addedTime: this.state.roomInfo.timeIn,
+      sectionRoom: sectionID
+    })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 
@@ -239,7 +271,8 @@ class DetailRoom extends Component {
   formatVND = (anotherCostValue) => {
     try {
       let intMoney = parseInt(anotherCostValue) * 1000
-      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
       return intMoney
     } catch (error) {
       console.log("TCL: formatVND -> error", error)
@@ -368,6 +401,66 @@ class DetailRoom extends Component {
         sectionRoom: sectionRoom,
         cmnd: null
       })
+      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
+
+    })
+
+  }
+
+  lostRoom = () => {
+    const { roomInfo } = this.props
+    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, sectionRoom, tag } = this.state
+    this.props.updateRoomInfoRequestHandler({
+      id: roomInfo.id,
+      currentStatus: 'available',
+      tag: '',
+      timeIn: 0,
+      sectionRoom: '',
+      cmnd: null,
+      advancedPay: 0
+    })
+
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_water',
+      payStatus: 'lost'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_beer',
+      payStatus: 'lost'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_softdrink',
+      payStatus: 'lost'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_instantNoodle',
+      payStatus: 'lost'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_anotherCost',
+      payStatus: 'lost'
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: roomInfo.timeIn + '_roomcost',
+      total: calculatedRoomCost - roomInfo.advancedPay,
+      payStatus: 'lost'
+    })
+
+    this.setState({ alertReturnRoomModal: false }, () => {
+      this.props.navigation.goBack()
+      this.props.addHistoryItemRequestHandler({
+        roomID: roomInfo.id,
+        roomName: roomInfo.roomName,
+        status: 'out',
+        total: roomInfo.advancedPay,
+        sectionID: roomInfo.timeIn,
+        timeIn: roomInfo.timeIn,
+        note: roomInfo.note,
+        tag: tag,
+        sectionRoom: sectionRoom,
+        cmnd: null
+      })
+      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
     })
 
   }
@@ -385,7 +478,7 @@ class DetailRoom extends Component {
           this.props.roomInfo &&
           <View style={styles.navigationBar}>
             <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
-              <Icon type='AntDesign' name='arrowleft' style={{ color: 'white' }} />
+              <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
             </TouchableOpacity>
             <View style={styles.headerTitle}>
               <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
@@ -487,26 +580,35 @@ class DetailRoom extends Component {
                     <Text style={styles.titleTxt}>CMND:</Text>
                   </View>
                   <View style={styles.InfoCMNDWrapper}>
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={{ width: 80, height: 60, resizeMode: 'contain' }} />
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={{ width: 80, height: 60, resizeMode: 'contain', marginLeft: 20 }} />
+                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={styles.imgCMND} />
+                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={[styles.imgCMND, { marginLeft: 20 }]} />
                   </View>
                 </View>
               </View>
               <View style={styles.bottomLeftBodyContainer}>
-                <Text style={[styles.titleTxt, { alignSelf: 'flex-start', marginLeft: 20 }]}>Ghi chú:</Text>
-                <TextInput
-                  style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
-                  placeholder="Nhập ghi chú"
-                  keyboardType="default"
-                  blurOnSubmit={true}
-                  value={generatedNote}
-                  autoCapitalize='none'
-                  autoCompleteType='off'
-                  autoCorrect={Platform.OS != 'ios'}
-                  autoFocus={false}
-                  multiline
-                  editable={false}
-                />
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                  <Text style={[styles.titleTxt, { alignSelf: 'flex-start', marginLeft: 20 }]}>Note:</Text>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 5.5, paddingVertical: 5 }}>
+                  <TextInput
+                    style={styles.historyNote}
+                    placeholder="Nhập ghi chú"
+                    keyboardType="default"
+                    blurOnSubmit={true}
+                    value={generatedNote}
+                    autoCapitalize='none'
+                    autoCompleteType='off'
+                    autoCorrect={Platform.OS != 'ios'}
+                    autoFocus={false}
+                    multiline
+                    scrollEnabled={true}
+                    // setFocusableInTouchMode={false}
+                    focusable={false}
+                    focusableInTouchMode={false}
+                  // editable={false}
+                  />
+                </View>
+
               </View>
             </View>
 
@@ -540,7 +642,7 @@ class DetailRoom extends Component {
                   increaseQuantity={() => this.increaseQuantity('softdrink', softdrinkQuantity)}
                 />
                 <ChargedItemRow
-                  title={'Mỳ gói'}
+                  title={'Mỳ trứng'}
                   totalPrice={instantNoodleQuantity * appConfig.unitInstantNoodle}
                   quantity={instantNoodleQuantity}
                   decreaseQuantity={() => this.decreaseQuantity('instantNoodle', instantNoodleQuantity)}
@@ -575,7 +677,7 @@ class DetailRoom extends Component {
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true })}>
             {
               totalPayment > 0 ?
-                <Text style={styles.headerTitleTxt}>Trả phòng & Thanh Toán</Text>
+                <Text style={styles.headerTitleTxt}>Trả phòng&Thanh Toán</Text>
                 :
                 <Text style={styles.headerTitleTxt}>Trả phòng</Text>
             }
@@ -588,7 +690,7 @@ class DetailRoom extends Component {
                 <Text style={styles.modalHeaderTxt}>{modalAnotherCostHeader}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeAnotherCostModal}>
-                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                <Icon type="AntDesign" name="close" style={styles.iconClose} />
               </TouchableOpacity>
             </View>
             <View style={styles.modalBodyWrapper}>
@@ -598,7 +700,7 @@ class DetailRoom extends Component {
                 </View>
                 <View style={{ flex: 2.5, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtTextInput}
                     placeholder="Tên khoản thêm"
                     returnKeyType="next"
                     keyboardType="default"
@@ -617,7 +719,7 @@ class DetailRoom extends Component {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtTextInput}
                     placeholder="Số tiền thu"
                     keyboardType='numeric'
                     blurOnSubmit={true}
@@ -629,7 +731,7 @@ class DetailRoom extends Component {
                 </View>
                 <View style={{ flex: 1.5, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
                   <Text style={styles.modalTitleRowTxt}>x 1.000 = </Text>
-                  <Text style={[styles.modalTitleRowTxt, { fontSize: 20 }]}>{formatedVND}</Text>
+                  <Text style={styles.modalTitleRowTxt}>{formatedVND}</Text>
                 </View>
               </View>
             </View>
@@ -669,6 +771,9 @@ class DetailRoom extends Component {
                 <Text style={styles.titleTxt}>Nhớ trả <Text style={{ color: 'red' }}>CHỨNG MINH</Text> <Icon type='AntDesign' name='idcard' style={{ color: 'green', fontSize: 40 }} />  và đòi <Text style={{ color: 'red' }}>CHÌA KHÓA</Text> <Icon type='FontAwesome5' name='key' style={{ color: '#B7950B', fontSize: 40 }} /></Text>
               </View>
               <View style={styles.modalFooterWrapper}>
+                <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: 'red' }]} onPress={this.closeGetRoomModal} onPress={this.lostRoom}>
+                  <Text style={styles.modalHeaderTxt}>KHÁCH TRỐN</Text>
+                </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.returnRoom}>
                   <Text style={styles.modalHeaderTxt}>OK</Text>
                 </TouchableOpacity>
@@ -692,6 +797,8 @@ const mapDispatchToProps = dispatch => ({
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
   addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
+  getHistoryListRequestHandler: () => dispatch(getHistoryListRequest()),
+  updateHistoryRoomRequestHandler: (payload) => dispatch(updateHistoryRoomRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)

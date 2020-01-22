@@ -1,11 +1,12 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
-const screen = Dimensions.get('screen')
+const screen = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    padding: 15,
+    padding: 5,
     borderWidth: 1,
     flex: 1,
     flexDirection: 'row',
@@ -14,9 +15,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   roomNumber: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: screen.height * 0.06,
+    height: screen.height * 0.06,
+    borderRadius: screen.height * 0.03,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
@@ -24,12 +25,12 @@ const styles = StyleSheet.create({
   },
   roomNumberTxt: {
     color: 'white',
-    fontSize: 20,
+    fontSize: RFValue(15, 790),
     fontWeight: 'bold'
   },
   timeNumberTxt: {
     color: 'white',
-    fontSize: 15,
+    fontSize: RFValue(13, 790),
     fontWeight: 'bold'
   },
   timeWrapper: {

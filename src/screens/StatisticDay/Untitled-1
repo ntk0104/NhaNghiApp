@@ -1,0 +1,32 @@
+data = {
+  '18': { // roomID
+    roomName: '18',
+    hourSection: [
+      {
+        timeIn: //also sectionID
+        timeOut:
+        roomType,
+        total
+      },
+       {
+        timeIn:
+        timeOut:
+        roomType,
+        total
+      },
+       {
+        timeIn:
+        timeOut:
+        roomType,
+        total
+      },
+      ...
+    ],
+    overnight: {
+      timeIn:
+      timeOut: // past thi co value, current thi null
+      total,
+      guessName
+    }
+  } 
+}

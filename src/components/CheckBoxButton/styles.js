@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
-const screen = Dimensions.get('screen')
+const screen = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     borderColor: '#BFC9CA'
   },
   titleTxt:{
-    fontSize: 20,
+    fontSize: RFValue(15, 790),
     fontWeight: 'bold'
   }
 })

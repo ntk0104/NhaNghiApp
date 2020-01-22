@@ -1,21 +1,20 @@
 import React, { PureComponent } from 'react'
-import { Text, View, TouchableOpacity, FlatList, TextInput, ScrollView } from 'react-native'
+import { Text, View, TouchableOpacity, TextInput, ScrollView, StatusBar } from 'react-native'
 import styles from './styles'
 import MenuBar from '../../components/MenuBar/index'
-import HistoryItem from '../../components/HistoryItem/index'
 import Modal from 'react-native-modal'
 import { Icon, CheckBox } from 'native-base'
 import Realm from 'realm'
-import { updateRoom, addRoom, getAllRoomsInfo } from '../../database/index'
+import { addRoom } from '../../database/index'
 import moment from 'moment'
 import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
 import CashBox from './CashBox'
 import HistoryList from './HistoryList'
 import { camera, pickerImage } from '../../components/ImagePicker/index'
-import ImagePicker from 'react-native-image-picker'
-import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest } from '../../redux/actions/index'
+import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
+import { makeGetHistoryRoom } from '../../redux/selectors/index'
 
 import { createStructuredSelector } from 'reselect';
 
@@ -24,83 +23,8 @@ class Home extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      // history: [
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 123,
-      //     time: '15h30',
-      //     tagName: 'DG',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 15,
-      //     itemID: 123,
-      //     time: '15h31',
-      //     tagName: 'DG',
-      //     status: 'out',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1223,
-      //     time: '15h30',
-      //     tagName: 'CD',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1233,
-      //     time: '15h30',
-      //     tagName: 'QD',
-      //     status: 'out',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1243,
-      //     time: '15h30',
-      //     tagName: 'DG',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1253,
-      //     time: '15h30',
-      //     tagName: 'QD',
-      //     status: 'out',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1263,
-      //     time: '15h30',
-      //     tagName: 'DG',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   },
-      //   {
-      //     roomNumber: 16,
-      //     itemID: 1273,
-      //     time: '15h30',
-      //     tagName: 'CD',
-      //     status: 'in',
-      //     note: 'note',
-      //     total: 100
-      //   }
-      // ],
-
       modalGetRoomVisible: false,
-      selectedSectionType: 'CD',
+      selectedSectionType: 'DG',
       selectedRoomType: 'quat',
       gettingRoomName: null,
       currentNote: '',
@@ -116,7 +40,7 @@ class Home extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('%c%s', 'color: #22b6', Realm.defaultPath);
+    //console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
   }
 
@@ -133,11 +57,12 @@ class Home extends PureComponent {
     const isSecond = await Storage.shared().getStorage(constants.SecondStart);
     if (isSecond == true) {
       // is not first init
-      console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
+      //console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
       this.props.getCurrentMoneyInBoxHandler()
+      this.props.getHistoryListRequestHandler()
     } else {
-      console.log('%c%s', 'color: #f2ceb6', 'Is first start');
+      //console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
       const listRooms = appConfig.listRooms
@@ -151,6 +76,10 @@ class Home extends PureComponent {
         })
         .catch(err => console.log(err))
     }
+  }
+
+  goToStatisticDay = () => {
+    this.props.navigation.navigate('StatisticDay')
   }
 
   closeChangeMoneyBoxModal = () => {
@@ -186,7 +115,7 @@ class Home extends PureComponent {
   }
 
   submitChangeCashInBox = () => {
-    const {changeMoneyValue, changeMoneyType, changeMoneyTxt} = this.state
+    const { changeMoneyValue, changeMoneyType, changeMoneyTxt } = this.state
     this.props.updateCashBoxRequestHandler({
       type: changeMoneyType,
       title: changeMoneyTxt,
@@ -199,7 +128,7 @@ class Home extends PureComponent {
   closeGetRoomModal = () => {
     this.setState({
       modalGetRoomVisible: false,
-      selectedSectionType: 'CD',
+      selectedSectionType: 'DG',
       selectedRoomType: 'quat',
       gettingRoomName: null,
       currentNote: '',
@@ -222,7 +151,8 @@ class Home extends PureComponent {
   formatVND = (anotherCostValue) => {
     try {
       let intMoney = parseInt(anotherCostValue) * 1000
-      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
       return intMoney
     } catch (error) {
       console.log("TCL: formatVND -> error", error)
@@ -326,13 +256,29 @@ class Home extends PureComponent {
     })
 
     this.closeGetRoomModal()
-    setTimeout(() => this.props.getRoomsDataRequestHandler(), 300)
+    setTimeout(() => {
+      this.props.getRoomsDataRequestHandler()
+      this.props.getHistoryListRequestHandler()
+    }, 300)
   }
 
   selectSectionType = (sectionType) => {
-    this.setState({
-      selectedSectionType: sectionType
-    })
+    if (sectionType == 'DG') {
+      this.setState({
+        selectedSectionType: sectionType,
+        selectedRoomType: 'quat'
+      })
+    } else if (sectionType == 'CD'){
+      this.setState({
+        selectedSectionType: sectionType,
+        selectedRoomType: 'lanh'
+      })
+    } else {
+      this.setState({
+        selectedSectionType: sectionType,
+        selectedRoomType: 'lanh'
+      })
+    }
   }
 
   selectRoomType = (roomType) => {
@@ -342,117 +288,114 @@ class Home extends PureComponent {
   }
 
   render() {
-
-    console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
+    //console.log('%c%s', 'color: #aa00ff', 'Rendering Home');
     const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
-        <MenuBar />
+        <StatusBar hidden={true} />
+        <MenuBar goToStatisticDay={this.goToStatisticDay} />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
-            <View style={styles.labelWrapper}>
-              <Text style={styles.lableTxt}>Sơ đồ phòng</Text>
-            </View>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
             <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} />
           </View>
           <View style={styles.rightSideContent}>
-            <Text style={[styles.withdrawTxt, { fontSize: 25 }]}>Danh sách vào / ra</Text>
-            {/* <HistoryList data /> */}
+            <Text style={styles.historyTitleTxt}>Danh sách vào / ra</Text>
+            <HistoryList />
           </View>
         </View>
 
-        <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} style={{ justifyContent: 'center', alignItems: 'center' }} onBackdropPress={this.closeGetRoomModal}>
-          <ScrollView keyboardShouldPersistTaps='handled'>
-            <View style={styles.modalContent}>
-              <View style={styles.modalTopBar}>
-                <View style={styles.modalHeaderTxtWrapper}>
-                  <Text style={[styles.headerTxt, { marginRight: 20 }]}>Nhận Phòng</Text>
-                  <View style={styles.roomNumber}>
-                    <Text style={styles.roomNumberTxt}>{gettingRoomName}</Text>
-                  </View>
-                </View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
-                  <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.modalBody}>
-                <View style={styles.leftBodyContainer}>
-                  <View style={styles.typeContainer}>
-                    <Text style={styles.titleTxt}>Loại:</Text>
-                    <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>DG</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>CD</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Qua đêm</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.typeContainer}>
-                    <Text style={styles.titleTxt}>Phòng:</Text>
-                    <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedRoomType == 'quat'} color="green" onPress={() => this.selectRoomType('quat')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('lanh')}>
-                        <View style={styles.optionBtnWrapper}>
-                          <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View style={styles.typeContainer}>
-                    <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
-                    <View style={styles.typeOptionsWrapper}>
-                      <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
-                        <View style={styles.optionBtnWrapper}>
-                          <Icon type="Entypo" name="camera" size={30} style={{ color: 'black' }} />
-                          <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.rightBodyContainer}>
-                  <Text style={styles.titleTxt}>Ghi chú:</Text>
-                  <TextInput
-                    style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
-                    placeholder="Nhập ghi chú"
-                    onChangeText={(text) => this.setState({ currentNote: text })}
-                    multiline
-                    keyboardType="default"
-                    blurOnSubmit={true}
-                    returnKeyType="done"
-                  />
+        <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} onBackdropPress={this.closeGetRoomModal}>
+          {/* <ScrollView keyboardShouldPersistTaps='handled'> */}
+          <View style={styles.modalContent}>
+            <View style={styles.modalTopBar}>
+              <View style={styles.modalHeaderTxtWrapper}>
+                <Text style={[styles.headerTxt, { marginRight: 20 }]}>Nhận Phòng</Text>
+                <View style={styles.roomNumber}>
+                  <Text style={styles.roomNumberTxt}>{gettingRoomName}</Text>
                 </View>
               </View>
-              <View style={styles.modalFooter}>
-                <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
-                  <Text style={styles.headerTxt}>Hủy</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnOK} onPress={this.onSubmitGetRoom}>
-                  <Text style={styles.headerTxt}>OK</Text>
-                </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
+                <Icon type="AntDesign" name="close" style={styles.iconClose} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalBody}>
+              <View style={styles.leftBodyContainer}>
+                <View style={styles.typeContainer}>
+                  <Text style={styles.titleTxt}>Loại:</Text>
+                  <View style={styles.typeOptionsWrapper}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>DG</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>CD</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>Qua đêm</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.typeContainer}>
+                  <Text style={styles.titleTxt}>Phòng:</Text>
+                  <View style={styles.typeOptionsWrapper}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedRoomType == 'quat'} color="green" onPress={() => this.selectRoomType('quat')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('lanh')}>
+                      <View style={styles.optionBtnWrapper}>
+                        <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
+                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.typeContainer}>
+                  <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
+                  <View style={styles.typeOptionsWrapper}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
+                      <View style={styles.optionBtnWrapper}>
+                        <Icon type="Entypo" name="camera" style={[styles.iconClose, { color: 'black' }]} />
+                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.rightBodyContainer}>
+                <Text style={styles.titleTxt}>Ghi chú:</Text>
+                <TextInput
+                  style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
+                  placeholder="Nhập ghi chú"
+                  onChangeText={(text) => this.setState({ currentNote: text })}
+                  multiline
+                  keyboardType="default"
+                  blurOnSubmit={true}
+                  returnKeyType="done"
+                />
               </View>
             </View>
-          </ScrollView>
+            <View style={styles.modalFooter}>
+              <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
+                <Text style={styles.headerTxt}>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnOK} onPress={this.onSubmitGetRoom}>
+                <Text style={styles.headerTxt}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* </ScrollView> */}
         </Modal>
 
         <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} onBackdropPress={this.closeChangeMoneyBoxModal}>
@@ -462,7 +405,7 @@ class Home extends PureComponent {
                 <Text style={styles.modalHeaderTxt}>{changeCashBoxModalHeader}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeChangeMoneyBoxModal}>
-                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+                <Icon type="AntDesign" name="close" style={styles.iconClose} />
               </TouchableOpacity>
             </View>
             <View style={styles.modalBodyWrapper}>
@@ -472,7 +415,7 @@ class Home extends PureComponent {
                 </View>
                 <View style={{ flex: 2.5, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtInput}
                     placeholder="Tên khoản thêm"
                     returnKeyType="next"
                     keyboardType="default"
@@ -491,7 +434,7 @@ class Home extends PureComponent {
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start' }}>
                   <TextInput
-                    style={{ height: '80%', width: '90%', borderWidth: 1, backgroundColor: 'white', fontSize: 15, fontWeight: '600', padding: 5 }}
+                    style={styles.txtInput}
                     placeholder="Số tiền thu"
                     keyboardType='numeric'
                     blurOnSubmit={true}
@@ -503,12 +446,12 @@ class Home extends PureComponent {
                 </View>
                 <View style={{ flex: 1.5, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'row' }}>
                   <Text style={styles.modalTitleRowTxt}>x 1.000 = </Text>
-                  <Text style={[styles.modalTitleRowTxt, { fontSize: 20 }]}>{this.formatVND(changeMoneyValue)}</Text>
+                  <Text style={[styles.modalTitleRowTxt]}>{this.formatVND(changeMoneyValue)}</Text>
                 </View>
               </View>
             </View>
             <View style={styles.modalFooterWrapper}>
-              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, {backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C'}]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
+              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C' }]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
                 {
                   changeMoneyType === 'deposit' ?
                     <Text style={styles.modalHeaderTxt}>Bỏ {this.formatVND(changeMoneyValue)} vào tủ</Text>
@@ -534,6 +477,7 @@ const mapDispatchToProps = dispatch => ({
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
   updateCashBoxRequestHandler: payload => dispatch(updateCashBoxRequest(payload)),
   addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
+  getHistoryListRequestHandler: () => dispatch(getHistoryListRequest())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

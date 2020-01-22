@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
 const screen = Dimensions.get('window')
 
@@ -11,7 +12,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   leftSideContent: {
-    flex: 7,
+    flex: 8,
     flexDirection: 'column'
   },
   rightSideContent: {
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   totalContainer: {
-    flex: 1,
+    flex: 1.3,
     backgroundColor: '#2A6C97',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -45,9 +46,9 @@ const styles = StyleSheet.create({
   },
   btnWithDraw: {
     paddingHorizontal: 15,
+    height: '80%',
     backgroundColor: '#FF5B5B',
     borderRadius: 5,
-    fontSize: 20,
     justifyContent: 'center',
     alignItems: 'center'
 
@@ -56,19 +57,26 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textTransform: 'uppercase',
-    paddingVertical: 10
+    paddingVertical: 10,
+    fontSize: RFValue(15, 790),
+  },
+  historyTitleTxt: {
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    paddingVertical: 10,
+    fontSize: RFValue(20, 790),
   },
   modalContent: {
-    // width: '95%',
-    // height: '95%',
     width: screen.width * 0.85,
-    height: screen.height * 0.8,
+    height: screen.height * 0.85,
     backgroundColor: 'white',
     borderRadius: 5
   },
   modalTopBar: {
     width: '100%',
-    height: 60,
+    height: screen.height * 0.1,
+    // flex: 1,
     backgroundColor: '#28B463',
     flexDirection: 'row'
   },
@@ -88,13 +96,14 @@ const styles = StyleSheet.create({
   },
   headerTxt: {
     color: 'white',
-    fontSize: 25,
+    fontSize: RFValue(20, 790),
     fontWeight: 'bold',
     textTransform: 'uppercase'
   },
   modalFooter: {
     width: '100%',
-    height: 60,
+    height: screen.height * 0.1,
+    // flex: 1,
     borderTopWidth: 1,
     borderTopColor: '#AEB6BF',
     flexDirection: 'row',
@@ -103,12 +112,15 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     // backgroundColor: 'yellow',
-    flex: 1,
+    // flex: 1,
+    width: '100%',
+    height: screen.height * 0.6,
+    flex: 6,
     flexDirection: 'row'
   },
   btnOK: {
-    width: 150,
     height: '80%',
+    paddingHorizontal: 40,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#28B463',
@@ -117,12 +129,12 @@ const styles = StyleSheet.create({
   leftBodyContainer: {
     flex: 3,
     // backgroundColor: '#F5B041',
-    padding: 10
+    padding: 5
   },
   rightBodyContainer: {
     flex: 2,
     // backgroundColor: '#1ABC9C',
-    padding: 10
+    padding: 5
   },
   typeContainer: {
     flex : 1,
@@ -140,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   titleTxt: {
-    fontSize: 25,
+    fontSize: RFValue(18, 790),
     color: 'black',
     fontWeight:'bold'
   },
@@ -155,9 +167,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   roomNumber: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: screen.height * 0.07,
+    height: screen.height * 0.07,
+    borderRadius: screen.height * 0.035,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
@@ -165,7 +177,7 @@ const styles = StyleSheet.create({
   },
   roomNumberTxt: {
     color: 'white',
-    fontSize: 20,
+    fontSize: RFValue(20, 790),
     fontWeight: 'bold'
   },
   modalContainer: {
@@ -188,7 +200,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 30
+    fontSize: RFValue(25, 790),
   },
   modalBodyWrapper: {
     flex: 2,
@@ -201,7 +213,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   modalTitleRowTxt: {
-    fontSize: 15,
+    fontSize: RFValue(12, 790),
     fontWeight: 'bold',
     color: 'black',
     textTransform: 'capitalize'
@@ -221,6 +233,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#28B463',
     borderRadius: 5
   },
+  cashInBoxTitleTxt: {
+    color: 'white', 
+    fontWeight: 'bold', 
+    fontSize: RFValue(18, 790),
+  },
+  iconClose: {
+    color: 'white', 
+    fontSize: RFValue(25, 790),
+  },
+  txtInput:{ 
+    height: '80%', 
+    width: '90%', 
+    borderWidth: 1, 
+    backgroundColor: 'white', 
+    fontSize: RFValue(15, 790),
+    fontWeight: '600', 
+    padding: 5 
+  }
 })
 
 export default styles;

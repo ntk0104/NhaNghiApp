@@ -12,8 +12,8 @@ export default class MenuBar extends Component {
         <View style={styles.leftMenu}>
           <Text style={styles.dateTxt}>{currentDate}</Text>
         </View>
-        <TouchableOpacity style={styles.btnSetting}>
-          <Icon type="AntDesign" name="setting" size={30} color="white" />
+        <TouchableOpacity style={styles.btnSetting} onPress={() => this.props.goToStatisticDay()}>
+          <Icon type="AntDesign" name="setting" color="white" style={styles.iconSetting} />
         </TouchableOpacity>
       </View>
     )

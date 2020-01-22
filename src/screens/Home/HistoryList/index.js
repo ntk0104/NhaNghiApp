@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
-import styles from '../styles'
 import _ from 'lodash'
 import HistoryItem from '../../../components/HistoryItem/index'
+import { connect } from 'react-redux';
+import { makeGetHistoryRoom } from '../../../redux/selectors/index'
+import { createStructuredSelector } from 'reselect';
+import { View, FlatList } from 'react-native'
 
-export default class HistoryList extends Component {
+class HistoryList extends Component {
 
   shouldComponentUpdate(nextprops) {
-    if (!_.isEqual(nextprops.roomsData, this.props.roomsData)) {
+    if (!_.isEqual(nextprops.historyRoom, this.props.historyRoom)) {
       return true
     }
     return false
@@ -15,18 +17,26 @@ export default class HistoryList extends Component {
 
 
   render() {
-    console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList');
-    const { roomsData, historyData } = this.props
+    //console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList');
     return (
       <View style={{ width: '100%', flex: 1 }}>
         <FlatList
-          data={this.state.history}
+          data={this.props.historyRoom}
           scrollEnabled
           bounces={true}
-          keyExtractor={item => item.itemID}
-          renderItem={({ item, index }) => <HistoryItem roomNumber={item.roomNumber} time={item.time} tagName={item.tagName} note={item.note} total={item.total} status={item.status} />}
+          keyExtractor={item => item.addedTime + ''}
+          renderItem={({ item, index }) => <HistoryItem item={item} />}
         />
       </View>
     )
   }
 }
+
+const mapStateToProps = createStructuredSelector({
+  historyRoom: makeGetHistoryRoom()
+})
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryList)

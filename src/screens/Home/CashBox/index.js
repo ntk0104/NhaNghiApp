@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import styles from '../styles'
 import { Icon } from 'native-base'
@@ -7,23 +7,12 @@ import { makeGetCurrentMoneyInBox } from '../../../redux/selectors/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
-class CashBox extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-
-    }
-  }
-
-  componentDidMount() {
-
-  }
-
+class CashBox extends PureComponent {
   formatVND = (anotherCostValue) => {
     try {
       let intMoney = parseInt(anotherCostValue) * 1000
-      intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+      intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
       return intMoney
     } catch (error) {
       console.log("TCL: formatVND -> error", error)
@@ -31,10 +20,11 @@ class CashBox extends Component {
   }
 
   render() {
+    //console.log("TCL: CashBox -> render -> render")
     const currentMoneyInBox = this.props.currentMoneyInBox || 0
     return (
       <View style={styles.totalContainer}>
-        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>Tiền trong tủ: {this.formatVND(currentMoneyInBox)}</Text>
+        <Text style={styles.cashInBoxTitleTxt}>Tiền trong tủ: {this.formatVND(currentMoneyInBox)}</Text>
         <TouchableOpacity style={styles.btnWithDraw} onPress={() => this.props.showWithdrawModal()}>
           <Text style={styles.withdrawTxt}>Rút tiền</Text>
         </TouchableOpacity>
@@ -45,7 +35,6 @@ class CashBox extends Component {
     )
   }
 }
-
 
 const mapStateToProps = createStructuredSelector({
   currentMoneyInBox: makeGetCurrentMoneyInBox()

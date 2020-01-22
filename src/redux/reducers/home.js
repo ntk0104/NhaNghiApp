@@ -23,7 +23,16 @@ import {
   UPDATE_CASH_BOX_FAILURE,
   ADD_HISTORY_ITEM_REQUEST,
   ADD_HISTORY_ITEM_SUCCESS,
-  ADD_HISTORY_ITEM_FAILURE
+  ADD_HISTORY_ITEM_FAILURE,
+  GET_HISTORY_LIST_REQUEST,
+  GET_HISTORY_LIST_SUCCESS,
+  GET_HISTORY_LIST_FAILURE,
+  GET_STATISTIC_OF_DAY_REQUEST,
+  GET_STATISTIC_OF_DAY_SUCCESS,
+  GET_STATISTIC_OF_DAY_FAILURE,
+  UPDATE_HISTORY_ROOM_REQUEST,
+  UPDATE_HISTORY_ROOM_SUCCESS,
+  UPDATE_HISTORY_ROOM_FAILURE
 } from '../types/index';
 
 
@@ -32,6 +41,7 @@ const initialState = {
   currentRoom: null, // currentRoom info
   currentMoneyInBox: 0, //current money in cash box
   historyList: [], // list of history in/out show in the right side of Home screen
+  statisticOfDay: undefined, // statistic of 1 day
 
   error: null
 };
@@ -48,6 +58,9 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_CASH_BOX_REQUEST:
     case UPDATE_CASH_BOX_REQUEST:
     case ADD_HISTORY_ITEM_REQUEST:
+    case GET_HISTORY_LIST_REQUEST:
+    case GET_STATISTIC_OF_DAY_REQUEST:
+    case UPDATE_HISTORY_ROOM_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
@@ -84,7 +97,19 @@ const mainReducer = produce((draft = initialState, action) => {
 
     // ===================ADD HISTORY ITEM 
     case ADD_HISTORY_ITEM_SUCCESS:
+      return draft
+
+    // ===================GET HISTORY LIST 
+    case GET_HISTORY_LIST_SUCCESS:
       return { ...draft, historyList: payload };
+
+    // ===================GET STATISTIC OF DAY SUCCESS
+    case GET_STATISTIC_OF_DAY_SUCCESS:
+      return { ...draft, statisticOfDay: payload };
+
+    // ===================UPDATE HISTORY ROOM SUCSESS
+    case UPDATE_HISTORY_ROOM_SUCCESS:
+      return draft
 
     case GET_ROOMS_DATA_FAILURE:
     case GET_ROOM_INFO_FAILURE:
@@ -94,6 +119,9 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_CASH_BOX_FAILURE:
     case UPDATE_CASH_BOX_FAILURE:
     case ADD_HISTORY_ITEM_FAILURE:
+    case GET_HISTORY_LIST_FAILURE:
+    case GET_STATISTIC_OF_DAY_FAILURE:
+    case UPDATE_HISTORY_ROOM_FAILURE:
       return { ...draft, error: payload }
 
     default:

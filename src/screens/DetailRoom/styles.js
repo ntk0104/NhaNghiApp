@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 
 const screen = Dimensions.get('window')
 
@@ -9,7 +10,7 @@ const styles = StyleSheet.create({
   },
   navigationBar: {
     width: '100%',
-    height: 60,
+    height: screen.height * 0.1,
     backgroundColor: '#1A72BC',
     flexDirection: 'row'
   },
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   headerTitleTxt: {
-    fontSize: 20,
+    fontSize: RFValue(15, 790),
     color: 'white',
     fontWeight: 'bold',
     textTransform: 'uppercase'
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   },
   btnAction: {
     width: '30%',
-    height: '80%',
+    height: '90%',
     backgroundColor: '#E74C3C',
     justifyContent: 'center',
     alignItems: 'center',
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     width: '100%',
-    height: 70,
+    height: screen.height * 0.15,
     backgroundColor: '#EAFAF1',
     flexDirection: 'row',
     alignItems: 'center',
@@ -69,10 +70,11 @@ const styles = StyleSheet.create({
     // backgroundColor: '#A569BD',
   },
   bottomLeftBodyContainer: {
-    flex: 3,
+    flex: 2.5,
     backgroundColor: '#D5DBDB',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   rowInfoContainer: {
     flexDirection: 'row',
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
   },
   titleTxt: {
     color: 'black',
-    fontSize: 20,
+    fontSize: RFValue(18, 790),
     fontWeight: 'bold'
   },
   optionBtnWrapper: {
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   totalTxt: {
-    fontSize: 25,
+    fontSize: RFValue(20, 790),
     color: '#CB4335',
     fontWeight: 'bold',
     textAlign: 'center'
@@ -194,13 +196,14 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'black',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-around',
+    flexDirection: 'row'
   },
   modalHeaderTxt: {
     textTransform: 'uppercase',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 30
+    fontSize: RFValue(20, 790),
   },
   btnCloseModal: {
     width: 70,
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   modalTitleRowTxt: {
-    fontSize: 15,
+    fontSize: RFValue(12, 790),
     fontWeight: 'bold',
     color: 'black',
     textTransform: 'capitalize'
@@ -231,6 +234,39 @@ const styles = StyleSheet.create({
     backgroundColor: '#28B463',
     borderRadius: 5
   },
+  iconBack: {
+    color: 'white',
+    fontSize: RFValue(25, 790)
+  },
+  imgCMND: {
+    width: screen.height * 0.12,
+    height: screen.height * 0.1,
+    resizeMode: 'contain'
+  },
+  historyNote: {
+    color: 'black',
+    height: '100%',
+    width: '100%',
+    flex: 1,
+    borderWidth: 1,
+    backgroundColor: 'white',
+    fontSize: RFValue(15, 790),
+    fontWeight: '600',
+    padding: 5
+  },
+  iconClose: {
+    fontSize: RFValue(25, 790),
+    color: 'white'
+  },
+  txtTextInput: {
+    height: '80%',
+    width: '90%',
+    borderWidth: 1,
+    backgroundColor: 'white',
+    fontSize: RFValue(12, 790),
+    fontWeight: '600',
+    padding: 5
+  }
 })
 
 export default styles;

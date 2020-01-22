@@ -31,7 +31,7 @@ export default class CheckBoxButton extends PureComponent {
     return (
       <TouchableOpacity activeOpacity={0.7} style={[styles.container, this.props.style, { width, height, backgroundColor: checked ? selectedBackground : unSelectedBackground }]} onPress={() => this.props.selectOption()}>
         <CheckBox checked={checked} color="green" onPress={onSelect} onPress={() => this.props.selectOption()}/>
-        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>{title}</Text>
+        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>{title}</Text>
       </TouchableOpacity>
     )
   }
