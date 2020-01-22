@@ -7,7 +7,7 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest, getHistoryListRequest, updateHistoryRoomRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest, getHistoryListRequest, updateHistoryRoomRequest, cancelCurrentRoomRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
@@ -462,6 +462,18 @@ class DetailRoom extends Component {
       })
       setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
     })
+  }
+
+  deleteRoom = () => {
+    const { roomInfo } = this.props
+    this.props.cancelCurrentRoomRequestHandler({
+      timeIn: roomInfo.timeIn,
+      roomID: roomInfo.id,
+    })
+    setTimeout(() => {
+      this.props.getHistoryListRequestHandler()
+      this.props.navigation.goBack()
+    }, 300)
 
   }
 
@@ -483,6 +495,10 @@ class DetailRoom extends Component {
             <View style={styles.headerTitle}>
               <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
             </View>
+            <TouchableOpacity style={styles.btnDeleteRoom} onPress={this.deleteRoom}>
+              <Text style={styles.deleteRoomTxt}>Hủy Phòng</Text>
+              <Icon type='AntDesign' name='delete' style={styles.iconBack} />
+            </TouchableOpacity>
           </View>
         }
         {
@@ -798,7 +814,8 @@ const mapDispatchToProps = dispatch => ({
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
   addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
   getHistoryListRequestHandler: () => dispatch(getHistoryListRequest()),
-  updateHistoryRoomRequestHandler: (payload) => dispatch(updateHistoryRoomRequest(payload))
+  updateHistoryRoomRequestHandler: (payload) => dispatch(updateHistoryRoomRequest(payload)),
+  cancelCurrentRoomRequestHandler: (payload) => dispatch(cancelCurrentRoomRequest(payload))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)

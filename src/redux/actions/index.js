@@ -37,7 +37,10 @@ import {
   GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
   DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
   DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
-  DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  CANCEL_CURRENT_ROOM_REQUEST,
+  CANCEL_CURRENT_ROOM_SUCCESS,
+  CANCEL_CURRENT_ROOM_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -260,7 +263,25 @@ export const deleteHistoryWithdrawDepositSuccess = payload => ({
 });
 
 export const deleteHistoryWithdrawDepositFailure = errors => ({
-  type: GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  type: DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
   errors
 });
+
+// ==================================================== CANCEL CURRENT ROOM
+
+export const cancelCurrentRoomRequest = payload => ({
+  type: CANCEL_CURRENT_ROOM_REQUEST,
+  payload
+});
+
+export const cancelCurrentRoomSuccess = payload => ({
+  type: CANCEL_CURRENT_ROOM_SUCCESS,
+  payload
+});
+
+export const cancelCurrentRoomFailure = errors => ({
+  type: CANCEL_CURRENT_ROOM_FAILURE,
+  errors
+});
+
 

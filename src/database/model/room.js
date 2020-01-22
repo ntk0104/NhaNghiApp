@@ -103,3 +103,31 @@ export const getAllRoomsInfo = (i) => {
     }
   });
 }
+
+// hủy phòng book do nhầm lẫn
+export const cancelRoom = ({ timeIn, roomID }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      let queryDeleteHistory = "addedTime = " + timeIn
+      let history = realm.objects('HistoryRoom').filtered(queryDeleteHistory)
+      let queryDeleteChargedItem = `id = '${timeIn}_beer' or id = '${timeIn}_roomcost' or id = '${timeIn}_anotherCost' or id = '${timeIn}_instantNoodle' or id = '${timeIn}_softdrink' or id = '${timeIn}_water'`
+      let chargedItems = realm.objects('ChargedItem').filtered(queryDeleteChargedItem)
+      realm.write(() => {
+        realm.delete(history)
+        realm.delete(chargedItems)
+        let updatedRoom = realm.create("Room", {
+          id: roomID,
+          currentStatus: 'available',
+          tag: '',
+          timeIn: 0,
+          sectionRoom: '',
+          cmnd: null,
+          advancedPay: 0
+        }, 'modified');
+        resolve()
+      })
+    } catch (error) {
+      reject(error);
+    }
+  });
+}

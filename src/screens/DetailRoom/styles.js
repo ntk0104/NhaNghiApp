@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: screen.height * 0.1,
     backgroundColor: '#1A72BC',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   btnBack: {
     width: 80,
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     width: '100%',
-    height: screen.height * 0.15,
+    height: screen.height * 0.1,
     backgroundColor: '#EAFAF1',
     flexDirection: 'row',
     alignItems: 'center',
@@ -266,6 +267,25 @@ const styles = StyleSheet.create({
     fontSize: RFValue(12, 790),
     fontWeight: '600',
     padding: 5
+  },
+  btnDeleteRoom: {
+    padding: 5,
+    paddingHorizontal: 10,
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderWidth: 1,
+    marginRight: 10,
+    borderColor: 'white',
+    borderRadius: 5,
+    backgroundColor: '#EA1576'
+  },
+  deleteRoomTxt: {
+    fontSize: RFValue(14, 790),
+    color: 'white',
+    fontWeight: 'bold',
+    marginRight: 10
   }
 })
 
