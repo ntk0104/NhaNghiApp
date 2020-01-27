@@ -123,6 +123,13 @@ export const calculateRoomCostOvernight = (timestampIn, timestampOut, overnight_
   const bufferTime = appConfig.bufferTimeInMinutes // sống có đức, dưới threshold thì coi như ko tính charge thêm level tiếp theo -dvt: phut
   let numsNight = calculateNumsNightFrom(timestampIn, timestampOut)
   if (numsNight == 0) {
+    const currentDate = moment(timestampOut).format('YYYY-MM-DD')
+    const generatedTimeThreshold = currentDate + ' 12:' + bufferTime + ':00'
+    const generatedTimestampThreshold = moment(generatedTimeThreshold).valueOf()
+    if (timestampOut > generatedTimestampThreshold) {
+      let additionalHourCost = calculateRoomCostPerHour(moment(currentDate + ' 12:00:00').valueOf(), timestampOut, overnight_price, SectionHourCost, additionalHourPrice, 'additionalOverNight')
+      return overnight_price + additionalHourCost
+    }
     // without charge additional hour
     return overnight_price
   } else {
