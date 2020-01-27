@@ -16,9 +16,10 @@ import DatePicker from 'react-native-datepicker';
 import RoomMap from '../Home/RoomMap/index'
 import _ from 'lodash'
 import Modal from 'react-native-modal'
+var Sound = require('react-native-sound');
+var whoosh = null
 
 class DetailRoom extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -78,10 +79,17 @@ class DetailRoom extends Component {
     const payload = this.props.navigation.getParam('payload')
     const { id } = payload
     this.props.getRoomInfoRequestHandler(payload)
+    whoosh = new Sound('alert_return_room.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        alert('failed to load the sound', error);
+        return;
+      }
+    })
   }
 
   componentWillUnmount() {
     this.props.getRoomsDataRequestHandler()
+    whoosh.release();
   }
 
   calculateRoomCost = () => {
@@ -570,7 +578,7 @@ class DetailRoom extends Component {
     const formatedVND = this.formatVND(anotherCostValue)
     const formatedTotalPayment = this.formatVND(totalPayment)
     return (
-      <View style={styles.container}>
+      <View style={styles.container} >
         {
           this.props.roomInfo &&
           <View style={styles.navigationBar}>
@@ -803,14 +811,14 @@ class DetailRoom extends Component {
             </View>
           </View>
         }
-        <View style={styles.bottomBar}>
+        < View style={styles.bottomBar} >
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#E74C3C' }]} onPress={() => this.setState({ swapRoomModal: true })}>
             <Text style={styles.headerTitleTxt}>Đổi phòng</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: totalPayment > 0 ? '#F1C40F' : 'gray' }]} onPress={() => this.payAdvanced(totalPayment)} disabled={totalPayment == 0}>
             <Text style={styles.headerTitleTxt}>Trả tiền trước</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true })}>
+          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true }, () => { whoosh.play() })}>
             {
               totalPayment > 0 ?
                 <Text style={styles.headerTitleTxt}>Trả phòng&Thanh Toán</Text>
@@ -818,7 +826,7 @@ class DetailRoom extends Component {
                 <Text style={styles.headerTitleTxt}>Trả phòng</Text>
             }
           </TouchableOpacity>
-        </View>
+        </View >
         <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer} onBackdropPress={this.closeEditAnotherCostModal}>
           <View style={styles.modalWrapper}>
             <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
@@ -891,7 +899,7 @@ class DetailRoom extends Component {
                 </TouchableOpacity>
               </View>
               <View style={[styles.modalBodyWrapper, { padding: 10, justifyContent: 'space-around' }]}>
-                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: {formatedTotalPayment}</Text>
+                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: <Text style={{color: 'red', fontWeight: 'bold'}}>{formatedTotalPayment}</Text></Text>
                 {
                   totalPayment < 500 &&
                   <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: <Text style={{ color: 'blue' }}>{this.formatVND(500 - totalPayment)}</Text></Text>
@@ -932,7 +940,7 @@ class DetailRoom extends Component {
             </View>
           </View>
         </Modal>
-      </View>
+      </View >
     )
   }
 }
