@@ -24,7 +24,7 @@ export const addChargedItem = ({ addedTime, sectionID, itemKey, roomID, quantity
   });
 }
 
-export const updateChargedItem = ({ id, addedTime, sectionID, itemKey, quantity, total, payStatus }) => {
+export const updateChargedItem = ({ id, addedTime, sectionID, itemKey, quantity, total, payStatus, roomID }) => {
   return new Promise((resolve, reject) => {
     try {
       realm.write(() => {
@@ -35,7 +35,8 @@ export const updateChargedItem = ({ id, addedTime, sectionID, itemKey, quantity,
           itemKey,
           quantity,
           total,
-          payStatus
+          payStatus,
+          roomID
         }, 'modified');
         resolve()
       })

@@ -1,7 +1,7 @@
-import { ADD_HISTORY_ITEM_REQUEST, GET_HISTORY_LIST_REQUEST, GET_STATISTIC_OF_DAY_REQUEST, UPDATE_HISTORY_ROOM_REQUEST  } from '../types'
+import { ADD_HISTORY_ITEM_REQUEST, GET_HISTORY_LIST_REQUEST, GET_STATISTIC_OF_DAY_REQUEST, UPDATE_HISTORY_ROOM_REQUEST, DELETE_HISTORY_ROOM_ITEM_REQUEST } from '../types'
 import { put, takeLatest, fork, call } from 'redux-saga/effects';
-import { addHistoryItemSuccess, addHistoryItemFailure, getHistoryListSuccess, getHistoryListFailure, getStatisticOfDaySuccess, getStatisticOfDayFailure, updateHistoryRoomSuccess, updateHistoryRoomFailure } from '../actions'
-import { addHistory, getHistory, getStatisticOfDay, updateHistoryItem } from '../../database/model/historyRoom'
+import { addHistoryItemSuccess, addHistoryItemFailure, getHistoryListSuccess, getHistoryListFailure, getStatisticOfDaySuccess, getStatisticOfDayFailure, updateHistoryRoomSuccess, updateHistoryRoomFailure, deleteHistoryRoomSuccess, deleteHistoryRoomFailure } from '../actions'
+import { addHistory, getHistory, getStatisticOfDay, updateHistoryItem, deleteHistoryRoom } from '../../database/model/historyRoom'
 
 const addHistoryItemAPI = (payload) => {
   return new Promise((resolve, reject) => {
@@ -27,14 +27,14 @@ const getHistoryListAPI = (payload) => {
   })
 }
 
-const getStatisticOfDayRequestAPI = async ({selectedDay}) => {
+const getStatisticOfDayRequestAPI = async ({ selectedDay }) => {
   return new Promise((resolve, reject) => {
     getStatisticOfDay(selectedDay)
       .then((statistic) => {
         resolve(statistic)
       })
       .catch((err) => {
-      console.log("TCL: updateChargedItemRequestAPI -> err", err)
+      console.log("TCL: getStatisticOfDayRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -47,7 +47,20 @@ const updateHistoryRoomRequestAPI = (payload) => {
         resolve(rs)
       })
       .catch((err) => {
-      console.log("TCL: updateHistoryRoomRequestAPI -> err", err)
+        console.log("TCL: updateHistoryRoomRequestAPI -> err", err)
+        reject(err)
+      })
+  })
+}
+
+const deleteHistoryRoomRequestAPI = ({ addedTime }) => {
+  return new Promise((resolve, reject) => {
+    deleteHistoryRoom(addedTime)
+      .then((rs) => {
+        resolve(rs)
+      })
+      .catch((err) => {
+        console.log("TCL: deleteHistoryRoomRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -95,6 +108,15 @@ export function* updateHistoryRoomRequest(obj) {
   }
 }
 
+export function* deleteHistoryRoomItemRequest(obj) {
+  try {
+    const deletedHistory = yield call(deleteHistoryRoomRequestAPI, obj.payload);
+    yield put(deleteHistoryRoomSuccess(deletedHistory));
+  } catch (err) {
+    yield put(deleteHistoryRoomFailure(err));
+  }
+}
+
 /**
  * Catch action request
  */
@@ -103,6 +125,7 @@ function* watchHistory() {
   yield takeLatest(GET_HISTORY_LIST_REQUEST, getHistoryRoomRequest);
   yield takeLatest(GET_STATISTIC_OF_DAY_REQUEST, getStatisticOfDayRequest);
   yield takeLatest(UPDATE_HISTORY_ROOM_REQUEST, updateHistoryRoomRequest);
+  yield takeLatest(DELETE_HISTORY_ROOM_ITEM_REQUEST, deleteHistoryRoomItemRequest);
 }
 
 export default function* rootChild() {

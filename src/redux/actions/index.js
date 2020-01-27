@@ -40,7 +40,10 @@ import {
   DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
   CANCEL_CURRENT_ROOM_REQUEST,
   CANCEL_CURRENT_ROOM_SUCCESS,
-  CANCEL_CURRENT_ROOM_FAILURE
+  CANCEL_CURRENT_ROOM_FAILURE,
+  DELETE_HISTORY_ROOM_ITEM_REQUEST,
+  DELETE_HISTORY_ROOM_ITEM_SUCCESS,
+  DELETE_HISTORY_ROOM_ITEM_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -281,6 +284,23 @@ export const cancelCurrentRoomSuccess = payload => ({
 
 export const cancelCurrentRoomFailure = errors => ({
   type: CANCEL_CURRENT_ROOM_FAILURE,
+  errors
+});
+
+// ==================================================== DELETE_HISTORY_ROOM_ITEM
+
+export const deleteHistoryRoomRequest = payload => ({
+  type: DELETE_HISTORY_ROOM_ITEM_REQUEST,
+  payload
+});
+
+export const deleteHistoryRoomSuccess = payload => ({
+  type: DELETE_HISTORY_ROOM_ITEM_SUCCESS,
+  payload
+});
+
+export const deleteHistoryRoomFailure = errors => ({
+  type: DELETE_HISTORY_ROOM_ITEM_FAILURE,
   errors
 });
 

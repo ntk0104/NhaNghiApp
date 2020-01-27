@@ -124,14 +124,17 @@ export const calculateRoomCostOvernight = (timestampIn, timestampOut, overnight_
   let numsNight = calculateNumsNightFrom(timestampIn, timestampOut)
   if (numsNight == 0) {
     const currentDate = moment(timestampOut).format('YYYY-MM-DD')
-    const generatedTimeThreshold = currentDate + ' 12:' + bufferTime + ':00'
-    const generatedTimestampThreshold = moment(generatedTimeThreshold).valueOf()
-    if (timestampOut > generatedTimestampThreshold) {
+    const generatedTimeInThreshold = currentDate + ' 05:00:00'
+    const generatedTimeInstampThreshold = moment(generatedTimeInThreshold).valueOf()
+    const generatedTimeOutThreshold = currentDate + ' 12:' + bufferTime + ':00'
+    const generatedTimestampOutThreshold = moment(generatedTimeOutThreshold).valueOf()
+    if (timestampOut > generatedTimestampOutThreshold && timestampIn < generatedTimeInstampThreshold) {
       let additionalHourCost = calculateRoomCostPerHour(moment(currentDate + ' 12:00:00').valueOf(), timestampOut, overnight_price, SectionHourCost, additionalHourPrice, 'additionalOverNight')
       return overnight_price + additionalHourCost
+    } else {
+      // without charge additional hour
+      return overnight_price
     }
-    // without charge additional hour
-    return overnight_price
   } else {
     const currentDate = moment(timestampOut).format('YYYY-MM-DD')
     const generatedTimeThreshold = currentDate + ' 12:' + bufferTime + ':00'

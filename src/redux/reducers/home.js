@@ -41,7 +41,10 @@ import {
   DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
   CANCEL_CURRENT_ROOM_REQUEST,
   CANCEL_CURRENT_ROOM_SUCCESS,
-  CANCEL_CURRENT_ROOM_FAILURE
+  CANCEL_CURRENT_ROOM_FAILURE,
+  DELETE_HISTORY_ROOM_ITEM_REQUEST,
+  DELETE_HISTORY_ROOM_ITEM_SUCCESS,
+  DELETE_HISTORY_ROOM_ITEM_FAILURE
 } from '../types/index';
 
 
@@ -74,6 +77,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST:
     case DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST:
     case CANCEL_CURRENT_ROOM_REQUEST:
+    case DELETE_HISTORY_ROOM_ITEM_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
@@ -136,6 +140,10 @@ const mainReducer = produce((draft = initialState, action) => {
     case CANCEL_CURRENT_ROOM_SUCCESS:
       return draft
 
+    // ===================DELETE HISTORY ROOM ITEM SUCCESS
+    case DELETE_HISTORY_ROOM_ITEM_SUCCESS:
+      return draft
+
     case GET_ROOMS_DATA_FAILURE:
     case GET_ROOM_INFO_FAILURE:
     case UPDATE_ROOM_INFO_FAILURE:
@@ -150,6 +158,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE:
     case DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE:
     case CANCEL_CURRENT_ROOM_FAILURE:
+    case DELETE_HISTORY_ROOM_ITEM_FAILURE:
       return { ...draft, error: payload }
 
     default:

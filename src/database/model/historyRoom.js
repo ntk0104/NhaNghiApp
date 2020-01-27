@@ -214,3 +214,19 @@ export const getStatisticOfDay = (selectedDay) => {
     }
   });
 }
+
+export const deleteHistoryRoom = (addedTime) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let query = "addedTime = " + addedTime
+      let historyItem = realm.objects('HistoryRoom').filtered(query)
+      realm.write(() => {
+        realm.delete(historyItem)
+      })
+      resolve(historyItem)
+    } catch (error) {
+      console.log("TCL: deletehistoryItem -> error", error)
+      reject(error);
+    }
+  });
+}

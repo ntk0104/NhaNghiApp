@@ -79,6 +79,8 @@ const styles = StyleSheet.create({
   },
   rowInfoContainer: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   titleWrapper: {
@@ -183,6 +185,11 @@ const styles = StyleSheet.create({
     height: screen.height * 0.6,
     backgroundColor: 'white'
   },
+  modalSwapRoomWrapper: {
+    width: screen.width * 0.8,
+    height: screen.height * 0.8,
+    backgroundColor: 'white'
+  },
   modalHeaderWrapper: {
     flex: 1,
     backgroundColor: '#2A6C97',
@@ -191,6 +198,10 @@ const styles = StyleSheet.create({
   },
   modalBodyWrapper: {
     flex: 2,
+  },
+  modalSwapRoomWrapper: {
+    flex: 6,
+    backgroundColor: 'white'
   },
   modalFooterWrapper: {
     flex: 1,
@@ -286,6 +297,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     marginRight: 10
+  },
+  btnSetting: {
+    padding: 10,
+    height: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginRight: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#BFC9CA'
+  },
+  iconSetting: {
+    fontSize: RFValue(30, 790),
+    color: 'black'
+  },
+  startDatePicker: {
+    width: 147,
+    height: '90%',
+    justifyContent: "center",
+    alignItems: "center"
   }
 })
 
