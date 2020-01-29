@@ -44,6 +44,10 @@ const styles = StyleSheet.create({
     fontSize: RFValue(18, 790),
     fontWeight: 'bold'
   },
+  smallTxt: {
+    fontSize: RFValue(13, 790),
+    fontWeight: 'bold'
+  },
 })
 
 export default styles;

@@ -183,7 +183,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    marginTop: 10
   },
   modalWrapper: {
     width: screen.width * 0.6,
@@ -226,8 +227,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   btnInput: {
-    paddingHorizontal: 20,
-    height: '80%',
+    paddingHorizontal: 30,
+    height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#28B463',

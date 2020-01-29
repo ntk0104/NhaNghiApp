@@ -114,7 +114,7 @@ class StatisticDay extends Component {
               <View style={styles.rowRoomsContainer}>
                 <RoomItem roomID={'3'} data={this.props.statisticOfDay['3']} />
                 <RoomItem roomID={'2'} data={this.props.statisticOfDay['2']} />
-                <RoomItem roomID={'16'} data={this.props.statisticOfDay['16']} />
+                <RoomItem roomID={'thongke'} data={this.props.statisticOfDay['thongke']} />
               </View>
             </ScrollView>
             :

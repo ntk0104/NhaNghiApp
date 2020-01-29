@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   rowRoomsContainer: {
     flexDirection: 'row',
     width: '100%',
-    height: screen.height * 0.8,
+    height: screen.height * 0.5,
   },
   btnBack: {
     width: 80,

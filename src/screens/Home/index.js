@@ -267,7 +267,7 @@ class Home extends PureComponent {
         selectedSectionType: sectionType,
         selectedRoomType: 'quat'
       })
-    } else if (sectionType == 'CD'){
+    } else if (sectionType == 'CD') {
       this.setState({
         selectedSectionType: sectionType,
         selectedRoomType: 'lanh'
@@ -396,7 +396,7 @@ class Home extends PureComponent {
           {/* </ScrollView> */}
         </Modal>
 
-        <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} onBackdropPress={this.closeChangeMoneyBoxModal}>
+        <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} >
           <View style={styles.modalWrapper}>
             <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.changeMoneyType == 'withdraw' ? '#F5B041' : '#2A6C97' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -449,7 +449,7 @@ class Home extends PureComponent {
               </View>
             </View>
             <View style={styles.modalFooterWrapper}>
-              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C' }]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
+              <TouchableOpacity activeOpacity={0.5} style={[styles.btnInput, { backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C' }]} onPress={this.submitChangeCashInBox}>
                 {
                   changeMoneyType === 'deposit' ?
                     <Text style={styles.modalHeaderTxt}>Bỏ {this.formatVND(changeMoneyValue)} vào tủ</Text>

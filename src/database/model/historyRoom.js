@@ -185,6 +185,25 @@ export const getStatisticOfDay = (selectedDay) => {
         roomName: '2',
         hourSection: [],
         overnight: []
+      },
+      'thongke': {
+        roomName: 'Thống kê',
+        totalIncome: 0,
+        totalIncomeFromDG: {
+          lanh: 0,
+          quat: 0
+        },
+        totalIncomeFromCD: {
+          lanh: 0,
+          quat: 0
+        },
+        totalIncomeFromQD: 0,
+        totalIncomeFromWater: 0,
+        totalIncomeFromSoftDrink: 0,
+        totalIncomeFromInstantNoodle: 0,
+        totalIncomeFromBeer: 0,
+        totalIncomeFromRoomCost: 0,
+        totalLostMoney: 0
       }
     }
     const dayBegin = selectedDay + ' 00:00:00'
@@ -192,6 +211,18 @@ export const getStatisticOfDay = (selectedDay) => {
     const dayEnd = selectedDay + ' 23:59:59'
     const generatedTimestampEnd = moment(dayEnd).valueOf();
     const filterQuery = "timeIn > " + generatedTimestampBegin + " and timeIn < " + generatedTimestampEnd + " and status = 'in'"
+    let totalIncome = 0
+    let totalIncomeFromDGQuat = 0
+    let totalIncomeFromDGLanh = 0
+    let totalIncomeFromCDLanh = 0
+    let totalIncomeFromCDQuat = 0
+    let totalIncomeFromQD = 0
+    let totalIncomeFromWater = 0
+    let totalIncomeFromSoftDrink = 0
+    let totalIncomeFromInstantNoodle = 0
+    let totalIncomeFromBeer = 0
+    let totalIncomeFromRoomCost = 0
+    let totalLostMoney = 0
     try {
       let sections = realm.objects('HistoryRoom').filtered(filterQuery)
       for (let section of sections) {
@@ -202,12 +233,59 @@ export const getStatisticOfDay = (selectedDay) => {
           roomType: section.sectionRoom,
           total: sectionOutInfo.total
         }
+        totalIncome += sectionOutInfo.total
         if (section.tag != 'QD') {
+          if(section.tag === 'DG'){
+            if(section.sectionRoom == 'quat'){
+              totalIncomeFromDGQuat += sectionOutInfo.total
+            } else if(section.sectionRoom == 'lanh'){
+              totalIncomeFromDGLanh += sectionOutInfo.total
+            }
+          } else if (section.tag === 'CD'){
+            if(section.sectionRoom == 'quat'){
+              totalIncomeFromCDQuat += sectionOutInfo.total
+            } else if(section.sectionRoom == 'lanh'){
+              totalIncomeFromCDLanh += sectionOutInfo.total
+            }
+          }
           returnedData[section.roomID].hourSection.push(tmpHourSection)
         } else {
+          totalIncomeFromQD += sectionOutInfo.total
           returnedData[section.roomID].overnight.push(tmpHourSection)
         }
+        //get ChargedItem based on sectionId
+        const getChargedItemsBySectionIDQuery = "sectionID = " + section.sectionID
+        let items = realm.objects('ChargedItem').filtered(getChargedItemsBySectionIDQuery)
+        for(let item of items){
+          if(item.payStatus === 'lost'){
+            totalLostMoney += item.total
+          } else if(item.payStatus === 'paid'){
+            if(item.itemKey === 'water'){
+              totalIncomeFromWater += item.total
+            } else if(item.itemKey === 'beer'){
+              totalIncomeFromBeer += item.total
+            } else if(item.itemKey === 'instantNoodle'){
+              totalIncomeFromInstantNoodle += item.total
+            } else if(item.itemKey === 'softdrink'){
+              totalIncomeFromSoftDrink += item.total
+            } else if(item.itemKey === 'roomcost'){
+              totalIncomeFromRoomCost += item.total
+            }
+          }
+        }
       }
+      returnedData['thongke'].totalIncome = totalIncome
+      returnedData['thongke'].totalIncomeFromDG.quat = totalIncomeFromDGQuat
+      returnedData['thongke'].totalIncomeFromDG.lanh = totalIncomeFromDGLanh
+      returnedData['thongke'].totalIncomeFromCD.quat = totalIncomeFromCDQuat
+      returnedData['thongke'].totalIncomeFromCD.lanh = totalIncomeFromCDLanh
+      returnedData['thongke'].totalIncomeFromQD = totalIncomeFromQD
+      returnedData['thongke'].totalIncomeFromWater = totalIncomeFromWater
+      returnedData['thongke'].totalIncomeFromSoftDrink = totalIncomeFromSoftDrink
+      returnedData['thongke'].totalIncomeFromBeer = totalIncomeFromBeer
+      returnedData['thongke'].totalIncomeFromInstantNoodle = totalIncomeFromInstantNoodle
+      returnedData['thongke'].totalIncomeFromRoomCost = totalIncomeFromRoomCost
+      returnedData['thongke'].totalLostMoney = totalLostMoney
       resolve(returnedData)
     } catch (error) {
       reject(error);
