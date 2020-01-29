@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Text, View, TouchableOpacity } from 'react-native'
+import { Text, View, TouchableOpacity, Alert } from 'react-native'
 import { Icon } from 'native-base'
 import styles from './styles'
 import moment from 'moment'
@@ -11,9 +11,35 @@ import { deleteHistoryWithdrawDepositRequest, getCashBoxRequest } from '../../..
 class ChangeCashItem extends PureComponent {
 
   deleteItem = () => {
-    this.props.deleteHistoryWithdrawDepositRequestHandler({ transactionID: this.props.item.addedTime })
-    this.props.updateHistory()
-    this.props.getCurrentMoneyInBoxHandler()
+    const { addedTime, type, title, total } = this.props.item
+    let msg = ''
+    if (type === 'deposit') {
+      msg = 'Bạn có chắc muốn xóa lịch sử lần THÊM ' + formatVND(total) + ' không?'
+    } else {
+      msg = 'Bạn có chắc muốn xóa lịch sử lần RÚT ' + formatVND(total) + ' không?'
+    }
+
+    Alert.alert(
+      'CHÚ Ý',
+      msg,
+      [
+        {
+          text: 'Không',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Chắc chắn', onPress: () => {
+            this.props.deleteHistoryWithdrawDepositRequestHandler({ transactionID: this.props.item.addedTime })
+            setTimeout(() => {
+              this.props.updateHistory()
+              this.props.getCurrentMoneyInBoxHandler()
+            }, 200)
+          }
+        }
+      ],
+      { cancelable: true },
+    );
   }
 
   render() {

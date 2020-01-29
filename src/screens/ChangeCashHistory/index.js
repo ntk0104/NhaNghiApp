@@ -20,14 +20,6 @@ class ChangeCashHistory extends Component {
     }
   }
 
-  shouldComponentUpdate(nextprops) {
-    if(this.props.navigation.isFocused() && (!_.isEqual(this.props.historyData, nextprops.historyData))){
-      return true
-    } else {
-      return false
-    }
-  }
-
   componentDidMount() {
     this.getHistory()
   }
