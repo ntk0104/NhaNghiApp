@@ -81,7 +81,7 @@ class DetailRoom extends Component {
     this.props.getRoomInfoRequestHandler(payload)
     whoosh = new Sound('alert_return_room.mp3', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
-        alert('failed to load the sound', error);
+        // alert('failed to load the sound', error);
         return;
       }
     })
@@ -117,7 +117,7 @@ class DetailRoom extends Component {
       if (itemID == 'water') {
         this.setState({ waterQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_water',
+          id: roomInfo.sectionID + '_water',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitWaterPrice
@@ -126,7 +126,7 @@ class DetailRoom extends Component {
       } else if (itemID == 'beer') {
         this.setState({ beerQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_beer',
+          id: roomInfo.sectionID + '_beer',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitBeerPrice
@@ -135,7 +135,7 @@ class DetailRoom extends Component {
       } else if (itemID == 'softdrink') {
         this.setState({ softdrinkQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_softdrink',
+          id: roomInfo.sectionID + '_softdrink',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitSoftDrinkPrice
@@ -144,7 +144,7 @@ class DetailRoom extends Component {
       } else if (itemID == 'instantNoodle') {
         this.setState({ instantNoodleQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_instantNoodle',
+          id: roomInfo.sectionID + '_instantNoodle',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitInstantNoodle
@@ -166,7 +166,7 @@ class DetailRoom extends Component {
     if (itemID == 'water') {
       this.setState({ waterQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_water',
+        id: roomInfo.sectionID + '_water',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitWaterPrice
@@ -175,7 +175,7 @@ class DetailRoom extends Component {
     } else if (itemID == 'beer') {
       this.setState({ beerQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_beer',
+        id: roomInfo.sectionID + '_beer',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitBeerPrice
@@ -184,7 +184,7 @@ class DetailRoom extends Component {
     } else if (itemID == 'softdrink') {
       this.setState({ softdrinkQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_softdrink',
+        id: roomInfo.sectionID + '_softdrink',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitSoftDrinkPrice
@@ -193,7 +193,7 @@ class DetailRoom extends Component {
     } else if (itemID == 'instantNoodle') {
       this.setState({ instantNoodleQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_instantNoodle',
+        id: roomInfo.sectionID + '_instantNoodle',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitInstantNoodle
@@ -218,7 +218,7 @@ class DetailRoom extends Component {
     setTimeout(() => {
       this.calculateRoomCost()
       this.props.updateHistoryRoomRequestHandler({
-        addedTime: roomInfo.timeIn,
+        addedTime: roomInfo.sectionID,
         tag: tagID
       })
     }, 300)
@@ -246,7 +246,7 @@ class DetailRoom extends Component {
       note: this.state.note + ',' + addedNote
     })
     this.props.updateHistoryRoomRequestHandler({
-      addedTime: this.props.roomInfo.timeIn,
+      addedTime: this.props.roomInfo.sectionID,
       sectionRoom: sectionID
     })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
@@ -321,14 +321,14 @@ class DetailRoom extends Component {
     let addedNote = ''
     if (this.state.currentAddedType == 'add') {
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_anotherCost',
+        id: roomInfo.sectionID + '_anotherCost',
         addedTime: moment().valueOf(),
         total: parseInt(this.state.additionalCost) + parseInt(this.state.anotherCostValue)
       })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' CỘNG thêm vào chi phí khác (' + this.state.anotherCostNoteText + ') thêm: ' + this.state.anotherCostValue + ' K'
     } else {
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_anotherCost',
+        id: roomInfo.sectionID + '_anotherCost',
         addedTime: moment().valueOf(),
         total: parseInt(this.state.additionalCost) - parseInt(this.state.anotherCostValue)
       })
@@ -349,6 +349,7 @@ class DetailRoom extends Component {
       id: roomInfo.id,
       currentStatus: 'available',
       tag: '',
+      sectionID: 0,
       timeIn: 0,
       sectionRoom: '',
       cmnd: null,
@@ -356,27 +357,27 @@ class DetailRoom extends Component {
     })
 
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_water',
+      id: roomInfo.sectionID + '_water',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_beer',
+      id: roomInfo.sectionID + '_beer',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_softdrink',
+      id: roomInfo.sectionID + '_softdrink',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_instantNoodle',
+      id: roomInfo.sectionID + '_instantNoodle',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_anotherCost',
+      id: roomInfo.sectionID + '_anotherCost',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_roomcost',
+      id: roomInfo.sectionID + '_roomcost',
       total: calculatedRoomCost,
       payStatus: 'paid'
     })
@@ -389,8 +390,8 @@ class DetailRoom extends Component {
         roomName: roomInfo.roomName,
         status: 'out',
         total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
-        sectionID: roomInfo.timeIn,
-        timeIn: roomInfo.timeIn,
+        sectionID: roomInfo.sectionID,
+        timeIn: roomInfo.sectionID,
         note: roomInfo.note,
         tag: tag,
         sectionRoom: sectionRoom,
@@ -409,6 +410,7 @@ class DetailRoom extends Component {
       id: roomInfo.id,
       currentStatus: 'available',
       tag: '',
+      sectionID: 0,
       timeIn: 0,
       sectionRoom: '',
       cmnd: null,
@@ -416,27 +418,27 @@ class DetailRoom extends Component {
     })
 
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_water',
+      id: roomInfo.sectionID + '_water',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_beer',
+      id: roomInfo.sectionID + '_beer',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_softdrink',
+      id: roomInfo.sectionID + '_softdrink',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_instantNoodle',
+      id: roomInfo.sectionID + '_instantNoodle',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_anotherCost',
+      id: roomInfo.sectionID + '_anotherCost',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_roomcost',
+      id: roomInfo.sectionID + '_roomcost',
       total: calculatedRoomCost - roomInfo.advancedPay,
       payStatus: 'lost'
     })
@@ -448,7 +450,7 @@ class DetailRoom extends Component {
         roomName: roomInfo.roomName,
         status: 'out',
         total: roomInfo.advancedPay,
-        sectionID: roomInfo.timeIn,
+        sectionID: roomInfo.sectionID,
         timeIn: roomInfo.timeIn,
         note: roomInfo.note,
         tag: tag,
@@ -473,7 +475,7 @@ class DetailRoom extends Component {
           text: 'Chắc chắn', onPress: () => {
             const { roomInfo } = this.props
             this.props.cancelCurrentRoomRequestHandler({
-              timeIn: roomInfo.timeIn,
+              timeIn: roomInfo.sectionID,
               roomID: roomInfo.id,
             })
             setTimeout(() => {
@@ -488,16 +490,26 @@ class DetailRoom extends Component {
   }
 
   selectDateFrom = (date) => {
-    console.log("TCL: selectDateFrom -> date", date)
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      timeIn: moment(date, 'DD/MM/YYYY HH:mm:ss').valueOf()
+    })
+    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+    this.props.updateHistoryRoomRequestHandler({
+      addedTime: this.props.roomInfo.sectionID,
+      timeIn: moment(date, 'DD/MM/YYYY HH:mm:ss').valueOf()
+    })
+    this.props.getHistoryListRequestHandler()
   }
 
   swapToNewRoom = (id) => {
     const { roomInfo } = this.props
-    const { currentStatus, timeIn, note, tag, advancedPay, sectionRoom } = roomInfo
+    const { currentStatus, timeIn, note, tag, advancedPay, sectionRoom, sectionID } = roomInfo
     //move data to new room - Room table
     this.props.updateRoomInfoRequestHandler({
       id: id,
       currentStatus,
+      sectionID,
       timeIn,
       note,
       tag,
@@ -555,6 +567,7 @@ class DetailRoom extends Component {
       this.props.updateRoomInfoRequestHandler({
         id: this.props.roomInfo.id,
         currentStatus: 'available',
+        sectionID: 0,
         timeIn: 0,
         note: '',
         tag: '',
@@ -607,12 +620,12 @@ class DetailRoom extends Component {
                     <Text style={styles.titleTxt}>{moment(this.props.roomInfo.timeIn).format('HH:mm (DD/MM/YYYY)')}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    {/* <DatePicker
+                    <DatePicker
                       style={styles.startDatePicker}
                       iconSource={require('../../assets/images/calendar.png')}
                       mode='datetime'
                       placeholder='Thay đổi'
-                      format='DD/MM/YYYY HH:mm'
+                      format='DD/MM/YYYY HH:mm:ss'
                       is24Hour={true}
                       confirmBtnText='Chọn'
                       cancelBtnText='Hủy'
@@ -635,7 +648,7 @@ class DetailRoom extends Component {
                       }}
                       onDateChange={date => this.selectDateFrom(date)}
                       
-                    /> */}
+                    />
                   </View>
                   {/* <TouchableOpacity style={styles.btnSetting} onPress={() => this.openDatePicker()}>
                     <Icon type="Entypo" name="pencil" color="white" style={styles.iconSetting} />

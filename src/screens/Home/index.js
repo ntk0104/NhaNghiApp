@@ -160,10 +160,12 @@ class Home extends PureComponent {
 
 
   onSubmitGetRoom = () => {
+    const currentTimestamp = moment().valueOf()
     const updatedInfo = {
       id: this.state.gettingRoomID,
       currentStatus: 'busy',
-      timeIn: moment().valueOf(),
+      timeIn: currentTimestamp,
+      sectionID: currentTimestamp,
       chargedItems: [],
       note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,

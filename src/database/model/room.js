@@ -27,6 +27,7 @@ export const addRoom = ({ id, roomName, currentStatus, timeIn, note, tag, sectio
           roomName,
           currentStatus,
           timeIn,
+          sectionID: timeIn,
           note,
           tag,
           sectionRoom,
@@ -42,13 +43,14 @@ export const addRoom = ({ id, roomName, currentStatus, timeIn, note, tag, sectio
   });
 }
 
-export const updateRoom = ({ id, currentStatus, timeIn, note, tag, sectionRoom, cmnd, advancedPay }) => {
+export const updateRoom = ({ id, currentStatus, sectionID, timeIn, note, tag, sectionRoom, cmnd, advancedPay }) => {
   return new Promise((resolve, reject) => {
     try {
       realm.write(() => {
         let updatedRoom = realm.create("Room", {
           id,
           currentStatus,
+          sectionID,
           timeIn,
           note,
           tag,
@@ -88,6 +90,7 @@ export const getAllRoomsInfo = (i) => {
           roomName: room.roomName,
           currentStatus: room.currentStatus,
           timeIn: room.timeIn,
+          sectionID: room.sectionID,
           note: room.note,
           tag: room.tag,
           sectionRoom: room.sectionRoom,
@@ -120,6 +123,7 @@ export const cancelRoom = ({ timeIn, roomID }) => {
           currentStatus: 'available',
           tag: '',
           timeIn: 0,
+          sectionID: 0,
           sectionRoom: '',
           cmnd: null,
           advancedPay: 0
