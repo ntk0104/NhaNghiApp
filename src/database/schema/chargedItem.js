@@ -6,7 +6,7 @@ ChargedItem.schema = {
   name: 'ChargedItem',
   primaryKey: 'id',
   properties: {
-    id: 'string',
+    id: 'string', //sectionID_itemKey
     addedTime: 'int', // thời điểm add item
     sectionID: 'int', // id của section/ timeIn của room
     itemKey: 'string', //water/roomcost/softdrink/beer/instantNoodle/anotherCost

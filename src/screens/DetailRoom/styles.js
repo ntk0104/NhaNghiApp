@@ -253,7 +253,8 @@ const styles = StyleSheet.create({
   imgCMND: {
     width: screen.height * 0.12,
     height: screen.height * 0.1,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
+    marginRight: 10
   },
   historyNote: {
     color: 'black',

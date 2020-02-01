@@ -46,12 +46,10 @@ class Home extends PureComponent {
     const isSecond = await Storage.shared().getStorage(constants.SecondStart);
     if (isSecond == true) {
       // is not first init
-      //console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
       this.props.getCurrentMoneyInBoxHandler()
       this.props.getHistoryListRequestHandler()
     } else {
-      //console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
       const listRooms = appConfig.listRooms
@@ -160,14 +158,14 @@ class Home extends PureComponent {
       note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,
       sectionRoom: this.state.selectedRoomType,
-      cmnd: null
+      cmnd: ''
     }
 
     this.props.updateRoomInfoRequestHandler(updatedInfo)
 
     const roomCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'roomcost',
       roomID: this.state.gettingRoomID,
       quantity: 1,
@@ -176,8 +174,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const waterCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'water',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -186,8 +184,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const softdrinkCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'softdrink',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -196,8 +194,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const beerCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'beer',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -206,8 +204,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const instantNoodleCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'instantNoodle',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -216,8 +214,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const anotherCostCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'anotherCost',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -236,14 +234,14 @@ class Home extends PureComponent {
     this.props.addHistoryItemRequestHandler({
       roomID: this.state.gettingRoomID,
       roomName: this.state.gettingRoomName,
-      status: 'in',
       total: 0,
       sectionID: updatedInfo.timeIn,
       timeIn: updatedInfo.timeIn,
+      timeOut: 0,
       note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,
       sectionRoom: this.state.selectedRoomType,
-      cmnd: null
+      cmnd: ''
     })
 
     this.closeGetRoomModal()

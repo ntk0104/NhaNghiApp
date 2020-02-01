@@ -11,7 +11,7 @@ import { Text, TouchableOpacity, View, ImageBackground } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Icon } from 'native-base'
 import styles from './styles'
-import { updateRoomInfoRequest } from '../../redux/actions/index'
+import { updateRoomInfoRequest, getRoomInfoRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 
 class LiveCamera extends Component {
@@ -31,7 +31,7 @@ class LiveCamera extends Component {
     const roomID = this.props.navigation.getParam('roomID')
     const sectionID = this.props.navigation.getParam('sectionID')
     const cmnds = this.props.navigation.getParam('cmnd')
-    this.setState({ roomID, sectionID, cmnds})
+    this.setState({ roomID, sectionID, cmnds })
   }
 
   takePicture = async () => {
@@ -62,7 +62,7 @@ class LiveCamera extends Component {
       this.props.navigation.goBack()
     })
   }
-  
+
   clearPicture = () => {
     this.setState({
       turningOnFlash: false,
@@ -75,6 +75,8 @@ class LiveCamera extends Component {
       id: this.state.roomID,
       cmnd: this.state.cmnds ? this.state.cmnds + ';' + this.state.pathImg : this.state.pathImg
     })
+    this.props.navigation.goBack()
+    this.props.getRoomInfoRequestHandler({ id: this.state.roomID })
   }
 
   render() {
@@ -143,7 +145,8 @@ class LiveCamera extends Component {
 
 
 const mapDispatchToProps = dispatch => ({
-  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload))
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
+  getRoomInfoRequestHandler: payload => dispatch(getRoomInfoRequest(payload)),
 })
 
 export default connect(null, mapDispatchToProps)(LiveCamera)

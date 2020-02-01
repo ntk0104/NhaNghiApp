@@ -215,18 +215,14 @@ class DetailRoom extends Component {
       id: roomInfo.id,
       tag: tagID
     })
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID: roomInfo.sectionID,
+      tag: tagID
+    })
     setTimeout(() => {
       this.calculateRoomCost()
-      this.props.updateHistoryRoomRequestHandler({
-        addedTime: roomInfo.sectionID,
-        tag: tagID
-      })
-    }, 300)
-    setTimeout(() => {
       this.props.getHistoryListRequestHandler()
-    }, 500)
-
-
+    }, 200)
   }
 
   editSectionRoomType = (sectionID) => {
@@ -246,7 +242,7 @@ class DetailRoom extends Component {
       note: this.state.note + ',' + addedNote
     })
     this.props.updateHistoryRoomRequestHandler({
-      addedTime: this.props.roomInfo.sectionID,
+      sectionID: this.props.roomInfo.sectionID,
       sectionRoom: sectionID
     })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
@@ -352,7 +348,7 @@ class DetailRoom extends Component {
       sectionID: 0,
       timeIn: 0,
       sectionRoom: '',
-      cmnd: null,
+      cmnd: '',
       advancedPay: 0
     })
 
@@ -385,17 +381,10 @@ class DetailRoom extends Component {
     this.setState({ alertReturnRoomModal: false }, () => {
       this.props.navigation.goBack()
       this.props.getCurrentMoneyInBoxHandler()
-      this.props.addHistoryItemRequestHandler({
-        roomID: roomInfo.id,
-        roomName: roomInfo.roomName,
-        status: 'out',
-        total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
+      this.props.updateHistoryRoomRequestHandler({
         sectionID: roomInfo.sectionID,
-        timeIn: roomInfo.sectionID,
-        note: roomInfo.note,
-        tag: tag,
-        sectionRoom: sectionRoom,
-        cmnd: null
+        total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
+        timeOut: moment().valueOf()
       })
       setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
 
@@ -413,7 +402,7 @@ class DetailRoom extends Component {
       sectionID: 0,
       timeIn: 0,
       sectionRoom: '',
-      cmnd: null,
+      cmnd: '',
       advancedPay: 0
     })
 
@@ -445,19 +434,11 @@ class DetailRoom extends Component {
 
     this.setState({ alertReturnRoomModal: false }, () => {
       this.props.navigation.goBack()
-      this.props.addHistoryItemRequestHandler({
-        roomID: roomInfo.id,
-        roomName: roomInfo.roomName,
-        status: 'out',
-        total: roomInfo.advancedPay,
+      this.props.updateHistoryRoomRequestHandler({
         sectionID: roomInfo.sectionID,
-        timeIn: roomInfo.timeIn,
-        note: roomInfo.note,
-        tag: tag,
-        sectionRoom: sectionRoom,
-        cmnd: null
+        timeOut: moment().valueOf()
       })
-      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
+      setTimeout(() => this.props.getHistoryListRequestHandler(), 200)
     })
   }
 
@@ -475,7 +456,7 @@ class DetailRoom extends Component {
           text: 'Chắc chắn', onPress: () => {
             const { roomInfo } = this.props
             this.props.cancelCurrentRoomRequestHandler({
-              timeIn: roomInfo.sectionID,
+              sectionID: roomInfo.sectionID,
               roomID: roomInfo.id,
             })
             setTimeout(() => {
@@ -496,7 +477,7 @@ class DetailRoom extends Component {
     })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
     this.props.updateHistoryRoomRequestHandler({
-      addedTime: this.props.roomInfo.sectionID,
+      sectionID: this.props.roomInfo.sectionID,
       timeIn: moment(date, 'DD/MM/YYYY HH:mm:ss').valueOf()
     })
     this.props.getHistoryListRequestHandler()
@@ -504,7 +485,7 @@ class DetailRoom extends Component {
 
   swapToNewRoom = (id) => {
     const { roomInfo } = this.props
-    const { currentStatus, timeIn, note, tag, advancedPay, sectionRoom, sectionID } = roomInfo
+    const { currentStatus, timeIn, note, tag, advancedPay, sectionRoom, sectionID, cmnd } = roomInfo
     //move data to new room - Room table
     this.props.updateRoomInfoRequestHandler({
       id: id,
@@ -514,65 +495,57 @@ class DetailRoom extends Component {
       note,
       tag,
       advancedPay,
-      sectionRoom
+      sectionRoom,
+      cmnd
     })
-    // delete history room with old roomID
-    this.props.deleteHistoryRoomRequestHandler({
-      addedTime: timeIn
+
+    // update history room item with new room id
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID,
+      roomID: id,
+      roomName: id,
     })
 
     // update charged items
     this.props.updateChargedItemRequestHandler({
-      id: timeIn + '_softdrink',
+      id: sectionID + '_softdrink',
       roomID: id
     })
     this.props.updateChargedItemRequestHandler({
-      id: timeIn + '_beer',
+      id: sectionID + '_beer',
       roomID: id
     })
     this.props.updateChargedItemRequestHandler({
-      id: timeIn + '_instantNoodle',
+      id: sectionID + '_instantNoodle',
       roomID: id
     })
     this.props.updateChargedItemRequestHandler({
-      id: timeIn + '_water',
+      id: sectionID + '_water',
       roomID: id
     })
     this.props.updateChargedItemRequestHandler({
-      id: timeIn + '_anotherCost',
+      id: sectionID + '_anotherCost',
       roomID: id
     })
     this.props.updateChargedItemRequestHandler({
-      id: timeIn + '_roomcost',
+      id: sectionID + '_roomcost',
       roomID: id
     })
 
     this.setState({
       swapRoomModal: false
     }, () => {
-      // add new history room item with new room id
-      this.props.addHistoryItemRequestHandler({
-        roomID: id,
-        roomName: id,
-        status: 'in',
-        total: advancedPay,
-        sectionID: timeIn,
-        timeIn: timeIn,
-        note: note,
-        tag: tag,
-        sectionRoom: sectionRoom,
-        cmnd: null
-      })
       // reset current room - Room table
       this.props.updateRoomInfoRequestHandler({
-        id: this.props.roomInfo.id,
+        id: roomInfo.id,
         currentStatus: 'available',
         sectionID: 0,
         timeIn: 0,
         note: '',
         tag: '',
         advancedPay: 0,
-        sectionRoom: ''
+        sectionRoom: '',
+        cmnd: ''
       })
       this.props.getHistoryListRequestHandler()
       this.props.navigation.goBack()
@@ -598,6 +571,7 @@ class DetailRoom extends Component {
     const generatedNote = noteList.join('\n')
     const formatedVND = this.formatVND(anotherCostValue)
     const formatedTotalPayment = this.formatVND(totalPayment)
+    const listImgs = this.props.roomInfo && this.props.roomInfo.cmnd.length > 0 && this.props.roomInfo.cmnd.split(';')
     return (
       <View style={styles.container} >
         {
@@ -658,10 +632,6 @@ class DetailRoom extends Component {
 
                     />
                   </View>
-                  {/* <TouchableOpacity style={styles.btnSetting} onPress={() => this.openDatePicker()}>
-                    <Icon type="Entypo" name="pencil" color="white" style={styles.iconSetting} />
-                    <Text style={styles.titleTxt}>Thay đổi</Text>
-                  </TouchableOpacity> */}
                 </View>
                 <View style={styles.rowInfoContainer}>
                   <View style={styles.titleWrapper}>
@@ -748,8 +718,11 @@ class DetailRoom extends Component {
                     <TouchableOpacity style={styles.btnCamera} onPress={this.showCamera}>
                       <Icon type="Entypo" name="camera" style={styles.iconCamera} />
                     </TouchableOpacity>
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={styles.imgCMND} />
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={[styles.imgCMND, { marginLeft: 20 }]} />
+                    {
+                      listImgs.length > 0 && listImgs.map(item => (
+                        <Image source={{ uri: item }} style={styles.imgCMND} />
+                      ))
+                    }
                   </View>
                 </View>
               </View>
@@ -979,7 +952,6 @@ const mapDispatchToProps = dispatch => ({
   updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
-  addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
   getHistoryListRequestHandler: () => dispatch(getHistoryListRequest()),
   updateHistoryRoomRequestHandler: (payload) => dispatch(updateHistoryRoomRequest(payload)),
   cancelCurrentRoomRequestHandler: (payload) => dispatch(cancelCurrentRoomRequest(payload)),

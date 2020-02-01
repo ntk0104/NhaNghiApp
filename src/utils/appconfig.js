@@ -11,7 +11,7 @@ export default (appConfig = {
       sectionRoom: '', // quat/lanh
       overnight_price: 120,
       type: '1bed',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '9',
@@ -24,7 +24,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '10',
@@ -37,7 +37,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '11',
@@ -50,7 +50,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 220,
       type: '2beds',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '12',
@@ -63,7 +63,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 220,
       type: '2beds',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '13',
@@ -76,7 +76,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '14',
@@ -89,7 +89,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '15',
@@ -102,7 +102,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '16',
@@ -115,7 +115,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 200,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '17',
@@ -128,7 +128,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: '1bed',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '8',
@@ -141,7 +141,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 120,
       type: '1bed',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '7',
@@ -154,7 +154,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '6',
@@ -167,7 +167,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 220,
       type: '2beds',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '5',
@@ -180,7 +180,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 220,
       type: '2beds',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '4',
@@ -193,7 +193,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '3',
@@ -206,7 +206,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 180,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     },
     {
       id: '2',
@@ -219,7 +219,7 @@ export default (appConfig = {
       sectionRoom: '',
       overnight_price: 200,
       type: 'special',
-      cmnd: null
+      cmnd: ''
     }
   ],
   bufferTimeInMinutes: 30,

@@ -1,5 +1,4 @@
 import realm from '../configRealm';
-import moment from 'moment'
 
 export const addChargedItem = ({ addedTime, sectionID, itemKey, roomID, quantity, unitPrice, total, payStatus }) => {
   return new Promise((resolve, reject) => {

@@ -19,6 +19,6 @@ Room.schema = {
     sectionRoom: { type: 'string', default: 'quat' }, //quat / lanh
     overnight_price: 'int',
     type: { type: 'string', default: '1bed' },
-    cmnd: 'data?'
+    cmnd: { type: 'string', default: '' },
   }
 };
