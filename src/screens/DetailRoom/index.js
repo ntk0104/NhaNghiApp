@@ -585,7 +585,9 @@ class DetailRoom extends Component {
 
   showCamera = () => {
     this.props.navigation.navigate('LiveCamera', {
-      id: this.props.roomInfo.id
+      roomID: this.props.roomInfo.id,
+      sectionID: this.props.roomInfo.sectionID,
+      cmnd: this.props.roomInfo.cmnd
     })
   }
 

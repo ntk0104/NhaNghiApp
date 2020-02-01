@@ -11,22 +11,33 @@ import { Text, TouchableOpacity, View, ImageBackground } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Icon } from 'native-base'
 import styles from './styles'
+import { updateRoomInfoRequest } from '../../redux/actions/index'
+import { connect } from 'react-redux';
 
-export default class LiveCamera extends Component {
+class LiveCamera extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       turningOnFlash: false,
-      pathImg: null
+      pathImg: null,
+      roomID: null,
+      sectionID: null,
+      cmnds: null
     }
+  }
+
+  componentDidMount() {
+    const roomID = this.props.navigation.getParam('roomID')
+    const sectionID = this.props.navigation.getParam('sectionID')
+    const cmnds = this.props.navigation.getParam('cmnd')
+    this.setState({ roomID, sectionID, cmnds})
   }
 
   takePicture = async () => {
     if (this.camera) {
       const options = { quality: 1, base64: true };
       const data = await this.camera.takePictureAsync(options);
-      console.log(data.uri);
       this.setState({ pathImg: data.uri });
     }
   };
@@ -56,6 +67,13 @@ export default class LiveCamera extends Component {
     this.setState({
       turningOnFlash: false,
       pathImg: null
+    })
+  }
+
+  addImg = () => {
+    this.props.updateRoomInfoRequestHandler({
+      id: this.state.roomID,
+      cmnd: this.state.cmnds ? this.state.cmnds + ';' + this.state.pathImg : this.state.pathImg
     })
   }
 
@@ -111,7 +129,7 @@ export default class LiveCamera extends Component {
                   <TouchableOpacity onPress={this.takePicture} style={styles.btnTool} onPress={this.clearPicture}>
                     <Icon type="FontAwesome5" name="trash-alt" style={styles.iconClose} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={this.takePicture} style={styles.btnTool} onPress={this.toggleFlash}>
+                  <TouchableOpacity onPress={this.takePicture} style={styles.btnTool} onPress={this.addImg}>
                     <Icon type="AntDesign" name="check" style={styles.iconClose} />
                   </TouchableOpacity>
                 </View>
@@ -122,4 +140,11 @@ export default class LiveCamera extends Component {
     );
   }
 };
+
+
+const mapDispatchToProps = dispatch => ({
+  updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload))
+})
+
+export default connect(null, mapDispatchToProps)(LiveCamera)
 
