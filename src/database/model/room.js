@@ -125,6 +125,7 @@ export const cancelRoom = ({ sectionID, roomID }) => {
           timeIn: 0,
           sectionID: 0,
           sectionRoom: '',
+          note: '',
           cmnd: '',
           advancedPay: 0
         }, 'modified');
