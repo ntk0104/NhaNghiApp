@@ -1,5 +1,6 @@
 import realm from '../configRealm';
 import moment from 'moment'
+import { getChargedItemsBySectionID } from './chargedItem'
 
 export const addHistory = ({ roomID, roomName, total, sectionID, timeIn, note, tag, sectionRoom, cmnd }) => {
   return new Promise((resolve, reject) => {
@@ -48,6 +49,33 @@ export const updateHistoryItem = ({ roomID, roomName, total, sectionID, timeIn, 
   });
 }
 
+export const getHistoryRoomDetail = ({ sectionID }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let query = "sectionID = " + sectionID
+      let historyItem = realm.objects('HistoryRoom').filtered(query)
+      const roomData = historyItem[0]
+      const returnedData = {
+        sectionID: roomData.sectionID,
+        roomID: roomData.roomID,
+        roomName: roomData.roomName,
+        timeIn: roomData.timeIn,
+        timeOut: roomData.timeOut,
+        total: roomData.total,
+        note: roomData.note,
+        tag: roomData.tag,
+        sectionRoomType: roomData.sectionRoom,
+        cmnd: roomData.cmnd,
+        chargedItems: await getChargedItemsBySectionID({ sectionId: sectionID })
+      }
+      resolve(returnedData)
+    } catch (error) {
+      console.log("TCL: getHistoryRoomDetail -> error", error)
+      reject(error);
+    }
+  });
+}
+
 export const getHistory = () => {
   return new Promise((resolve, reject) => {
     try {
@@ -55,7 +83,7 @@ export const getHistory = () => {
       let returnedHistory = []
       for (let item of historyList) {
         // type : in 
-        if(item.timeOut === 0){
+        if (item.timeOut === 0) {
           const itemData = {
             addedTime: item.timeIn,
             roomID: item.roomID,
@@ -240,22 +268,24 @@ export const getStatisticOfDay = (selectedDay) => {
       for (let section of sections) {
         let tmpHourSection = {
           timeIn: section.timeIn,
+          sectionID: section.sectionID,
+          roomID: section.roomID,
           timeOut: section.timeOut,
           roomType: section.sectionRoom,
           total: section.total
         }
         totalIncome += section.total
         if (section.tag != 'QD') {
-          if(section.tag === 'DG'){
-            if(section.sectionRoom == 'quat'){
+          if (section.tag === 'DG') {
+            if (section.sectionRoom == 'quat') {
               totalIncomeFromDGQuat += section.total
-            } else if(section.sectionRoom == 'lanh'){
+            } else if (section.sectionRoom == 'lanh') {
               totalIncomeFromDGLanh += section.total
             }
-          } else if (section.tag === 'CD'){
-            if(section.sectionRoom == 'quat'){
+          } else if (section.tag === 'CD') {
+            if (section.sectionRoom == 'quat') {
               totalIncomeFromCDQuat += section.total
-            } else if(section.sectionRoom == 'lanh'){
+            } else if (section.sectionRoom == 'lanh') {
               totalIncomeFromCDLanh += section.total
             }
           }
@@ -267,19 +297,19 @@ export const getStatisticOfDay = (selectedDay) => {
         //get ChargedItem based on sectionId
         const getChargedItemsBySectionIDQuery = "sectionID = " + section.sectionID
         let items = realm.objects('ChargedItem').filtered(getChargedItemsBySectionIDQuery)
-        for(let item of items){
-          if(item.payStatus === 'lost'){
+        for (let item of items) {
+          if (item.payStatus === 'lost') {
             totalLostMoney += item.total
-          } else if(item.payStatus === 'paid'){
-            if(item.itemKey === 'water'){
+          } else if (item.payStatus === 'paid') {
+            if (item.itemKey === 'water') {
               totalIncomeFromWater += item.total
-            } else if(item.itemKey === 'beer'){
+            } else if (item.itemKey === 'beer') {
               totalIncomeFromBeer += item.total
-            } else if(item.itemKey === 'instantNoodle'){
+            } else if (item.itemKey === 'instantNoodle') {
               totalIncomeFromInstantNoodle += item.total
-            } else if(item.itemKey === 'softdrink'){
+            } else if (item.itemKey === 'softdrink') {
               totalIncomeFromSoftDrink += item.total
-            } else if(item.itemKey === 'roomcost'){
+            } else if (item.itemKey === 'roomcost') {
               totalIncomeFromRoomCost += item.total
             }
           }

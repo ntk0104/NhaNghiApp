@@ -204,6 +204,10 @@ class DetailRoom extends Component {
       id: this.props.roomInfo.id,
       note: this.state.note + ',' + addedNote
     })
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID: this.props.roomInfo.sectionID,
+      note: this.state.note + ',' + addedNote
+    })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 

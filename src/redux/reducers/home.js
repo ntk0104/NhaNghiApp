@@ -44,7 +44,10 @@ import {
   CANCEL_CURRENT_ROOM_FAILURE,
   DELETE_HISTORY_ROOM_ITEM_REQUEST,
   DELETE_HISTORY_ROOM_ITEM_SUCCESS,
-  DELETE_HISTORY_ROOM_ITEM_FAILURE
+  DELETE_HISTORY_ROOM_ITEM_FAILURE,
+  SEE_HISTORY_ROOM_DETAIL_REQUEST,
+  SEE_HISTORY_ROOM_DETAIL_SUCCESS,
+  SEE_HISTORY_ROOM_DETAIL_FAILURE
 } from '../types/index';
 
 
@@ -55,6 +58,7 @@ const initialState = {
   historyList: [], // list of history in/out show in the right side of Home screen
   statisticOfDay: undefined, // statistic of 1 day
   historyWithdrawAndDeposit: undefined, //history money cash in / out
+  historyRoomDetail: undefined, //history room detail information
 
   error: null
 };
@@ -78,6 +82,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST:
     case CANCEL_CURRENT_ROOM_REQUEST:
     case DELETE_HISTORY_ROOM_ITEM_REQUEST:
+    case SEE_HISTORY_ROOM_DETAIL_REQUEST:
       return draft
 
     // ===================ROOMS_DATA
@@ -144,6 +149,10 @@ const mainReducer = produce((draft = initialState, action) => {
     case DELETE_HISTORY_ROOM_ITEM_SUCCESS:
       return draft
 
+    // ===================SEE HISTORY ROOM DETAIL SUCCESS
+    case SEE_HISTORY_ROOM_DETAIL_SUCCESS:
+      return { ...draft, historyRoomDetail: payload };
+
     case GET_ROOMS_DATA_FAILURE:
     case GET_ROOM_INFO_FAILURE:
     case UPDATE_ROOM_INFO_FAILURE:
@@ -159,6 +168,7 @@ const mainReducer = produce((draft = initialState, action) => {
     case DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE:
     case CANCEL_CURRENT_ROOM_FAILURE:
     case DELETE_HISTORY_ROOM_ITEM_FAILURE:
+    case SEE_HISTORY_ROOM_DETAIL_FAILURE:
       return { ...draft, error: payload }
 
     default:

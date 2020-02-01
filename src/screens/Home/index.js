@@ -289,7 +289,7 @@ class Home extends PureComponent {
           </View>
           <View style={styles.rightSideContent}>
             <Text style={styles.historyTitleTxt}>Danh sách vào / ra</Text>
-            <HistoryList />
+            <HistoryList navigation={this.props.navigation} />
           </View>
         </View>
 

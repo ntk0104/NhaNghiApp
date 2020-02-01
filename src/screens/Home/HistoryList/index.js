@@ -27,7 +27,7 @@ class HistoryList extends Component {
           scrollEnabled
           bounces={true}
           keyExtractor={item => item.addedTime + ''}
-          renderItem={({ item, index }) => <HistoryItem item={item} />}
+          renderItem={({ item, index }) => <HistoryItem item={item} navigation={this.props.navigation} />}
         />
       </View>
     )

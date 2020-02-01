@@ -1,7 +1,7 @@
-import { ADD_HISTORY_ITEM_REQUEST, GET_HISTORY_LIST_REQUEST, GET_STATISTIC_OF_DAY_REQUEST, UPDATE_HISTORY_ROOM_REQUEST, DELETE_HISTORY_ROOM_ITEM_REQUEST } from '../types'
+import { ADD_HISTORY_ITEM_REQUEST, GET_HISTORY_LIST_REQUEST, GET_STATISTIC_OF_DAY_REQUEST, UPDATE_HISTORY_ROOM_REQUEST, DELETE_HISTORY_ROOM_ITEM_REQUEST, SEE_HISTORY_ROOM_DETAIL_REQUEST } from '../types'
 import { put, takeLatest, fork, call } from 'redux-saga/effects';
-import { addHistoryItemSuccess, addHistoryItemFailure, getHistoryListSuccess, getHistoryListFailure, getStatisticOfDaySuccess, getStatisticOfDayFailure, updateHistoryRoomSuccess, updateHistoryRoomFailure, deleteHistoryRoomSuccess, deleteHistoryRoomFailure } from '../actions'
-import { addHistory, getHistory, getStatisticOfDay, updateHistoryItem, deleteHistoryRoom } from '../../database/model/historyRoom'
+import { addHistoryItemSuccess, addHistoryItemFailure, getHistoryListSuccess, getHistoryListFailure, getStatisticOfDaySuccess, getStatisticOfDayFailure, updateHistoryRoomSuccess, updateHistoryRoomFailure, deleteHistoryRoomSuccess, deleteHistoryRoomFailure, seeHistoryRoomSuccess, seeHistoryRoomFailure } from '../actions'
+import { addHistory, getHistory, getStatisticOfDay, updateHistoryItem, deleteHistoryRoom, getHistoryRoomDetail } from '../../database/model/historyRoom'
 
 const addHistoryItemAPI = (payload) => {
   return new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ const getStatisticOfDayRequestAPI = async ({ selectedDay }) => {
         resolve(statistic)
       })
       .catch((err) => {
-      console.log("TCL: getStatisticOfDayRequestAPI -> err", err)
+        console.log("TCL: getStatisticOfDayRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -61,6 +61,19 @@ const deleteHistoryRoomRequestAPI = ({ addedTime }) => {
       })
       .catch((err) => {
         console.log("TCL: deleteHistoryRoomRequestAPI -> err", err)
+        reject(err)
+      })
+  })
+}
+
+const getHistoryRoomDetailRequestAPI = (payload) => {
+  return new Promise((resolve, reject) => {
+    getHistoryRoomDetail(payload)
+      .then((rs) => {
+        resolve(rs)
+      })
+      .catch((err) => {
+        console.log("TCL: getHistoryRoomDetailRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -117,6 +130,15 @@ export function* deleteHistoryRoomItemRequest(obj) {
   }
 }
 
+export function* seeHistoryRoomDetailRequest(obj) {
+  try {
+    const selectedSection = yield call(getHistoryRoomDetailRequestAPI, obj.payload);
+    yield put(seeHistoryRoomSuccess(selectedSection));
+  } catch (err) {
+    yield put(seeHistoryRoomFailure(err));
+  }
+}
+
 /**
  * Catch action request
  */
@@ -126,6 +148,7 @@ function* watchHistory() {
   yield takeLatest(GET_STATISTIC_OF_DAY_REQUEST, getStatisticOfDayRequest);
   yield takeLatest(UPDATE_HISTORY_ROOM_REQUEST, updateHistoryRoomRequest);
   yield takeLatest(DELETE_HISTORY_ROOM_ITEM_REQUEST, deleteHistoryRoomItemRequest);
+  yield takeLatest(SEE_HISTORY_ROOM_DETAIL_REQUEST, seeHistoryRoomDetailRequest);
 }
 
 export default function* rootChild() {

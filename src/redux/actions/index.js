@@ -43,7 +43,10 @@ import {
   CANCEL_CURRENT_ROOM_FAILURE,
   DELETE_HISTORY_ROOM_ITEM_REQUEST,
   DELETE_HISTORY_ROOM_ITEM_SUCCESS,
-  DELETE_HISTORY_ROOM_ITEM_FAILURE
+  DELETE_HISTORY_ROOM_ITEM_FAILURE,
+  SEE_HISTORY_ROOM_DETAIL_REQUEST,
+  SEE_HISTORY_ROOM_DETAIL_SUCCESS,
+  SEE_HISTORY_ROOM_DETAIL_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -301,6 +304,23 @@ export const deleteHistoryRoomSuccess = payload => ({
 
 export const deleteHistoryRoomFailure = errors => ({
   type: DELETE_HISTORY_ROOM_ITEM_FAILURE,
+  errors
+});
+
+// ==================================================== SEE_HISTORY_ROOM_DETAIL
+
+export const seeHistoryRoomRequest = payload => ({
+  type: SEE_HISTORY_ROOM_DETAIL_REQUEST,
+  payload
+});
+
+export const seeHistoryRoomSuccess = payload => ({
+  type: SEE_HISTORY_ROOM_DETAIL_SUCCESS,
+  payload
+});
+
+export const seeHistoryRoomFailure = errors => ({
+  type: SEE_HISTORY_ROOM_DETAIL_FAILURE,
   errors
 });
 
