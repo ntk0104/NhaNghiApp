@@ -564,6 +564,12 @@ class DetailRoom extends Component {
     })
   }
 
+  viewImage = (url) => {
+    this.props.navigation.navigate('ViewImage', {
+      urlImg: url
+    })
+  }
+
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal, swapRoomModal, newChangedRoomID } = this.state
     const totalPayment = this.props.roomInfo && calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost - this.props.roomInfo.advancedPay
@@ -720,7 +726,9 @@ class DetailRoom extends Component {
                     </TouchableOpacity>
                     {
                       listImgs.length > 0 && listImgs.map(item => (
-                        <Image source={{ uri: item }} style={styles.imgCMND} />
+                        <TouchableOpacity onPress={() => this.viewImage(item)}>
+                          <Image source={{ uri: item }} style={styles.imgCMND} />
+                        </TouchableOpacity>
                       ))
                     }
                   </View>
