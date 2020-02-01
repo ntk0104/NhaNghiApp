@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   modalFooter: {
     width: '100%',
-    height: screen.height * 0.1,
+    height: screen.height * 0.15,
     // flex: 1,
     borderTopWidth: 1,
     borderTopColor: '#AEB6BF',

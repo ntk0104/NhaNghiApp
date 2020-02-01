@@ -318,6 +318,20 @@ const styles = StyleSheet.create({
     height: '90%',
     justifyContent: "center",
     alignItems: "center"
+  },
+  iconCamera: {
+    fontSize: RFValue(40, 790),
+    color: 'black'
+  },
+  btnCamera: {
+    height: '90%',
+    width: 80,
+    alignItems: "center",
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'black',
+    marginRight: 10
   }
 })
 

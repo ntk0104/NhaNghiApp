@@ -11,7 +11,6 @@ import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
 import CashBox from './CashBox'
 import HistoryList from './HistoryList'
-import { camera, pickerImage } from '../../components/ImagePicker/index'
 import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 
@@ -41,15 +40,6 @@ class Home extends PureComponent {
   componentDidMount() {
     console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
-  }
-
-  showCamera = () => {
-    camera((source, data) => {
-      this.setState({
-        imageUrl: source,
-        imageData: "data:image/jpeg;base64," + data
-      })
-    });
   }
 
   checkFirstInitApp = async () => {
@@ -357,17 +347,6 @@ class Home extends PureComponent {
                       <View style={styles.optionBtnWrapper}>
                         <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
                         <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.typeContainer}>
-                  <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
-                  <View style={styles.typeOptionsWrapper}>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
-                      <View style={styles.optionBtnWrapper}>
-                        <Icon type="Entypo" name="camera" style={[styles.iconClose, { color: 'black' }]} />
-                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
                       </View>
                     </TouchableOpacity>
                   </View>

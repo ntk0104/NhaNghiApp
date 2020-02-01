@@ -583,6 +583,12 @@ class DetailRoom extends Component {
     alert('Không thể đổi sang phòng đang có khách, vui lòng chọn phòng khác!')
   }
 
+  showCamera = () => {
+    this.props.navigation.navigate('LiveCamera', {
+      id: this.props.roomInfo.id
+    })
+  }
+
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal, swapRoomModal, newChangedRoomID } = this.state
     const totalPayment = this.props.roomInfo && calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost - this.props.roomInfo.advancedPay
@@ -647,7 +653,7 @@ class DetailRoom extends Component {
                         }
                       }}
                       onDateChange={date => this.selectDateFrom(date)}
-                      
+
                     />
                   </View>
                   {/* <TouchableOpacity style={styles.btnSetting} onPress={() => this.openDatePicker()}>
@@ -737,6 +743,9 @@ class DetailRoom extends Component {
                     <Text style={styles.titleTxt}>CMND:</Text>
                   </View>
                   <View style={styles.InfoCMNDWrapper}>
+                    <TouchableOpacity style={styles.btnCamera} onPress={this.showCamera}>
+                      <Icon type="Entypo" name="camera" style={styles.iconCamera} />
+                    </TouchableOpacity>
                     <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={styles.imgCMND} />
                     <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={[styles.imgCMND, { marginLeft: 20 }]} />
                   </View>
@@ -840,7 +849,7 @@ class DetailRoom extends Component {
             }
           </TouchableOpacity>
         </View >
-        <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer} onBackdropPress={this.closeEditAnotherCostModal}>
+        <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer}>
           <View style={styles.modalWrapper}>
             <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -901,7 +910,7 @@ class DetailRoom extends Component {
         </Modal>
         {
           this.props.roomInfo &&
-          <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer} onBackdropPress={() => this.setState({ alertReturnRoomModal: false })}>
+          <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer}>
             <View style={styles.modalReturnRoomWrapper}>
               <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -912,7 +921,7 @@ class DetailRoom extends Component {
                 </TouchableOpacity>
               </View>
               <View style={[styles.modalBodyWrapper, { padding: 10, justifyContent: 'space-around' }]}>
-                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: <Text style={{color: 'red', fontWeight: 'bold'}}>{formatedTotalPayment}</Text></Text>
+                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: <Text style={{ color: 'red', fontWeight: 'bold' }}>{formatedTotalPayment}</Text></Text>
                 {
                   totalPayment < 500 &&
                   <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: <Text style={{ color: 'blue' }}>{this.formatVND(500 - totalPayment)}</Text></Text>
@@ -938,7 +947,7 @@ class DetailRoom extends Component {
             </View>
           </Modal>
         }
-        <Modal isVisible={swapRoomModal} style={styles.modalReturnContainer} onBackdropPress={() => this.setState({ swapRoomModal: false })}>
+        <Modal isVisible={swapRoomModal} style={styles.modalReturnContainer}>
           <View style={styles.modalSwapRoomWrapper}>
             <View style={styles.modalHeaderWrapper}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
