@@ -38,6 +38,15 @@ export default class StatisticDay extends Component {
     return nameComponents[nameComponents.length - 1]
   }
 
+  navigateToDetail = (roomID, sectionID, timeOut, timeIn) => {
+    if (timeOut != 0 && timeIn != 0) {
+      this.props.navigation.navigate('HistoryRoom', { sectionID: sectionID })
+    } else {
+      const payload = { id: roomID }
+      this.props.navigation.navigate('DetailRoom', { payload })
+    }
+  }
+
   render() {
     const { roomName, hourSection, overnight } = this.props.data
     return (
@@ -57,7 +66,7 @@ export default class StatisticDay extends Component {
                 hourSection && hourSection.length > 0 ?
                   <FlatList
                     data={hourSection}
-                    keyExtractor={(item) => item.timeIn}
+                    keyExtractor={(item) => item.sectionID}
                     renderItem={({ item }) => <SectionHourItem sectionID={item.sectionID} roomID={item.roomID} timeIn={item.timeIn} timeOut={item.timeOut} roomType={item.roomType} total={item.total} navigation={this.props.navigation} />}
                     numColumns={2}
                     scrollEnabled
@@ -129,13 +138,15 @@ export default class StatisticDay extends Component {
         <View>
           {
             overnight && overnight.map((item) =>
-              <View style={styles.overnightContainer}>
+              <TouchableOpacity style={styles.overnightContainer} onPress={() => this.navigateToDetail(item.roomID, item.sectionID, item.timeOut, item.timeIn)}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={styles.normalTxt}>{moment(item.timeIn).format('HH:mm')}</Text>
                   <Icon type="AntDesign" name='arrowright' style={styles.iconArrow} />
                   {
-                    item.timeOut != null &&
+                    item.timeOut != 0 ?
                     <Text style={styles.normalTxt}>{moment(item.timeOut).format('HH:mm')}</Text>
+                    :
+                    <Text style={styles.normalTxt}>Còn ở</Text>
                   }
                 </View>
                 {
@@ -143,7 +154,7 @@ export default class StatisticDay extends Component {
                   <Text style={styles.normalTxt}>{this.getLastName(item.guessName)}</Text>
                 }
                 <Text style={styles.normalTxt}>{item.total}</Text>
-              </View>
+              </TouchableOpacity>
             )
           }
         </View>
