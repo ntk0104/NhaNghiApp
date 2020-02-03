@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 20,
-    marginTop: 20
+    // marginLeft: 20,
+    // marginTop: 20
   },
   iconClose: {
     fontSize: RFValue(30, 790),

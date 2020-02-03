@@ -16,6 +16,11 @@ import DatePicker from 'react-native-datepicker';
 import RoomMap from '../Home/RoomMap/index'
 import _ from 'lodash'
 import Modal from 'react-native-modal'
+import ActionSheet from 'react-native-action-sheet'
+const optionArray = [
+  'Xóa hình',
+  'Hủy'
+]
 var Sound = require('react-native-sound');
 var whoosh = null
 
@@ -574,6 +579,29 @@ class DetailRoom extends Component {
     })
   }
 
+  showActionSheet = (selectedURL, listURLs) => {
+    ActionSheet.showActionSheetWithOptions({
+      options: optionArray,
+      cancelButtonIndex: 1,
+      destructiveButtonIndex: 0,
+      tintColor: 'blue'
+    },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          listURLs.splice(listURLs.indexOf(selectedURL), 1)
+          this.props.updateRoomInfoRequestHandler({
+            id: this.props.roomInfo.id,
+            cmnd: listURLs.join(';')
+          })
+          this.props.updateHistoryRoomRequestHandler({
+            sectionID: this.props.roomInfo.sectionID,
+            cmnd: listURLs.join(';')
+          })
+          this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+        }
+      });
+  };
+
   render() {
     const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal, swapRoomModal, newChangedRoomID } = this.state
     const totalPayment = this.props.roomInfo && calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost - this.props.roomInfo.advancedPay
@@ -730,7 +758,7 @@ class DetailRoom extends Component {
                     </TouchableOpacity>
                     {
                       listImgs.length > 0 && listImgs.map(item => (
-                        <TouchableOpacity onPress={() => this.viewImage(item)}>
+                        <TouchableOpacity onPress={() => this.viewImage(item)} onLongPress={() => this.showActionSheet(item, listImgs)}>
                           <Image source={{ uri: item }} style={styles.imgCMND} />
                         </TouchableOpacity>
                       ))

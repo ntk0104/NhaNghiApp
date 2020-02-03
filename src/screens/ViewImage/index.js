@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View, ImageBackground } from 'react-native';
+import { Text, TouchableOpacity, View, ImageBackground, StatusBar } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Icon } from 'native-base'
 import styles from './styles'
@@ -32,6 +32,7 @@ export default class ViewCamera extends Component {
     const { urlImg } = this.state
     return (
       <View style={styles.container}>
+        <StatusBar hidden={true} />
         <View style={styles.previewImgContainter}>
           <ImageBackground source={{ uri: urlImg }} style={{ height: '100%', resizeMode: 'contain' }}>
             <TouchableOpacity onPress={this.takePicture} style={styles.btnTool} onPress={() => this.props.navigation.goBack()}>

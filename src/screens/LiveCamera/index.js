@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, View, ImageBackground } from 'react-native';
+import { Text, TouchableOpacity, View, ImageBackground, StatusBar } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Icon } from 'native-base'
 import styles from './styles'
@@ -87,6 +87,7 @@ class LiveCamera extends Component {
     const { turningOnFlash, pathImg } = this.state
     return (
       <View style={styles.container}>
+        <StatusBar hidden={true} />
         {
           !pathImg ?
             <RNCamera
@@ -96,6 +97,7 @@ class LiveCamera extends Component {
               style={styles.preview}
               type={RNCamera.Constants.Type.back}
               flashMode={turningOnFlash ? RNCamera.Constants.FlashMode.on : RNCamera.Constants.FlashMode.off}
+              autoFocus={RNCamera.Constants.AutoFocus.on}
               androidCameraPermissionOptions={{
                 title: 'Permission to use camera',
                 message: 'We need your permission to use your camera',
