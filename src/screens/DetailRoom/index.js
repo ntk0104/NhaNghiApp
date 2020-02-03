@@ -17,6 +17,8 @@ import RoomMap from '../Home/RoomMap/index'
 import _ from 'lodash'
 import Modal from 'react-native-modal'
 import ActionSheet from 'react-native-action-sheet'
+import NavigationHeader from './NavigationHeader'
+
 const optionArray = [
   'Xóa hình',
   'Hủy'
@@ -396,14 +398,12 @@ class DetailRoom extends Component {
         timeOut: moment().valueOf()
       })
       setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
-
     })
-
   }
 
   lostRoom = () => {
     const { roomInfo } = this.props
-    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, sectionRoom, tag } = this.state
+    const { calculatedRoomCost } = this.state
     this.props.updateRoomInfoRequestHandler({
       id: roomInfo.id,
       currentStatus: 'available',
@@ -614,18 +614,19 @@ class DetailRoom extends Component {
       <View style={styles.container} >
         {
           this.props.roomInfo &&
-          <View style={styles.navigationBar}>
-            <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
-              <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
-            </TouchableOpacity>
-            <View style={styles.headerTitle}>
-              <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
-            </View>
-            <TouchableOpacity style={styles.btnDeleteRoom} onPress={this.deleteRoom}>
-              <Text style={styles.deleteRoomTxt}>Hủy Phòng</Text>
-              <Icon type='AntDesign' name='delete' style={styles.iconBack} />
-            </TouchableOpacity>
-          </View>
+          // <View style={styles.navigationBar}>
+          //   <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
+          //     <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
+          //   </TouchableOpacity>
+          //   <View style={styles.headerTitle}>
+          //     <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
+          //   </View>
+          //   <TouchableOpacity style={styles.btnDeleteRoom} onPress={this.deleteRoom}>
+          //     <Text style={styles.deleteRoomTxt}>Hủy Phòng</Text>
+          //     <Icon type='AntDesign' name='delete' style={styles.iconBack} />
+          //   </TouchableOpacity>
+          // </View>
+          <NavigationHeader goBack={() => this.props.navigation.goBack()} roomName={this.props.roomInfo.roomName} deleteRoom={this.deleteRoom} />
         }
         {
           this.props.roomInfo &&
@@ -667,7 +668,6 @@ class DetailRoom extends Component {
                         }
                       }}
                       onDateChange={date => this.selectDateFrom(date)}
-
                     />
                   </View>
                 </View>
