@@ -32,7 +32,15 @@ export default class RoomItem extends PureComponent {
     return (
       <TouchableOpacity style={[styles.roomContainer, { backgroundColor: roomStatus == 'available' ? 'white' : '#F1948A' }]} onPress={this.clickRoom}>
         <View style={styles.roomNumberWrapper}>
-          <Text style={styles.roomNumberTxt}>{roomName}</Text>
+          {
+            (id == '18' || id == 8) ?
+              <View style={{backgroundColor: '#1979A0', padding: 5}}>
+                <Text style={styles.roomNumberTxt}>{roomName}</Text>
+              </View>
+              :
+              <Text style={styles.roomNumberTxt}>{roomName}</Text>
+          }
+
           {
             type == '2beds' &&
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: '100%' }}>

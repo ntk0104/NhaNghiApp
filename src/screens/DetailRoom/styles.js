@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: screen.height * 0.1,
     backgroundColor: '#1A72BC',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   btnBack: {
     width: 80,
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     width: '100%',
-    height: screen.height * 0.15,
+    height: screen.height * 0.1,
     backgroundColor: '#EAFAF1',
     flexDirection: 'row',
     alignItems: 'center',
@@ -78,6 +79,8 @@ const styles = StyleSheet.create({
   },
   rowInfoContainer: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
   },
   titleWrapper: {
@@ -182,6 +185,11 @@ const styles = StyleSheet.create({
     height: screen.height * 0.6,
     backgroundColor: 'white'
   },
+  modalSwapRoomWrapper: {
+    width: screen.width * 0.8,
+    height: screen.height * 0.8,
+    backgroundColor: 'white'
+  },
   modalHeaderWrapper: {
     flex: 1,
     backgroundColor: '#2A6C97',
@@ -190,6 +198,10 @@ const styles = StyleSheet.create({
   },
   modalBodyWrapper: {
     flex: 2,
+  },
+  modalSwapRoomWrapper: {
+    flex: 6,
+    backgroundColor: 'white'
   },
   modalFooterWrapper: {
     flex: 1,
@@ -241,7 +253,8 @@ const styles = StyleSheet.create({
   imgCMND: {
     width: screen.height * 0.12,
     height: screen.height * 0.1,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
+    marginRight: 10
   },
   historyNote: {
     color: 'black',
@@ -266,6 +279,60 @@ const styles = StyleSheet.create({
     fontSize: RFValue(12, 790),
     fontWeight: '600',
     padding: 5
+  },
+  btnDeleteRoom: {
+    padding: 5,
+    paddingHorizontal: 10,
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderWidth: 1,
+    marginRight: 10,
+    borderColor: 'white',
+    borderRadius: 5,
+    backgroundColor: '#EA1576'
+  },
+  deleteRoomTxt: {
+    fontSize: RFValue(14, 790),
+    color: 'white',
+    fontWeight: 'bold',
+    marginRight: 10
+  },
+  btnSetting: {
+    padding: 10,
+    height: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginRight: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#BFC9CA'
+  },
+  iconSetting: {
+    fontSize: RFValue(30, 790),
+    color: 'black'
+  },
+  startDatePicker: {
+    width: 147,
+    height: '90%',
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  iconCamera: {
+    fontSize: RFValue(40, 790),
+    color: 'black'
+  },
+  btnCamera: {
+    height: '90%',
+    width: 80,
+    alignItems: "center",
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'black',
+    marginRight: 10
   }
 })
 

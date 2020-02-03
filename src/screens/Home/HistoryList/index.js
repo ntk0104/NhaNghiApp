@@ -17,15 +17,17 @@ class HistoryList extends Component {
 
 
   render() {
-    //console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList');
+    //console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList'); 
+    let data = [...this.props.historyRoom]
+    data = data.sort((a, b) => b['addedTime'] - a['addedTime'])
     return (
       <View style={{ width: '100%', flex: 1 }}>
         <FlatList
-          data={this.props.historyRoom}
+          data={data}
           scrollEnabled
           bounces={true}
           keyExtractor={item => item.addedTime + ''}
-          renderItem={({ item, index }) => <HistoryItem item={item} />}
+          renderItem={({ item, index }) => <HistoryItem item={item} navigation={this.props.navigation} />}
         />
       </View>
     )

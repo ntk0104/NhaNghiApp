@@ -123,8 +123,18 @@ export const calculateRoomCostOvernight = (timestampIn, timestampOut, overnight_
   const bufferTime = appConfig.bufferTimeInMinutes // sống có đức, dưới threshold thì coi như ko tính charge thêm level tiếp theo -dvt: phut
   let numsNight = calculateNumsNightFrom(timestampIn, timestampOut)
   if (numsNight == 0) {
-    // without charge additional hour
-    return overnight_price
+    const currentDate = moment(timestampOut).format('YYYY-MM-DD')
+    const generatedTimeInThreshold = currentDate + ' 05:00:00'
+    const generatedTimeInstampThreshold = moment(generatedTimeInThreshold).valueOf()
+    const generatedTimeOutThreshold = currentDate + ' 12:' + bufferTime + ':00'
+    const generatedTimestampOutThreshold = moment(generatedTimeOutThreshold).valueOf()
+    if (timestampOut > generatedTimestampOutThreshold && timestampIn < generatedTimeInstampThreshold) {
+      let additionalHourCost = calculateRoomCostPerHour(moment(currentDate + ' 12:00:00').valueOf(), timestampOut, overnight_price, SectionHourCost, additionalHourPrice, 'additionalOverNight')
+      return overnight_price + additionalHourCost
+    } else {
+      // without charge additional hour
+      return overnight_price
+    }
   } else {
     const currentDate = moment(timestampOut).format('YYYY-MM-DD')
     const generatedTimeThreshold = currentDate + ' 12:' + bufferTime + ':00'
@@ -134,5 +144,16 @@ export const calculateRoomCostOvernight = (timestampIn, timestampOut, overnight_
       return numsNight * overnight_price + additionalHourCost
     }
     return numsNight * overnight_price
+  }
+}
+
+export const formatVND = (anotherCostValue) => {
+  try {
+    let intMoney = parseInt(anotherCostValue) * 1000
+    // intMoney = intMoney.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+    intMoney = intMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    return intMoney
+  } catch (error) {
+    console.log("TCL: formatVND -> error", error)
   }
 }

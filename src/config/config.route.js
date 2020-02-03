@@ -3,7 +3,10 @@ import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator, 
 import Home from '../screens/Home/index'
 import DetailRoom from '../screens/DetailRoom/index'
 import StatisticDay from '../screens/StatisticDay'
-
+import ChangeCashHistory from '../screens/ChangeCashHistory/index'
+import LiveCamera from '../screens/LiveCamera/index'
+import ViewImage from '../screens/ViewImage/index'
+import HistoryRoom from '../screens/HistoryRoom'
 
 const AppNavigator = createStackNavigator(
   {
@@ -16,6 +19,18 @@ const AppNavigator = createStackNavigator(
     StatisticDay: {
       screen: StatisticDay
     },
+    ChangeCashHistory: {
+      screen: ChangeCashHistory
+    },
+    LiveCamera: {
+      screen: LiveCamera
+    },
+    ViewImage: {
+      screen: ViewImage
+    },
+    HistoryRoom: {
+      screen: HistoryRoom
+    }
   },
   {
     initialRouteName: "Home",

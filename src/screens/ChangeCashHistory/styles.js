@@ -15,18 +15,23 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     flexDirection: 'row'
   },
+  btnBack: {
+    width: 80,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  iconBack: {
+    color: 'white',
+    fontSize: RFValue(25, 790)
+  },
   titleTopBarTxt: {
     color: 'white',
     // fontSize: 20,
     fontSize: RFValue(20, 790),
     fontWeight: 'bold',
-    alignSelf: 'center'
-  },
-  normalTxt: {
-    color: 'black',
-    // fontSize: 20,
-    fontSize: RFValue(18, 790),
-    fontWeight: 'bold'
+    alignSelf: 'center',
+    textTransform: 'uppercase'
   },
   dateSelectionRow: {
     width: '100%',
@@ -35,25 +40,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row'
   },
+  normalTxt: {
+    color: 'black',
+    // fontSize: 20,
+    fontSize: RFValue(20, 790),
+    fontWeight: 'bold'
+  },
   startDatePicker: {
-    width: 147,
+    width: 200,
     height: '90%',
     justifyContent: "center",
     alignItems: "center"
-  },
-  roomsWrapper: {
-    flex: 1
-  },
-  rowRoomsContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    height: screen.height * 0.5,
-  },
-  btnBack: {
-    width: 80,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   btnOK: {
     width: 80,
@@ -61,11 +58,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'green',
-    marginLeft: 30
+    marginLeft: 30,
+    borderRadius: 5
   },
-  iconBack: {
-    color: 'white',
-    fontSize: RFValue(25, 790)
+  flatlist: {
+    flex: 1
   }
 })
 

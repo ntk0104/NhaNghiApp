@@ -31,17 +31,17 @@ const styles = StyleSheet.create({
     padding: 5
   },
   tagWrapper: {
-    padding: 3,
+    padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'green',
     borderRadius: 4,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: 'white'
   },
   tagTxt: {
     color: 'white',
-    fontSize: RFValue(15, 790),
+    fontSize: RFValue(18, 790),
     fontWeight: 'bold',
     textAlign: 'center'
   },

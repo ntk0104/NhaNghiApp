@@ -17,187 +17,6 @@ class StatisticDay extends Component {
     super(props)
     this.state = {
       selectedDay: moment().format('DD/MM/YYYY'),
-      data: {
-        '18': {
-          roomName: '18',
-          hourSection: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-          ],
-          overnight: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              total: 200,
-              guessName: 'Nguyễn Tuấn Kiệt'
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              total: 200,
-              guessName: 'Nguyễn Tuấn Kiệt'
-            }
-          ]
-        },
-        '17': {
-          roomName: '17',
-          hourSection: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-          ],
-          overnight: [{
-            timeIn: 123123123,
-            timeOut: 123123123,
-            total: 200,
-            guessName: 'Nguyễn Tuấn Kiệt'
-          }]
-        },
-        '16': {
-          roomName: '16',
-          hourSection: [
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            },
-            {
-              timeIn: 123123123,
-              timeOut: 123123123,
-              roomType: 'quat',
-              total: 60
-            }
-          ],
-          overnight: [{
-            timeIn: 123123123,
-            timeOut: 123123123,
-            total: 200,
-            guessName: 'Nguyễn Tuấn Kiệt'
-          }]
-        }
-      }
     }
   }
 
@@ -223,7 +42,6 @@ class StatisticDay extends Component {
     const { selectedDay, data } = this.state
     return (
       <View style={styles.container}>
-        <StatusBar hidden={true} />
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
             <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
@@ -250,7 +68,7 @@ class StatisticDay extends Component {
                 top: 12
               },
               dateInput: {
-                height: 32,
+                height: 50,
                 backgroundColor: 'white',
                 borderColor: 'gray',
                 marginLeft: 0,
@@ -261,7 +79,7 @@ class StatisticDay extends Component {
             onDateChange={date => this.selectDateFrom(date)}
           />
           <TouchableOpacity style={styles.btnOK} onPress={this.getStatisticOfDay}>
-            <Text style={[styles.normalTxt, {color: 'white'}]}>OK</Text>
+            <Text style={[styles.normalTxt, { color: 'white' }]}>OK</Text>
           </TouchableOpacity>
         </View>
         {
@@ -269,34 +87,34 @@ class StatisticDay extends Component {
             ?
             <ScrollView style={styles.roomsWrapper}>
               <View style={styles.rowRoomsContainer}>
-                <RoomItem roomID={'18'} data={this.props.statisticOfDay['18']} />
-                <RoomItem roomID={'17'} data={this.props.statisticOfDay['17']} />
-                <RoomItem roomID={'16'} data={this.props.statisticOfDay['16']} />
+                <RoomItem navigation={this.props.navigation} roomID={'18'} data={this.props.statisticOfDay['18']} />
+                <RoomItem navigation={this.props.navigation} roomID={'17'} data={this.props.statisticOfDay['17']} />
+                <RoomItem navigation={this.props.navigation} roomID={'16'} data={this.props.statisticOfDay['16']} />
               </View>
               <View style={styles.rowRoomsContainer}>
-                <RoomItem roomID={'15'} data={this.props.statisticOfDay['15']} />
-                <RoomItem roomID={'14'} data={this.props.statisticOfDay['14']} />
-                <RoomItem roomID={'13'} data={this.props.statisticOfDay['13']} />
+                <RoomItem navigation={this.props.navigation} roomID={'15'} data={this.props.statisticOfDay['15']} />
+                <RoomItem navigation={this.props.navigation} roomID={'14'} data={this.props.statisticOfDay['14']} />
+                <RoomItem navigation={this.props.navigation} roomID={'13'} data={this.props.statisticOfDay['13']} />
               </View>
               <View style={styles.rowRoomsContainer}>
-                <RoomItem roomID={'12'} data={this.props.statisticOfDay['12']} />
-                <RoomItem roomID={'11'} data={this.props.statisticOfDay['11']} />
-                <RoomItem roomID={'10'} data={this.props.statisticOfDay['10']} />
+                <RoomItem navigation={this.props.navigation} roomID={'12'} data={this.props.statisticOfDay['12']} />
+                <RoomItem navigation={this.props.navigation} roomID={'11'} data={this.props.statisticOfDay['11']} />
+                <RoomItem navigation={this.props.navigation} roomID={'10'} data={this.props.statisticOfDay['10']} />
               </View>
               <View style={styles.rowRoomsContainer}>
-                <RoomItem roomID={'9'} data={this.props.statisticOfDay['9']} />
-                <RoomItem roomID={'8'} data={this.props.statisticOfDay['8']} />
-                <RoomItem roomID={'7'} data={this.props.statisticOfDay['7']} />
+                <RoomItem navigation={this.props.navigation} roomID={'9'} data={this.props.statisticOfDay['9']} />
+                <RoomItem navigation={this.props.navigation} roomID={'8'} data={this.props.statisticOfDay['8']} />
+                <RoomItem navigation={this.props.navigation} roomID={'7'} data={this.props.statisticOfDay['7']} />
               </View>
               <View style={styles.rowRoomsContainer}>
-                <RoomItem roomID={'6'} data={this.props.statisticOfDay['6']} />
-                <RoomItem roomID={'5'} data={this.props.statisticOfDay['5']} />
-                <RoomItem roomID={'4'} data={this.props.statisticOfDay['4']} />
+                <RoomItem navigation={this.props.navigation} roomID={'6'} data={this.props.statisticOfDay['6']} />
+                <RoomItem navigation={this.props.navigation} roomID={'5'} data={this.props.statisticOfDay['5']} />
+                <RoomItem navigation={this.props.navigation} roomID={'4'} data={this.props.statisticOfDay['4']} />
               </View>
               <View style={styles.rowRoomsContainer}>
-                <RoomItem roomID={'3'} data={this.props.statisticOfDay['3']} />
-                <RoomItem roomID={'2'} data={this.props.statisticOfDay['2']} />
-                <RoomItem roomID={'16'} data={this.props.statisticOfDay['16']} />
+                <RoomItem navigation={this.props.navigation} roomID={'3'} data={this.props.statisticOfDay['3']} />
+                <RoomItem navigation={this.props.navigation} roomID={'2'} data={this.props.statisticOfDay['2']} />
+                <RoomItem navigation={this.props.navigation} roomID={'thongke'} data={this.props.statisticOfDay['thongke']} />
               </View>
             </ScrollView>
             :

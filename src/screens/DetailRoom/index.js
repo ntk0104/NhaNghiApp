@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, Image, TextInput, Platform } from 'react-native'
+import { Text, View, TouchableOpacity, Image, TextInput, Platform, Alert } from 'react-native'
 import { Icon } from 'native-base'
 import styles from './styles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
@@ -7,16 +7,24 @@ import CheckBoxButton from '../../components/CheckBoxButton/index'
 import ChargedItemRow from './ChargedItemRow'
 import moment from 'moment'
 import { makeGetRoomInfo } from '../../redux/selectors/index'
-import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest, getHistoryListRequest, updateHistoryRoomRequest } from '../../redux/actions/index'
+import { getRoomInfoRequest, updateRoomInfoRequest, updateChargedItemRequest, getRoomsDataRequest, getCashBoxRequest, addHistoryItemRequest, getHistoryListRequest, updateHistoryRoomRequest, cancelCurrentRoomRequest, deleteHistoryRoomRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { appConfig } from '../../utils'
 import { calculateRoomCostPerHour, calculateRoomCostOvernight } from '../../utils/Helpers'
+import DatePicker from 'react-native-datepicker';
+import RoomMap from '../Home/RoomMap/index'
 import _ from 'lodash'
 import Modal from 'react-native-modal'
+import ActionSheet from 'react-native-action-sheet'
+const optionArray = [
+  'Xóa hình',
+  'Hủy'
+]
+var Sound = require('react-native-sound');
+var whoosh = null
 
 class DetailRoom extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -46,7 +54,9 @@ class DetailRoom extends Component {
       anotherCostValue: 0,
       currentAddedType: 'add',
 
-      alertReturnRoomModal: false
+      alertReturnRoomModal: false,
+      swapRoomModal: false,
+      newChangedRoomID: undefined
     }
   }
 
@@ -74,10 +84,17 @@ class DetailRoom extends Component {
     const payload = this.props.navigation.getParam('payload')
     const { id } = payload
     this.props.getRoomInfoRequestHandler(payload)
+    whoosh = new Sound('alert_return_room.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        // alert('failed to load the sound', error);
+        return;
+      }
+    })
   }
 
   componentWillUnmount() {
     this.props.getRoomsDataRequestHandler()
+    whoosh.release();
   }
 
   calculateRoomCost = () => {
@@ -105,7 +122,7 @@ class DetailRoom extends Component {
       if (itemID == 'water') {
         this.setState({ waterQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_water',
+          id: roomInfo.sectionID + '_water',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitWaterPrice
@@ -114,7 +131,7 @@ class DetailRoom extends Component {
       } else if (itemID == 'beer') {
         this.setState({ beerQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_beer',
+          id: roomInfo.sectionID + '_beer',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitBeerPrice
@@ -123,7 +140,7 @@ class DetailRoom extends Component {
       } else if (itemID == 'softdrink') {
         this.setState({ softdrinkQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_softdrink',
+          id: roomInfo.sectionID + '_softdrink',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitSoftDrinkPrice
@@ -132,7 +149,7 @@ class DetailRoom extends Component {
       } else if (itemID == 'instantNoodle') {
         this.setState({ instantNoodleQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
-          id: roomInfo.timeIn + '_instantNoodle',
+          id: roomInfo.sectionID + '_instantNoodle',
           addedTime: moment().valueOf(),
           quantity: currentValue,
           total: currentValue * appConfig.unitInstantNoodle
@@ -154,7 +171,7 @@ class DetailRoom extends Component {
     if (itemID == 'water') {
       this.setState({ waterQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_water',
+        id: roomInfo.sectionID + '_water',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitWaterPrice
@@ -163,7 +180,7 @@ class DetailRoom extends Component {
     } else if (itemID == 'beer') {
       this.setState({ beerQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_beer',
+        id: roomInfo.sectionID + '_beer',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitBeerPrice
@@ -172,7 +189,7 @@ class DetailRoom extends Component {
     } else if (itemID == 'softdrink') {
       this.setState({ softdrinkQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_softdrink',
+        id: roomInfo.sectionID + '_softdrink',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitSoftDrinkPrice
@@ -181,7 +198,7 @@ class DetailRoom extends Component {
     } else if (itemID == 'instantNoodle') {
       this.setState({ instantNoodleQuantity: currentValue })
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_instantNoodle',
+        id: roomInfo.sectionID + '_instantNoodle',
         addedTime: moment().valueOf(),
         quantity: currentValue,
         total: currentValue * appConfig.unitInstantNoodle
@@ -192,46 +209,29 @@ class DetailRoom extends Component {
       id: this.props.roomInfo.id,
       note: this.state.note + ',' + addedNote
     })
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID: this.props.roomInfo.sectionID,
+      note: this.state.note + ',' + addedNote
+    })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 
   editTag = (tagID) => {
-    const { sectionRoom } = this.state
     const { roomInfo } = this.props
-    if (tagID == 'DG') {
-      this.setState({
-        tag: tagID,
-        sectionRoom: 'quat'
-      })
-    } else if (tagID == 'CD') {
-      this.setState({
-        tag: tagID,
-        sectionRoom: 'lanh'
-      })
-    } else {
-      this.setState({
-        tag: tagID,
-        sectionRoom: 'lanh'
-      })
-    }
+    this.setState({ tag: tagID })
     //update room
     this.props.updateRoomInfoRequestHandler({
       id: roomInfo.id,
       tag: tagID
     })
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID: roomInfo.sectionID,
+      tag: tagID
+    })
     setTimeout(() => {
       this.calculateRoomCost()
-      this.props.updateHistoryRoomRequestHandler({
-        addedTime: roomInfo.timeIn,
-        tag: tagID,
-        sectionRoom: sectionRoom
-      })
-    }, 300)
-    setTimeout(() => {
       this.props.getHistoryListRequestHandler()
-    }, 500)
-
-
+    }, 200)
   }
 
   editSectionRoomType = (sectionID) => {
@@ -251,7 +251,7 @@ class DetailRoom extends Component {
       note: this.state.note + ',' + addedNote
     })
     this.props.updateHistoryRoomRequestHandler({
-      addedTime: this.state.roomInfo.timeIn,
+      sectionID: this.props.roomInfo.sectionID,
       sectionRoom: sectionID
     })
     this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
@@ -326,14 +326,14 @@ class DetailRoom extends Component {
     let addedNote = ''
     if (this.state.currentAddedType == 'add') {
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_anotherCost',
+        id: roomInfo.sectionID + '_anotherCost',
         addedTime: moment().valueOf(),
         total: parseInt(this.state.additionalCost) + parseInt(this.state.anotherCostValue)
       })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' CỘNG thêm vào chi phí khác (' + this.state.anotherCostNoteText + ') thêm: ' + this.state.anotherCostValue + ' K'
     } else {
       this.props.updateChargedItemRequestHandler({
-        id: roomInfo.timeIn + '_anotherCost',
+        id: roomInfo.sectionID + '_anotherCost',
         addedTime: moment().valueOf(),
         total: parseInt(this.state.additionalCost) - parseInt(this.state.anotherCostValue)
       })
@@ -354,34 +354,35 @@ class DetailRoom extends Component {
       id: roomInfo.id,
       currentStatus: 'available',
       tag: '',
+      sectionID: 0,
       timeIn: 0,
       sectionRoom: '',
-      cmnd: null,
+      cmnd: '',
       advancedPay: 0
     })
 
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_water',
+      id: roomInfo.sectionID + '_water',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_beer',
+      id: roomInfo.sectionID + '_beer',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_softdrink',
+      id: roomInfo.sectionID + '_softdrink',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_instantNoodle',
+      id: roomInfo.sectionID + '_instantNoodle',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_anotherCost',
+      id: roomInfo.sectionID + '_anotherCost',
       payStatus: 'paid'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_roomcost',
+      id: roomInfo.sectionID + '_roomcost',
       total: calculatedRoomCost,
       payStatus: 'paid'
     })
@@ -389,17 +390,10 @@ class DetailRoom extends Component {
     this.setState({ alertReturnRoomModal: false }, () => {
       this.props.navigation.goBack()
       this.props.getCurrentMoneyInBoxHandler()
-      this.props.addHistoryItemRequestHandler({
-        roomID: roomInfo.id,
-        roomName: roomInfo.roomName,
-        status: 'out',
+      this.props.updateHistoryRoomRequestHandler({
+        sectionID: roomInfo.sectionID,
         total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
-        sectionID: roomInfo.timeIn,
-        timeIn: roomInfo.timeIn,
-        note: roomInfo.note,
-        tag: tag,
-        sectionRoom: sectionRoom,
-        cmnd: null
+        timeOut: moment().valueOf()
       })
       setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
 
@@ -414,66 +408,210 @@ class DetailRoom extends Component {
       id: roomInfo.id,
       currentStatus: 'available',
       tag: '',
+      sectionID: 0,
       timeIn: 0,
       sectionRoom: '',
-      cmnd: null,
+      cmnd: '',
       advancedPay: 0
     })
 
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_water',
+      id: roomInfo.sectionID + '_water',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_beer',
+      id: roomInfo.sectionID + '_beer',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_softdrink',
+      id: roomInfo.sectionID + '_softdrink',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_instantNoodle',
+      id: roomInfo.sectionID + '_instantNoodle',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_anotherCost',
+      id: roomInfo.sectionID + '_anotherCost',
       payStatus: 'lost'
     })
     this.props.updateChargedItemRequestHandler({
-      id: roomInfo.timeIn + '_roomcost',
+      id: roomInfo.sectionID + '_roomcost',
       total: calculatedRoomCost - roomInfo.advancedPay,
       payStatus: 'lost'
     })
 
     this.setState({ alertReturnRoomModal: false }, () => {
       this.props.navigation.goBack()
-      this.props.addHistoryItemRequestHandler({
-        roomID: roomInfo.id,
-        roomName: roomInfo.roomName,
-        status: 'out',
-        total: roomInfo.advancedPay,
-        sectionID: roomInfo.timeIn,
-        timeIn: roomInfo.timeIn,
-        note: roomInfo.note,
-        tag: tag,
-        sectionRoom: sectionRoom,
-        cmnd: null
+      this.props.updateHistoryRoomRequestHandler({
+        sectionID: roomInfo.sectionID,
+        timeOut: moment().valueOf()
       })
-      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
+      setTimeout(() => this.props.getHistoryListRequestHandler(), 200)
     })
-
   }
 
+  deleteRoom = () => {
+    Alert.alert(
+      'CHÚ Ý',
+      'Bạn có chắc muốn hủy phòng này không?',
+      [
+        {
+          text: 'Không',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Chắc chắn', onPress: () => {
+            const { roomInfo } = this.props
+            this.props.cancelCurrentRoomRequestHandler({
+              sectionID: roomInfo.sectionID,
+              roomID: roomInfo.id,
+            })
+            setTimeout(() => {
+              this.props.getHistoryListRequestHandler()
+              this.props.navigation.goBack()
+            }, 300)
+          }
+        }
+      ],
+      { cancelable: true },
+    );
+  }
+
+  selectDateFrom = (date) => {
+    this.props.updateRoomInfoRequestHandler({
+      id: this.props.roomInfo.id,
+      timeIn: moment(date, 'DD/MM/YYYY HH:mm:ss').valueOf()
+    })
+    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID: this.props.roomInfo.sectionID,
+      timeIn: moment(date, 'DD/MM/YYYY HH:mm:ss').valueOf()
+    })
+    this.props.getHistoryListRequestHandler()
+  }
+
+  swapToNewRoom = (id) => {
+    const { roomInfo } = this.props
+    const { currentStatus, timeIn, note, tag, advancedPay, sectionRoom, sectionID, cmnd } = roomInfo
+    //move data to new room - Room table
+    this.props.updateRoomInfoRequestHandler({
+      id: id,
+      currentStatus,
+      sectionID,
+      timeIn,
+      note,
+      tag,
+      advancedPay,
+      sectionRoom,
+      cmnd
+    })
+
+    // update history room item with new room id
+    this.props.updateHistoryRoomRequestHandler({
+      sectionID,
+      roomID: id,
+      roomName: id,
+    })
+
+    // update charged items
+    this.props.updateChargedItemRequestHandler({
+      id: sectionID + '_softdrink',
+      roomID: id
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: sectionID + '_beer',
+      roomID: id
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: sectionID + '_instantNoodle',
+      roomID: id
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: sectionID + '_water',
+      roomID: id
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: sectionID + '_anotherCost',
+      roomID: id
+    })
+    this.props.updateChargedItemRequestHandler({
+      id: sectionID + '_roomcost',
+      roomID: id
+    })
+
+    this.setState({
+      swapRoomModal: false
+    }, () => {
+      // reset current room - Room table
+      this.props.updateRoomInfoRequestHandler({
+        id: roomInfo.id,
+        currentStatus: 'available',
+        sectionID: 0,
+        timeIn: 0,
+        note: '',
+        tag: '',
+        advancedPay: 0,
+        sectionRoom: '',
+        cmnd: ''
+      })
+      this.props.getHistoryListRequestHandler()
+      this.props.navigation.goBack()
+    })
+  }
+
+  showAlertBusyRoom = () => {
+    alert('Không thể đổi sang phòng đang có khách, vui lòng chọn phòng khác!')
+  }
+
+  showCamera = () => {
+    this.props.navigation.navigate('LiveCamera', {
+      roomID: this.props.roomInfo.id,
+      sectionID: this.props.roomInfo.sectionID,
+      cmnd: this.props.roomInfo.cmnd
+    })
+  }
+
+  viewImage = (url) => {
+    this.props.navigation.navigate('ViewImage', {
+      urlImg: url
+    })
+  }
+
+  showActionSheet = (selectedURL, listURLs) => {
+    ActionSheet.showActionSheetWithOptions({
+      options: optionArray,
+      cancelButtonIndex: 1,
+      destructiveButtonIndex: 0,
+      tintColor: 'blue'
+    },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          listURLs.splice(listURLs.indexOf(selectedURL), 1)
+          this.props.updateRoomInfoRequestHandler({
+            id: this.props.roomInfo.id,
+            cmnd: listURLs.join(';')
+          })
+          this.props.updateHistoryRoomRequestHandler({
+            sectionID: this.props.roomInfo.sectionID,
+            cmnd: listURLs.join(';')
+          })
+          this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+        }
+      });
+  };
+
   render() {
-    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal } = this.state
+    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal, swapRoomModal, newChangedRoomID } = this.state
     const totalPayment = this.props.roomInfo && calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost - this.props.roomInfo.advancedPay
     const noteList = note.split(',')
     const generatedNote = noteList.join('\n')
     const formatedVND = this.formatVND(anotherCostValue)
     const formatedTotalPayment = this.formatVND(totalPayment)
+    const listImgs = this.props.roomInfo && this.props.roomInfo.cmnd.length > 0 && this.props.roomInfo.cmnd.split(';')
     return (
-      <View style={styles.container}>
+      <View style={styles.container} >
         {
           this.props.roomInfo &&
           <View style={styles.navigationBar}>
@@ -483,6 +621,10 @@ class DetailRoom extends Component {
             <View style={styles.headerTitle}>
               <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
             </View>
+            <TouchableOpacity style={styles.btnDeleteRoom} onPress={this.deleteRoom}>
+              <Text style={styles.deleteRoomTxt}>Hủy Phòng</Text>
+              <Icon type='AntDesign' name='delete' style={styles.iconBack} />
+            </TouchableOpacity>
           </View>
         }
         {
@@ -494,8 +636,39 @@ class DetailRoom extends Component {
                   <View style={styles.titleWrapper}>
                     <Text style={styles.titleTxt}>Giờ Vào:</Text>
                   </View>
-                  <View style={styles.InfoRowWrapper}>
+                  <View style={[styles.InfoRowWrapper, { flex: 2 }]}>
                     <Text style={styles.titleTxt}>{moment(this.props.roomInfo.timeIn).format('HH:mm (DD/MM/YYYY)')}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <DatePicker
+                      style={styles.startDatePicker}
+                      iconSource={require('../../assets/images/calendar.png')}
+                      mode='datetime'
+                      placeholder='Thay đổi'
+                      format='DD/MM/YYYY HH:mm:ss'
+                      is24Hour={true}
+                      confirmBtnText='Chọn'
+                      cancelBtnText='Hủy'
+                      customStyles={{
+                        dateIcon: {
+                          width: 14,
+                          height: 15,
+                          position: 'absolute',
+                          right: 7,
+                          top: 12
+                        },
+                        dateInput: {
+                          height: 50,
+                          backgroundColor: 'white',
+                          borderColor: 'gray',
+                          marginLeft: 0,
+                          paddingLeft: 8,
+                          alignItems: 'flex-start'
+                        }
+                      }}
+                      onDateChange={date => this.selectDateFrom(date)}
+
+                    />
                   </View>
                 </View>
                 <View style={styles.rowInfoContainer}>
@@ -580,8 +753,16 @@ class DetailRoom extends Component {
                     <Text style={styles.titleTxt}>CMND:</Text>
                   </View>
                   <View style={styles.InfoCMNDWrapper}>
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={styles.imgCMND} />
-                    <Image source={{ uri: 'https://lambangdaihocaz.com/wp-content/uploads/2019/06/nhan-lam-cmnd-gia.jpg' }} style={[styles.imgCMND, { marginLeft: 20 }]} />
+                    <TouchableOpacity style={styles.btnCamera} onPress={this.showCamera}>
+                      <Icon type="Entypo" name="camera" style={styles.iconCamera} />
+                    </TouchableOpacity>
+                    {
+                      listImgs.length > 0 && listImgs.map(item => (
+                        <TouchableOpacity onPress={() => this.viewImage(item)} onLongPress={() => this.showActionSheet(item, listImgs)}>
+                          <Image source={{ uri: item }} style={styles.imgCMND} />
+                        </TouchableOpacity>
+                      ))
+                    }
                   </View>
                 </View>
               </View>
@@ -667,14 +848,14 @@ class DetailRoom extends Component {
             </View>
           </View>
         }
-        <View style={styles.bottomBar}>
-          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#E74C3C' }]}>
+        < View style={styles.bottomBar} >
+          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#E74C3C' }]} onPress={() => this.setState({ swapRoomModal: true })}>
             <Text style={styles.headerTitleTxt}>Đổi phòng</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.btnAction, { backgroundColor: totalPayment > 0 ? '#F1C40F' : 'gray' }]} onPress={() => this.payAdvanced(totalPayment)} disabled={totalPayment == 0}>
             <Text style={styles.headerTitleTxt}>Trả tiền trước</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true })}>
+          <TouchableOpacity style={[styles.btnAction, { backgroundColor: '#65BE35' }]} onPress={() => this.setState({ alertReturnRoomModal: true }, () => { whoosh.play() })}>
             {
               totalPayment > 0 ?
                 <Text style={styles.headerTitleTxt}>Trả phòng&Thanh Toán</Text>
@@ -682,14 +863,14 @@ class DetailRoom extends Component {
                 <Text style={styles.headerTitleTxt}>Trả phòng</Text>
             }
           </TouchableOpacity>
-        </View>
-        <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer} onBackdropPress={this.closeEditAnotherCostModal}>
+        </View >
+        <Modal isVisible={anotherCostModalVisible} style={styles.modalContainer}>
           <View style={styles.modalWrapper}>
             <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={styles.modalHeaderTxt}>{modalAnotherCostHeader}</Text>
               </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeAnotherCostModal}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={() => this.setState({ anotherCostModalVisible: false })} onPress={this.closeAnotherCostModal}>
                 <Icon type="AntDesign" name="close" style={styles.iconClose} />
               </TouchableOpacity>
             </View>
@@ -736,7 +917,7 @@ class DetailRoom extends Component {
               </View>
             </View>
             <View style={styles.modalFooterWrapper}>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.submitAnotherCost}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.submitAnotherCost}>
                 <Text style={styles.modalHeaderTxt}>Nhập</Text>
               </TouchableOpacity>
             </View>
@@ -744,18 +925,18 @@ class DetailRoom extends Component {
         </Modal>
         {
           this.props.roomInfo &&
-          <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer} onBackdropPress={() => this.setState({ alertReturnRoomModal: false })}>
+          <Modal isVisible={alertReturnRoomModal} style={styles.modalReturnContainer}>
             <View style={styles.modalReturnRoomWrapper}>
               <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.currentAddedType == 'minus' ? '#F5B041' : '#2A6C97' }]}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={styles.modalHeaderTxt}>Xác nhận trả phòng {this.props.roomInfo.roomName}</Text>
                 </View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={() => this.setState({ alertReturnRoomModal: false })}>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={() => this.setState({ alertReturnRoomModal: false })}>
                   <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
                 </TouchableOpacity>
               </View>
               <View style={[styles.modalBodyWrapper, { padding: 10, justifyContent: 'space-around' }]}>
-                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: {formatedTotalPayment}</Text>
+                <Text style={styles.titleTxt}>Số tiền khách cần thanh toán là: <Text style={{ color: 'red', fontWeight: 'bold' }}>{formatedTotalPayment}</Text></Text>
                 {
                   totalPayment < 500 &&
                   <Text style={styles.titleTxt}>Khách đưa 500.000 thối lại: <Text style={{ color: 'blue' }}>{this.formatVND(500 - totalPayment)}</Text></Text>
@@ -771,17 +952,32 @@ class DetailRoom extends Component {
                 <Text style={styles.titleTxt}>Nhớ trả <Text style={{ color: 'red' }}>CHỨNG MINH</Text> <Icon type='AntDesign' name='idcard' style={{ color: 'green', fontSize: 40 }} />  và đòi <Text style={{ color: 'red' }}>CHÌA KHÓA</Text> <Icon type='FontAwesome5' name='key' style={{ color: '#B7950B', fontSize: 40 }} /></Text>
               </View>
               <View style={styles.modalFooterWrapper}>
-                <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: 'red' }]} onPress={this.closeGetRoomModal} onPress={this.lostRoom}>
+                <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: 'red' }]} onPress={this.lostRoom}>
                   <Text style={styles.modalHeaderTxt}>KHÁCH TRỐN</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.closeGetRoomModal} onPress={this.returnRoom}>
+                <TouchableOpacity activeOpacity={0.7} style={styles.btnInput} onPress={this.returnRoom}>
                   <Text style={styles.modalHeaderTxt}>OK</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </Modal>
         }
-      </View>
+        <Modal isVisible={swapRoomModal} style={styles.modalReturnContainer}>
+          <View style={styles.modalSwapRoomWrapper}>
+            <View style={styles.modalHeaderWrapper}>
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={styles.modalHeaderTxt}>Chọn phòng để đổi</Text>
+              </View>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={() => this.setState({ swapRoomModal: false })}>
+                <Icon type="AntDesign" name="close" size={30} style={{ color: 'white' }} />
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.modalSwapRoomWrapper, { padding: 10, justifyContent: 'space-around' }]}>
+              <RoomMap showGetRoomModal={this.swapToNewRoom} showRoomDetail={this.showAlertBusyRoom} />
+            </View>
+          </View>
+        </Modal>
+      </View >
     )
   }
 }
@@ -796,9 +992,10 @@ const mapDispatchToProps = dispatch => ({
   updateRoomInfoRequestHandler: payload => dispatch(updateRoomInfoRequest(payload)),
   getRoomsDataRequestHandler: () => dispatch(getRoomsDataRequest()),
   getCurrentMoneyInBoxHandler: () => dispatch(getCashBoxRequest()),
-  addHistoryItemRequestHandler: payload => dispatch(addHistoryItemRequest(payload)),
   getHistoryListRequestHandler: () => dispatch(getHistoryListRequest()),
-  updateHistoryRoomRequestHandler: (payload) => dispatch(updateHistoryRoomRequest(payload))
+  updateHistoryRoomRequestHandler: (payload) => dispatch(updateHistoryRoomRequest(payload)),
+  cancelCurrentRoomRequestHandler: (payload) => dispatch(cancelCurrentRoomRequest(payload)),
+  deleteHistoryRoomRequestHandler: (payload) => dispatch(deleteHistoryRoomRequest(payload)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailRoom)

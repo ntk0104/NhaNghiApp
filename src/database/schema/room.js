@@ -9,7 +9,8 @@ Room.schema = {
     id: 'string',
     roomName: 'string',
     currentStatus: { type: 'string', default: 'available' },
-    timeIn: 'int',
+    timeIn: 'int', // use to calculate roomcost
+    sectionID: 'int', //use to get refenrence to another object
     // chargedItems: { type: 'object', default: [] },
     // chargedItems: 'ChargedItem[]',
     note: { type: 'string', default: '' },
@@ -18,6 +19,6 @@ Room.schema = {
     sectionRoom: { type: 'string', default: 'quat' }, //quat / lanh
     overnight_price: 'int',
     type: { type: 'string', default: '1bed' },
-    cmnd: 'data?'
+    cmnd: { type: 'string', default: '' },
   }
 };

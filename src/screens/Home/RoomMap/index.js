@@ -23,12 +23,12 @@ class RoomMap extends Component {
     return false
   }
 
-  UNSAFE_componentWillReceiveProps(nextprops) {
-    const { roomsData } = this.props
-    if (!_.isEqual(roomsData, nextprops.roomsData)) {
-      this.setState({ roomsData: nextprops.roomsData })
-    }
-  }
+  // UNSAFE_componentWillReceiveProps(nextprops) {
+  //   const { roomsData } = this.props
+  //   if (!_.isEqual(roomsData, nextprops.roomsData)) {
+  //     this.setState({ roomsData: nextprops.roomsData })
+  //   }
+  // }
 
   componentDidMount(){
     this.timer = setInterval(() => {this.props.getRoomsDataRequestHandler()}, 60000)
@@ -36,7 +36,7 @@ class RoomMap extends Component {
 
   render() {
     //console.log('%c%s', 'color: #f2ceb6', 'Rendering RoomMap');
-    const { roomsData } = this.state
+    const { roomsData } = this.props
     return (
       <View style={styles.roomMapContainer}>
         <View style={styles.roomsLaneContainer}>

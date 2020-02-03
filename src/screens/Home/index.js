@@ -11,10 +11,8 @@ import { Storage, constants, appConfig } from '../../utils'
 import RoomMap from './RoomMap'
 import CashBox from './CashBox'
 import HistoryList from './HistoryList'
-import { camera, pickerImage } from '../../components/ImagePicker/index'
 import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
 import { connect } from 'react-redux';
-import { makeGetHistoryRoom } from '../../redux/selectors/index'
 
 import { createStructuredSelector } from 'reselect';
 
@@ -40,29 +38,18 @@ class Home extends PureComponent {
   }
 
   componentDidMount() {
-    //console.log('%c%s', 'color: #22b6', Realm.defaultPath);
+    console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
-  }
-
-  showCamera = () => {
-    camera((source, data) => {
-      this.setState({
-        imageUrl: source,
-        imageData: "data:image/jpeg;base64," + data
-      })
-    });
   }
 
   checkFirstInitApp = async () => {
     const isSecond = await Storage.shared().getStorage(constants.SecondStart);
     if (isSecond == true) {
       // is not first init
-      //console.log('%c%s', 'color: #f2ceb6', 'Is not first start');
       this.props.getRoomsDataRequestHandler()
       this.props.getCurrentMoneyInBoxHandler()
       this.props.getHistoryListRequestHandler()
     } else {
-      //console.log('%c%s', 'color: #f2ceb6', 'Is first start');
       // first init
       await Storage.shared().setStorage(constants.SecondStart, true)
       const listRooms = appConfig.listRooms
@@ -161,22 +148,24 @@ class Home extends PureComponent {
 
 
   onSubmitGetRoom = () => {
+    const currentTimestamp = moment().valueOf()
     const updatedInfo = {
       id: this.state.gettingRoomID,
       currentStatus: 'busy',
-      timeIn: moment().valueOf(),
+      timeIn: currentTimestamp,
+      sectionID: currentTimestamp,
       chargedItems: [],
       note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,
       sectionRoom: this.state.selectedRoomType,
-      cmnd: null
+      cmnd: ''
     }
 
     this.props.updateRoomInfoRequestHandler(updatedInfo)
 
     const roomCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'roomcost',
       roomID: this.state.gettingRoomID,
       quantity: 1,
@@ -185,8 +174,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const waterCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'water',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -195,8 +184,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const softdrinkCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'softdrink',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -205,8 +194,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const beerCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'beer',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -215,8 +204,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const instantNoodleCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'instantNoodle',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -225,8 +214,8 @@ class Home extends PureComponent {
       payStatus: 'pending'
     }
     const anotherCostCostItem = {
-      addedTime: updatedInfo.timeIn,
-      sectionID: updatedInfo.timeIn,
+      addedTime: updatedInfo.sectionID,
+      sectionID: updatedInfo.sectionID,
       itemKey: 'anotherCost',
       roomID: this.state.gettingRoomID,
       quantity: 0,
@@ -245,14 +234,14 @@ class Home extends PureComponent {
     this.props.addHistoryItemRequestHandler({
       roomID: this.state.gettingRoomID,
       roomName: this.state.gettingRoomName,
-      status: 'in',
       total: 0,
       sectionID: updatedInfo.timeIn,
       timeIn: updatedInfo.timeIn,
+      timeOut: 0,
       note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
       tag: this.state.selectedSectionType,
       sectionRoom: this.state.selectedRoomType,
-      cmnd: null
+      cmnd: ''
     })
 
     this.closeGetRoomModal()
@@ -268,7 +257,7 @@ class Home extends PureComponent {
         selectedSectionType: sectionType,
         selectedRoomType: 'quat'
       })
-    } else if (sectionType == 'CD'){
+    } else if (sectionType == 'CD') {
       this.setState({
         selectedSectionType: sectionType,
         selectedRoomType: 'lanh'
@@ -292,16 +281,15 @@ class Home extends PureComponent {
     const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
-        <StatusBar hidden={true} />
         <MenuBar goToStatisticDay={this.goToStatisticDay} />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
             <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
-            <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} />
+            <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} goToDetail={() => this.props.navigation.navigate('ChangeCashHistory')} />
           </View>
           <View style={styles.rightSideContent}>
             <Text style={styles.historyTitleTxt}>Danh sách vào / ra</Text>
-            <HistoryList />
+            <HistoryList navigation={this.props.navigation} />
           </View>
         </View>
 
@@ -361,17 +349,6 @@ class Home extends PureComponent {
                     </TouchableOpacity>
                   </View>
                 </View>
-                <View style={styles.typeContainer}>
-                  <Text style={styles.titleTxt}>Chứng minh nhân dân:</Text>
-                  <View style={styles.typeOptionsWrapper}>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={this.showCamera}>
-                      <View style={styles.optionBtnWrapper}>
-                        <Icon type="Entypo" name="camera" style={[styles.iconClose, { color: 'black' }]} />
-                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Chụp hình</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
               </View>
               <View style={styles.rightBodyContainer}>
                 <Text style={styles.titleTxt}>Ghi chú:</Text>
@@ -398,7 +375,7 @@ class Home extends PureComponent {
           {/* </ScrollView> */}
         </Modal>
 
-        <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} onBackdropPress={this.closeChangeMoneyBoxModal}>
+        <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} >
           <View style={styles.modalWrapper}>
             <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.changeMoneyType == 'withdraw' ? '#F5B041' : '#2A6C97' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -451,7 +428,7 @@ class Home extends PureComponent {
               </View>
             </View>
             <View style={styles.modalFooterWrapper}>
-              <TouchableOpacity activeOpacity={0.7} style={[styles.btnInput, { backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C' }]} onPress={this.closeGetRoomModal} onPress={this.submitChangeCashInBox}>
+              <TouchableOpacity activeOpacity={0.5} style={[styles.btnInput, { backgroundColor: changeMoneyType === 'deposit' ? '#28B463' : '#E74C3C' }]} onPress={this.submitChangeCashInBox}>
                 {
                   changeMoneyType === 'deposit' ?
                     <Text style={styles.modalHeaderTxt}>Bỏ {this.formatVND(changeMoneyValue)} vào tủ</Text>

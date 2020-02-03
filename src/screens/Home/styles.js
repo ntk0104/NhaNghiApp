@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   totalContainer: {
-    flex: 1.3,
+    flex: 0.8,
     backgroundColor: '#2A6C97',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   modalFooter: {
     width: '100%',
-    height: screen.height * 0.1,
+    height: screen.height * 0.15,
     // flex: 1,
     borderTopWidth: 1,
     borderTopColor: '#AEB6BF',
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   btnOK: {
     height: '80%',
-    paddingHorizontal: 40,
+    paddingHorizontal: 150,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#28B463',
@@ -183,7 +183,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    marginTop: 10
   },
   modalWrapper: {
     width: screen.width * 0.6,
@@ -226,8 +227,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   btnInput: {
-    paddingHorizontal: 20,
-    height: '80%',
+    paddingHorizontal: 30,
+    height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#28B463',
@@ -250,6 +251,10 @@ const styles = StyleSheet.create({
     fontSize: RFValue(15, 790),
     fontWeight: '600', 
     padding: 5 
+  },
+  iconSetting: {
+    fontSize: RFValue(30, 790),
+    color: 'white'
   }
 })
 

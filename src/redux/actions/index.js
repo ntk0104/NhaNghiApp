@@ -31,7 +31,22 @@ import {
   GET_STATISTIC_OF_DAY_FAILURE,
   UPDATE_HISTORY_ROOM_REQUEST,
   UPDATE_HISTORY_ROOM_SUCCESS,
-  UPDATE_HISTORY_ROOM_FAILURE
+  UPDATE_HISTORY_ROOM_FAILURE,
+  GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  CANCEL_CURRENT_ROOM_REQUEST,
+  CANCEL_CURRENT_ROOM_SUCCESS,
+  CANCEL_CURRENT_ROOM_FAILURE,
+  DELETE_HISTORY_ROOM_ITEM_REQUEST,
+  DELETE_HISTORY_ROOM_ITEM_SUCCESS,
+  DELETE_HISTORY_ROOM_ITEM_FAILURE,
+  SEE_HISTORY_ROOM_DETAIL_REQUEST,
+  SEE_HISTORY_ROOM_DETAIL_SUCCESS,
+  SEE_HISTORY_ROOM_DETAIL_FAILURE
 } from '../types/index';
 
 // ==================================================== LOGIN
@@ -223,4 +238,90 @@ export const updateHistoryRoomFailure = errors => ({
   type: UPDATE_HISTORY_ROOM_FAILURE,
   errors
 });
+
+// ==================================================== GET HISTORY WITHDRAW & DEPOSIT
+
+export const getHistoryWithdrawDepositRequest = payload => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  payload
+});
+
+export const getHistoryWithdrawDepositSuccess = payload => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  payload
+});
+
+export const getHistoryWithdrawDepositFailure = errors => ({
+  type: GET_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  errors
+});
+
+// ==================================================== GET HISTORY WITHDRAW & DEPOSIT
+
+export const deleteHistoryWithdrawDepositRequest = payload => ({
+  type: DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST,
+  payload
+});
+
+export const deleteHistoryWithdrawDepositSuccess = payload => ({
+  type: DELETE_HISTORY_WITHDRAW_DEPOSIT_SUCCESS,
+  payload
+});
+
+export const deleteHistoryWithdrawDepositFailure = errors => ({
+  type: DELETE_HISTORY_WITHDRAW_DEPOSIT_FAILURE,
+  errors
+});
+
+// ==================================================== CANCEL CURRENT ROOM
+
+export const cancelCurrentRoomRequest = payload => ({
+  type: CANCEL_CURRENT_ROOM_REQUEST,
+  payload
+});
+
+export const cancelCurrentRoomSuccess = payload => ({
+  type: CANCEL_CURRENT_ROOM_SUCCESS,
+  payload
+});
+
+export const cancelCurrentRoomFailure = errors => ({
+  type: CANCEL_CURRENT_ROOM_FAILURE,
+  errors
+});
+
+// ==================================================== DELETE_HISTORY_ROOM_ITEM
+
+export const deleteHistoryRoomRequest = payload => ({
+  type: DELETE_HISTORY_ROOM_ITEM_REQUEST,
+  payload
+});
+
+export const deleteHistoryRoomSuccess = payload => ({
+  type: DELETE_HISTORY_ROOM_ITEM_SUCCESS,
+  payload
+});
+
+export const deleteHistoryRoomFailure = errors => ({
+  type: DELETE_HISTORY_ROOM_ITEM_FAILURE,
+  errors
+});
+
+// ==================================================== SEE_HISTORY_ROOM_DETAIL
+
+export const seeHistoryRoomRequest = payload => ({
+  type: SEE_HISTORY_ROOM_DETAIL_REQUEST,
+  payload
+});
+
+export const seeHistoryRoomSuccess = payload => ({
+  type: SEE_HISTORY_ROOM_DETAIL_SUCCESS,
+  payload
+});
+
+export const seeHistoryRoomFailure = errors => ({
+  type: SEE_HISTORY_ROOM_DETAIL_FAILURE,
+  errors
+});
+
 
