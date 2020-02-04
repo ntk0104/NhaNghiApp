@@ -17,6 +17,8 @@ import RoomMap from '../Home/RoomMap/index'
 import _ from 'lodash'
 import Modal from 'react-native-modal'
 import ActionSheet from 'react-native-action-sheet'
+import NavigationHeader from './NavigationHeader'
+
 const optionArray = [
   'Xóa hình',
   'Hủy'
@@ -93,6 +95,83 @@ class DetailRoom extends Component {
   }
 
   componentWillUnmount() {
+    const { roomInfo } = this.props
+    const { chargedItems } = roomInfo
+
+    let newRoomInfoBody = {
+      id: roomInfo.id
+    }
+    let newHistoryRoomBody = {
+      sectionID: roomInfo.sectionID
+    }
+    // if tag changed
+    if (this.state.tag != roomInfo.tag) {
+      newRoomInfoBody['tag'] = this.state.tag
+      newHistoryRoomBody['tag'] = this.state.tag
+    }
+    // if sectionRoom changed
+    if (this.state.sectionRoom != roomInfo.sectionRoom) {
+      newRoomInfoBody['sectionRoom'] = this.state.sectionRoom
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['sectionRoom'] = this.state.sectionRoom
+      newHistoryRoomBody['note'] = this.state.note
+    }
+    //if waterQuantity changed
+    if (this.state.waterQuantity != chargedItems.water.quantity) {
+      const chargedItemWaterBody = {
+        id: roomInfo.sectionID + '_water',
+        addedTime: moment().valueOf(),
+        quantity: this.state.waterQuantity,
+        total: this.state.waterQuantity * appConfig.unitWaterPrice
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemWaterBody)
+    }
+    //if beerQuantity changed
+    if (this.state.beerQuantity != chargedItems.beer.quantity) {
+      const chargedItemBeerBody = {
+        id: roomInfo.sectionID + '_beer',
+        addedTime: moment().valueOf(),
+        quantity: this.state.beerQuantity,
+        total: this.state.beerQuantity * appConfig.unitBeerPrice
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemBeerBody)
+    }
+    //if softdrink Quantity changed
+    if (this.state.softdrinkQuantity != chargedItems.softdrink.quantity) {
+      const chargedItemSoftdrinkBody = {
+        id: roomInfo.sectionID + '_softdrink',
+        addedTime: moment().valueOf(),
+        quantity: this.state.softdrinkQuantity,
+        total: this.state.softdrinkQuantity * appConfig.unitSoftDrinkPrice
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemSoftdrinkBody)
+    }
+    //if instantNoodle Quantity changed
+    if (this.state.instantNoodleQuantity != chargedItems.instantNoodle.quantity) {
+      const chargedItemInstantNoodleBody = {
+        id: roomInfo.sectionID + '_instantNoodle',
+        addedTime: moment().valueOf(),
+        quantity: this.state.instantNoodleQuantity,
+        total: this.state.instantNoodleQuantity * appConfig.unitInstantNoodle
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemInstantNoodleBody)
+    }
+
+    if (Object.keys(newRoomInfoBody).length > 1) {
+      this.props.updateRoomInfoRequestHandler(newRoomInfoBody)
+    }
+    if (Object.keys(newHistoryRoomBody).length > 1) {
+      this.props.updateHistoryRoomRequestHandler(newHistoryRoomBody)
+    }
+    this.props.getHistoryListRequestHandler()
     this.props.getRoomsDataRequestHandler()
     whoosh.release();
   }
@@ -120,47 +199,18 @@ class DetailRoom extends Component {
     if (currentValue > 0) {
       currentValue -= 1
       if (itemID == 'water') {
-        this.setState({ waterQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_water',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitWaterPrice
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Nước Suối thành ' + currentValue
+        this.setState({ waterQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'beer') {
-        this.setState({ beerQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_beer',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitBeerPrice
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Bia thành ' + currentValue
+        this.setState({ beerQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'softdrink') {
-        this.setState({ softdrinkQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_softdrink',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitSoftDrinkPrice
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Nước Ngọt thành ' + currentValue
+        this.setState({ softdrinkQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'instantNoodle') {
-        this.setState({ instantNoodleQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_instantNoodle',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitInstantNoodle
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Mì gói thành ' + currentValue
+        this.setState({ instantNoodleQuantity: currentValue, note: this.state.note + ',' + addedNote })
       }
-      this.props.updateRoomInfoRequestHandler({
-        id: this.props.roomInfo.id,
-        note: this.state.note + ',' + addedNote
-      })
-      this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
     }
   }
 
@@ -169,75 +219,28 @@ class DetailRoom extends Component {
     currentValue += 1
     let addedNote = ''
     if (itemID == 'water') {
-      this.setState({ waterQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_water',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitWaterPrice
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Nước suối thành ' + currentValue
+      this.setState({ waterQuantity: currentValue, note: this.state.note + ',' + addedNote })
     } else if (itemID == 'beer') {
-      this.setState({ beerQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_beer',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitBeerPrice
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Bia thành ' + currentValue
+      this.setState({ beerQuantity: currentValue, note: this.state.note + ',' + addedNote })
     } else if (itemID == 'softdrink') {
-      this.setState({ softdrinkQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_softdrink',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitSoftDrinkPrice
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Nước ngọt thành ' + currentValue
+      this.setState({ softdrinkQuantity: currentValue, note: this.state.note + ',' + addedNote })
     } else if (itemID == 'instantNoodle') {
-      this.setState({ instantNoodleQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_instantNoodle',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitInstantNoodle
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Mì gói thành ' + currentValue
+      this.setState({ instantNoodleQuantity: currentValue, note: this.state.note + ',' + addedNote })
     }
-    this.props.updateRoomInfoRequestHandler({
-      id: this.props.roomInfo.id,
-      note: this.state.note + ',' + addedNote
-    })
-    this.props.updateHistoryRoomRequestHandler({
-      sectionID: this.props.roomInfo.sectionID,
-      note: this.state.note + ',' + addedNote
-    })
-    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 
   editTag = (tagID) => {
     const { roomInfo } = this.props
-    this.setState({ tag: tagID })
-    //update room
-    this.props.updateRoomInfoRequestHandler({
-      id: roomInfo.id,
-      tag: tagID
-    })
-    this.props.updateHistoryRoomRequestHandler({
-      sectionID: roomInfo.sectionID,
-      tag: tagID
-    })
-    setTimeout(() => {
+    this.setState({ tag: tagID }, () => {
       this.calculateRoomCost()
-      this.props.getHistoryListRequestHandler()
-    }, 200)
+    })
   }
 
   editSectionRoomType = (sectionID) => {
-    this.setState({
-      sectionRoom: sectionID
-    }, () => this.calculateRoomCost())
     //update room
     let addedNote = ''
     if (sectionID == 'quat') {
@@ -245,16 +248,10 @@ class DetailRoom extends Component {
     } else {
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Thay đổi thành phòng Lạnh'
     }
-    this.props.updateRoomInfoRequestHandler({
-      id: this.props.roomInfo.id,
+    this.setState({
       sectionRoom: sectionID,
       note: this.state.note + ',' + addedNote
-    })
-    this.props.updateHistoryRoomRequestHandler({
-      sectionID: this.props.roomInfo.sectionID,
-      sectionRoom: sectionID
-    })
-    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+    }, () => this.calculateRoomCost())
   }
 
   payAdvanced = (totalPayment) => {
@@ -349,7 +346,7 @@ class DetailRoom extends Component {
 
   returnRoom = () => {
     const { roomInfo } = this.props
-    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, sectionRoom, tag } = this.state
+    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
     this.props.updateRoomInfoRequestHandler({
       id: roomInfo.id,
       currentStatus: 'available',
@@ -395,15 +392,12 @@ class DetailRoom extends Component {
         total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
         timeOut: moment().valueOf()
       })
-      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
-
     })
-
   }
 
   lostRoom = () => {
     const { roomInfo } = this.props
-    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, sectionRoom, tag } = this.state
+    const { calculatedRoomCost } = this.state
     this.props.updateRoomInfoRequestHandler({
       id: roomInfo.id,
       currentStatus: 'available',
@@ -573,9 +567,9 @@ class DetailRoom extends Component {
     })
   }
 
-  viewImage = (url) => {
+  viewImage = (urlList) => {
     this.props.navigation.navigate('ViewImage', {
-      urlImg: url
+      urlImg: urlList
     })
   }
 
@@ -614,18 +608,7 @@ class DetailRoom extends Component {
       <View style={styles.container} >
         {
           this.props.roomInfo &&
-          <View style={styles.navigationBar}>
-            <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
-              <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
-            </TouchableOpacity>
-            <View style={styles.headerTitle}>
-              <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
-            </View>
-            <TouchableOpacity style={styles.btnDeleteRoom} onPress={this.deleteRoom}>
-              <Text style={styles.deleteRoomTxt}>Hủy Phòng</Text>
-              <Icon type='AntDesign' name='delete' style={styles.iconBack} />
-            </TouchableOpacity>
-          </View>
+          <NavigationHeader goBack={() => this.props.navigation.goBack()} roomName={this.props.roomInfo.roomName} deleteRoom={this.deleteRoom} />
         }
         {
           this.props.roomInfo &&
@@ -667,7 +650,6 @@ class DetailRoom extends Component {
                         }
                       }}
                       onDateChange={date => this.selectDateFrom(date)}
-
                     />
                   </View>
                 </View>
@@ -758,7 +740,7 @@ class DetailRoom extends Component {
                     </TouchableOpacity>
                     {
                       listImgs.length > 0 && listImgs.map(item => (
-                        <TouchableOpacity onPress={() => this.viewImage(item)} onLongPress={() => this.showActionSheet(item, listImgs)}>
+                        <TouchableOpacity onPress={() => this.viewImage(listImgs)} onLongPress={() => this.showActionSheet(item, listImgs)}>
                           <Image source={{ uri: item }} style={styles.imgCMND} />
                         </TouchableOpacity>
                       ))

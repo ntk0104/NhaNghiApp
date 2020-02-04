@@ -37,10 +37,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   btnTool: {
-    width: 80,
+    width: 120,
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'green',
   },
   iconClose: {
     fontSize: RFValue(30, 790),
