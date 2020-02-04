@@ -171,12 +171,14 @@ class DetailRoom extends Component {
     if (Object.keys(newHistoryRoomBody).length > 1) {
       this.props.updateHistoryRoomRequestHandler(newHistoryRoomBody)
     }
-    if ((Object.keys(newHistoryRoomBody).length > 1) || (Object.keys(newHistoryRoomBody).length > 1)) {
-      setTimeout(() => {
-        this.props.getHistoryListRequestHandler()
-        this.props.getRoomsDataRequestHandler()
-      }, 200)
-    }
+    // if ((Object.keys(newHistoryRoomBody).length > 1) || (Object.keys(newHistoryRoomBody).length > 1)) {
+    //   setTimeout(() => {
+    //     this.props.getHistoryListRequestHandler()
+    //     this.props.getRoomsDataRequestHandler()
+    //   }, 200)
+    // }
+    this.props.getHistoryListRequestHandler()
+    this.props.getRoomsDataRequestHandler()
     whoosh.release();
   }
 
@@ -242,21 +244,6 @@ class DetailRoom extends Component {
     this.setState({ tag: tagID }, () => {
       this.calculateRoomCost()
     })
-
-
-    //update room
-    // this.props.updateRoomInfoRequestHandler({
-    //   id: roomInfo.id,
-    //   tag: tagID
-    // })
-    // this.props.updateHistoryRoomRequestHandler({
-    //   sectionID: roomInfo.sectionID,
-    //   tag: tagID
-    // })
-    // setTimeout(() => {
-    //   this.calculateRoomCost()
-    //   this.props.getHistoryListRequestHandler()
-    // }, 200)
   }
 
   editSectionRoomType = (sectionID) => {
@@ -365,7 +352,7 @@ class DetailRoom extends Component {
 
   returnRoom = () => {
     const { roomInfo } = this.props
-    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, sectionRoom, tag } = this.state
+    const { calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost } = this.state
     this.props.updateRoomInfoRequestHandler({
       id: roomInfo.id,
       currentStatus: 'available',
@@ -411,7 +398,6 @@ class DetailRoom extends Component {
         total: calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost,
         timeOut: moment().valueOf()
       })
-      setTimeout(() => this.props.getHistoryListRequestHandler(), 300)
     })
   }
 
