@@ -4,7 +4,6 @@ import Home from '../screens/Home/index'
 import DetailRoom from '../screens/DetailRoom/index'
 import StatisticDay from '../screens/StatisticDay'
 import ChangeCashHistory from '../screens/ChangeCashHistory/index'
-import LiveCamera from '../screens/LiveCamera/index'
 import ViewImage from '../screens/ViewImage/index'
 import HistoryRoom from '../screens/HistoryRoom'
 
@@ -21,9 +20,6 @@ const AppNavigator = createStackNavigator(
     },
     ChangeCashHistory: {
       screen: ChangeCashHistory
-    },
-    LiveCamera: {
-      screen: LiveCamera
     },
     ViewImage: {
       screen: ViewImage

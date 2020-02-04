@@ -18,6 +18,7 @@ import _ from 'lodash'
 import Modal from 'react-native-modal'
 import ActionSheet from 'react-native-action-sheet'
 import NavigationHeader from './NavigationHeader'
+import { camera } from '../../components/ImagePicker/index'
 
 const optionArray = [
   'Xóa hình',
@@ -33,6 +34,7 @@ class DetailRoom extends Component {
       tag: null,
       sectionRoom: null,
       note: '',
+      cmnd: null,
 
       sectionPrice: 0,
       additionalPrice: 0,
@@ -79,6 +81,7 @@ class DetailRoom extends Component {
       instantNoodleCost: chargedItems.instantNoodle ? chargedItems.instantNoodle.total : 0,
       additionalCost: chargedItems.anotherCost ? chargedItems.anotherCost.total : 0,
       roomCost: chargedItems.roomcost ? chargedItems.roomcost.total : 0,
+      cmnd: roomInfo.cmnd
     }, () => this.calculateRoomCost())
   }
 
@@ -116,6 +119,13 @@ class DetailRoom extends Component {
       newHistoryRoomBody['sectionRoom'] = this.state.sectionRoom
       newHistoryRoomBody['note'] = this.state.note
     }
+
+    // if Cmnd changed
+    if (this.state.cmnd != roomInfo.cmnd) {
+      newRoomInfoBody['cmnd'] = this.state.cmnd
+      newHistoryRoomBody['cmnd'] = this.state.cmnd
+    }
+
     //if waterQuantity changed
     if (this.state.waterQuantity != chargedItems.water.quantity) {
       const chargedItemWaterBody = {
@@ -560,11 +570,11 @@ class DetailRoom extends Component {
   }
 
   showCamera = () => {
-    this.props.navigation.navigate('LiveCamera', {
-      roomID: this.props.roomInfo.id,
-      sectionID: this.props.roomInfo.sectionID,
-      cmnd: this.props.roomInfo.cmnd
-    })
+    camera((source, data) => {
+      this.setState({
+        cmnd: this.state.cmnd ? this.state.cmnd + ';' + data : data
+      })
+    });
   }
 
   viewImage = (urlList) => {
@@ -583,27 +593,20 @@ class DetailRoom extends Component {
       (buttonIndex) => {
         if (buttonIndex === 0) {
           listURLs.splice(listURLs.indexOf(selectedURL), 1)
-          this.props.updateRoomInfoRequestHandler({
-            id: this.props.roomInfo.id,
-            cmnd: listURLs.join(';')
-          })
-          this.props.updateHistoryRoomRequestHandler({
-            sectionID: this.props.roomInfo.sectionID,
-            cmnd: listURLs.join(';')
-          })
-          this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+          this.setState({ cmnd: listURLs.length > 0 ? listURLs.join(';') : null })
         }
       });
   };
 
   render() {
-    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal, swapRoomModal, newChangedRoomID } = this.state
+    const { tag, sectionRoom, calculatedRoomCost, waterQuantity, beerQuantity, softdrinkQuantity, instantNoodleQuantity, additionalCost, anotherCostModalVisible, note, modalAnotherCostHeader, modalNoteTitle, anotherCostValue, alertReturnRoomModal, swapRoomModal, newChangedRoomID, cmnd } = this.state
     const totalPayment = this.props.roomInfo && calculatedRoomCost + waterQuantity * appConfig.unitWaterPrice + beerQuantity * appConfig.unitBeerPrice + softdrinkQuantity * appConfig.unitSoftDrinkPrice + instantNoodleQuantity * appConfig.unitInstantNoodle + additionalCost - this.props.roomInfo.advancedPay
     const noteList = note.split(',')
     const generatedNote = noteList.join('\n')
     const formatedVND = this.formatVND(anotherCostValue)
     const formatedTotalPayment = this.formatVND(totalPayment)
-    const listImgs = this.props.roomInfo && this.props.roomInfo.cmnd.length > 0 && this.props.roomInfo.cmnd.split(';')
+    // const listImgs = this.props.roomInfo && this.props.roomInfo.cmnd.length > 0 && this.props.roomInfo.cmnd.split(';')
+    const listImgs = (cmnd != null && cmnd.length > 0) ? cmnd.split(';') : []
     return (
       <View style={styles.container} >
         {
