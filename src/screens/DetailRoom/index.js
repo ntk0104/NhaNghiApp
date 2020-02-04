@@ -96,6 +96,8 @@ class DetailRoom extends Component {
 
   componentWillUnmount() {
     const { roomInfo } = this.props
+    const { chargedItems } = roomInfo
+
     let newRoomInfoBody = {
       id: roomInfo.id
     }
@@ -113,6 +115,18 @@ class DetailRoom extends Component {
       newRoomInfoBody['note'] = this.state.note
       newHistoryRoomBody['sectionRoom'] = this.state.sectionRoom
       newHistoryRoomBody['note'] = this.state.note
+    }
+    //if waterQuantity changed
+    if(this.state.waterQuantity != chargedItems.water.quantity){
+      const chargedItemWaterBody = {
+        id: roomInfo.sectionID + '_water',
+        addedTime: moment().valueOf(),
+        quantity: this.state.waterQuantity,
+        total: this.state.waterQuantity * appConfig.unitWaterPrice
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemWaterBody)
     }
 
     if (Object.keys(newRoomInfoBody).length > 1) {
@@ -153,15 +167,10 @@ class DetailRoom extends Component {
     if (currentValue > 0) {
       currentValue -= 1
       if (itemID == 'water') {
-        this.setState({ waterQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_water',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitWaterPrice
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Nước Suối thành ' + currentValue
+        this.setState({ waterQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'beer') {
+        addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Bia thành ' + currentValue
         this.setState({ beerQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
           id: roomInfo.sectionID + '_beer',
@@ -169,7 +178,6 @@ class DetailRoom extends Component {
           quantity: currentValue,
           total: currentValue * appConfig.unitBeerPrice
         })
-        addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Bia thành ' + currentValue
       } else if (itemID == 'softdrink') {
         this.setState({ softdrinkQuantity: currentValue })
         this.props.updateChargedItemRequestHandler({
@@ -189,11 +197,11 @@ class DetailRoom extends Component {
         })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Mì gói thành ' + currentValue
       }
-      this.props.updateRoomInfoRequestHandler({
-        id: this.props.roomInfo.id,
-        note: this.state.note + ',' + addedNote
-      })
-      this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+      // this.props.updateRoomInfoRequestHandler({
+      //   id: this.props.roomInfo.id,
+      //   note: this.state.note + ',' + addedNote
+      // })
+      // this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
     }
   }
 
