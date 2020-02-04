@@ -95,7 +95,38 @@ class DetailRoom extends Component {
   }
 
   componentWillUnmount() {
-    this.props.getRoomsDataRequestHandler()
+    const { roomInfo } = this.props
+    let newRoomInfoBody = {
+      id: roomInfo.id
+    }
+    let newHistoryRoomBody = {
+      sectionID: roomInfo.sectionID
+    }
+    // if tag changed
+    if (this.state.tag != roomInfo.tag) {
+      newRoomInfoBody['tag'] = this.state.tag
+      newHistoryRoomBody['tag'] = this.state.tag
+    }
+    // if sectionRoom changed
+    if (this.state.sectionRoom != roomInfo.sectionRoom) {
+      newRoomInfoBody['sectionRoom'] = this.state.sectionRoom
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['sectionRoom'] = this.state.sectionRoom
+      newHistoryRoomBody['note'] = this.state.note
+    }
+
+    if (Object.keys(newRoomInfoBody).length > 1) {
+      this.props.updateRoomInfoRequestHandler(newRoomInfoBody)
+    }
+    if (Object.keys(newHistoryRoomBody).length > 1) {
+      this.props.updateHistoryRoomRequestHandler(newHistoryRoomBody)
+    }
+    if ((Object.keys(newHistoryRoomBody).length > 1) || (Object.keys(newHistoryRoomBody).length > 1)) {
+      setTimeout(() => {
+        this.props.getHistoryListRequestHandler()
+        this.props.getRoomsDataRequestHandler()
+      }, 200)
+    }
     whoosh.release();
   }
 
@@ -220,26 +251,27 @@ class DetailRoom extends Component {
 
   editTag = (tagID) => {
     const { roomInfo } = this.props
-    this.setState({ tag: tagID })
-    //update room
-    this.props.updateRoomInfoRequestHandler({
-      id: roomInfo.id,
-      tag: tagID
-    })
-    this.props.updateHistoryRoomRequestHandler({
-      sectionID: roomInfo.sectionID,
-      tag: tagID
-    })
-    setTimeout(() => {
+    this.setState({ tag: tagID }, () => {
       this.calculateRoomCost()
-      this.props.getHistoryListRequestHandler()
-    }, 200)
+    })
+
+
+    //update room
+    // this.props.updateRoomInfoRequestHandler({
+    //   id: roomInfo.id,
+    //   tag: tagID
+    // })
+    // this.props.updateHistoryRoomRequestHandler({
+    //   sectionID: roomInfo.sectionID,
+    //   tag: tagID
+    // })
+    // setTimeout(() => {
+    //   this.calculateRoomCost()
+    //   this.props.getHistoryListRequestHandler()
+    // }, 200)
   }
 
   editSectionRoomType = (sectionID) => {
-    this.setState({
-      sectionRoom: sectionID
-    }, () => this.calculateRoomCost())
     //update room
     let addedNote = ''
     if (sectionID == 'quat') {
@@ -247,16 +279,10 @@ class DetailRoom extends Component {
     } else {
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Thay đổi thành phòng Lạnh'
     }
-    this.props.updateRoomInfoRequestHandler({
-      id: this.props.roomInfo.id,
+    this.setState({
       sectionRoom: sectionID,
       note: this.state.note + ',' + addedNote
-    })
-    this.props.updateHistoryRoomRequestHandler({
-      sectionID: this.props.roomInfo.sectionID,
-      sectionRoom: sectionID
-    })
-    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+    }, () => this.calculateRoomCost())
   }
 
   payAdvanced = (totalPayment) => {
@@ -614,18 +640,6 @@ class DetailRoom extends Component {
       <View style={styles.container} >
         {
           this.props.roomInfo &&
-          // <View style={styles.navigationBar}>
-          //   <TouchableOpacity style={styles.btnBack} onPress={() => this.props.navigation.goBack()}>
-          //     <Icon type='AntDesign' name='arrowleft' style={styles.iconBack} />
-          //   </TouchableOpacity>
-          //   <View style={styles.headerTitle}>
-          //     <Text style={styles.headerTitleTxt}>Chi tiết phòng {this.props.roomInfo.roomName}</Text>
-          //   </View>
-          //   <TouchableOpacity style={styles.btnDeleteRoom} onPress={this.deleteRoom}>
-          //     <Text style={styles.deleteRoomTxt}>Hủy Phòng</Text>
-          //     <Icon type='AntDesign' name='delete' style={styles.iconBack} />
-          //   </TouchableOpacity>
-          // </View>
           <NavigationHeader goBack={() => this.props.navigation.goBack()} roomName={this.props.roomInfo.roomName} deleteRoom={this.deleteRoom} />
         }
         {
