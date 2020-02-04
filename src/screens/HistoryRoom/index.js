@@ -113,7 +113,7 @@ class HistoryRoom extends Component {
                   </View>
                   <View style={styles.InfoCMNDWrapper}>
                     {listImgs.map(item => (
-                      <TouchableOpacity onPress={() => this.viewImage(item)}>
+                      <TouchableOpacity onPress={() => this.viewImage(listImgs)}>
                         <Image source={{ uri: item }} style={styles.imgCMND} />
                       </TouchableOpacity>
                     ))

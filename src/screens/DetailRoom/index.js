@@ -171,12 +171,6 @@ class DetailRoom extends Component {
     if (Object.keys(newHistoryRoomBody).length > 1) {
       this.props.updateHistoryRoomRequestHandler(newHistoryRoomBody)
     }
-    // if ((Object.keys(newHistoryRoomBody).length > 1) || (Object.keys(newHistoryRoomBody).length > 1)) {
-    //   setTimeout(() => {
-    //     this.props.getHistoryListRequestHandler()
-    //     this.props.getRoomsDataRequestHandler()
-    //   }, 200)
-    // }
     this.props.getHistoryListRequestHandler()
     this.props.getRoomsDataRequestHandler()
     whoosh.release();
@@ -573,9 +567,9 @@ class DetailRoom extends Component {
     })
   }
 
-  viewImage = (url) => {
+  viewImage = (urlList) => {
     this.props.navigation.navigate('ViewImage', {
-      urlImg: url
+      urlImg: urlList
     })
   }
 
@@ -746,7 +740,7 @@ class DetailRoom extends Component {
                     </TouchableOpacity>
                     {
                       listImgs.length > 0 && listImgs.map(item => (
-                        <TouchableOpacity onPress={() => this.viewImage(item)} onLongPress={() => this.showActionSheet(item, listImgs)}>
+                        <TouchableOpacity onPress={() => this.viewImage(listImgs)} onLongPress={() => this.showActionSheet(item, listImgs)}>
                           <Image source={{ uri: item }} style={styles.imgCMND} />
                         </TouchableOpacity>
                       ))
