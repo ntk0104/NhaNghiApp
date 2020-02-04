@@ -117,7 +117,7 @@ class DetailRoom extends Component {
       newHistoryRoomBody['note'] = this.state.note
     }
     //if waterQuantity changed
-    if(this.state.waterQuantity != chargedItems.water.quantity){
+    if (this.state.waterQuantity != chargedItems.water.quantity) {
       const chargedItemWaterBody = {
         id: roomInfo.sectionID + '_water',
         addedTime: moment().valueOf(),
@@ -127,6 +127,42 @@ class DetailRoom extends Component {
       newRoomInfoBody['note'] = this.state.note
       newHistoryRoomBody['note'] = this.state.note
       this.props.updateChargedItemRequestHandler(chargedItemWaterBody)
+    }
+    //if beerQuantity changed
+    if (this.state.beerQuantity != chargedItems.beer.quantity) {
+      const chargedItemBeerBody = {
+        id: roomInfo.sectionID + '_beer',
+        addedTime: moment().valueOf(),
+        quantity: this.state.beerQuantity,
+        total: this.state.beerQuantity * appConfig.unitBeerPrice
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemBeerBody)
+    }
+    //if softdrink Quantity changed
+    if (this.state.softdrinkQuantity != chargedItems.softdrink.quantity) {
+      const chargedItemSoftdrinkBody = {
+        id: roomInfo.sectionID + '_softdrink',
+        addedTime: moment().valueOf(),
+        quantity: this.state.softdrinkQuantity,
+        total: this.state.softdrinkQuantity * appConfig.unitSoftDrinkPrice
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemSoftdrinkBody)
+    }
+    //if instantNoodle Quantity changed
+    if (this.state.instantNoodleQuantity != chargedItems.instantNoodle.quantity) {
+      const chargedItemInstantNoodleBody = {
+        id: roomInfo.sectionID + '_instantNoodle',
+        addedTime: moment().valueOf(),
+        quantity: this.state.instantNoodleQuantity,
+        total: this.state.instantNoodleQuantity * appConfig.unitInstantNoodle
+      }
+      newRoomInfoBody['note'] = this.state.note
+      newHistoryRoomBody['note'] = this.state.note
+      this.props.updateChargedItemRequestHandler(chargedItemInstantNoodleBody)
     }
 
     if (Object.keys(newRoomInfoBody).length > 1) {
@@ -171,37 +207,14 @@ class DetailRoom extends Component {
         this.setState({ waterQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'beer') {
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Bia thành ' + currentValue
-        this.setState({ beerQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_beer',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitBeerPrice
-        })
+        this.setState({ beerQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'softdrink') {
-        this.setState({ softdrinkQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_softdrink',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitSoftDrinkPrice
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Nước Ngọt thành ' + currentValue
+        this.setState({ softdrinkQuantity: currentValue, note: this.state.note + ',' + addedNote })
       } else if (itemID == 'instantNoodle') {
-        this.setState({ instantNoodleQuantity: currentValue })
-        this.props.updateChargedItemRequestHandler({
-          id: roomInfo.sectionID + '_instantNoodle',
-          addedTime: moment().valueOf(),
-          quantity: currentValue,
-          total: currentValue * appConfig.unitInstantNoodle
-        })
         addedNote = moment().format('DD/MM/YY HH:mm') + ' Giảm số lượng Mì gói thành ' + currentValue
+        this.setState({ instantNoodleQuantity: currentValue, note: this.state.note + ',' + addedNote })
       }
-      // this.props.updateRoomInfoRequestHandler({
-      //   id: this.props.roomInfo.id,
-      //   note: this.state.note + ',' + addedNote
-      // })
-      // this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
     }
   }
 
@@ -210,51 +223,18 @@ class DetailRoom extends Component {
     currentValue += 1
     let addedNote = ''
     if (itemID == 'water') {
-      this.setState({ waterQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_water',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitWaterPrice
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Nước suối thành ' + currentValue
+      this.setState({ waterQuantity: currentValue, note: this.state.note + ',' + addedNote })
     } else if (itemID == 'beer') {
-      this.setState({ beerQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_beer',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitBeerPrice
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Bia thành ' + currentValue
+      this.setState({ beerQuantity: currentValue, note: this.state.note + ',' + addedNote })
     } else if (itemID == 'softdrink') {
-      this.setState({ softdrinkQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_softdrink',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitSoftDrinkPrice
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Nước ngọt thành ' + currentValue
+      this.setState({ softdrinkQuantity: currentValue, note: this.state.note + ',' + addedNote })
     } else if (itemID == 'instantNoodle') {
-      this.setState({ instantNoodleQuantity: currentValue })
-      this.props.updateChargedItemRequestHandler({
-        id: roomInfo.sectionID + '_instantNoodle',
-        addedTime: moment().valueOf(),
-        quantity: currentValue,
-        total: currentValue * appConfig.unitInstantNoodle
-      })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' Tăng số lượng Mì gói thành ' + currentValue
+      this.setState({ instantNoodleQuantity: currentValue, note: this.state.note + ',' + addedNote })
     }
-    this.props.updateRoomInfoRequestHandler({
-      id: this.props.roomInfo.id,
-      note: this.state.note + ',' + addedNote
-    })
-    this.props.updateHistoryRoomRequestHandler({
-      sectionID: this.props.roomInfo.sectionID,
-      note: this.state.note + ',' + addedNote
-    })
-    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 
   editTag = (tagID) => {
