@@ -44,11 +44,6 @@ export default class ViewCamera extends Component {
       <View style={styles.container}>
         <StatusBar hidden={true} />
         <View style={styles.previewImgContainter}>
-          {/* <ImageBackground source={{ uri: urlImg }} style={{ height: '100%', resizeMode: 'contain' }}>
-            <TouchableOpacity onPress={this.takePicture} style={styles.btnTool} onPress={() => this.props.navigation.goBack()}>
-              <Icon type="AntDesign" name="closecircleo" style={styles.iconClose} />
-            </TouchableOpacity>
-          </ImageBackground> */}
           <View style={{ width: '100%', height: 60, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.3)'}}>
                 <TouchableOpacity onPress={this.takePicture} style={{width: 120, height: '100%', flex: 1, paddingLeft: 20, justifyContent: 'center' }} onPress={() => this.props.navigation.goBack()}>
                   <Icon type="AntDesign" name="closecircleo" style={styles.iconClose} onPress={() => this.props.navigation.goBack()} />
