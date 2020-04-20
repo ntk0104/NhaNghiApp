@@ -9,7 +9,6 @@ const addHistoryItemAPI = (payload) => {
       .then(rs => {
         resolve(rs)
       }).catch(err => {
-        console.log("TCL: addHistoryItemAPI -> err", err)
         reject(err)
       })
   })
@@ -21,7 +20,6 @@ const getHistoryListAPI = (payload) => {
       .then(rs => {
         resolve(rs)
       }).catch(err => {
-        console.log("TCL: addHistoryItemAPI -> err", err)
         reject(err)
       })
   })
@@ -34,7 +32,6 @@ const getStatisticOfDayRequestAPI = async ({ selectedDay }) => {
         resolve(statistic)
       })
       .catch((err) => {
-        console.log("TCL: getStatisticOfDayRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -47,7 +44,6 @@ const updateHistoryRoomRequestAPI = (payload) => {
         resolve(rs)
       })
       .catch((err) => {
-        console.log("TCL: updateHistoryRoomRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -60,7 +56,6 @@ const deleteHistoryRoomRequestAPI = ({ addedTime }) => {
         resolve(rs)
       })
       .catch((err) => {
-        console.log("TCL: deleteHistoryRoomRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -73,7 +68,6 @@ const getHistoryRoomDetailRequestAPI = (payload) => {
         resolve(rs)
       })
       .catch((err) => {
-        console.log("TCL: getHistoryRoomDetailRequestAPI -> err", err)
         reject(err)
       })
   })
@@ -88,7 +82,6 @@ export function* addHistoryRoomRequest(obj) {
     const addedItem = yield call(addHistoryItemAPI, obj.payload);
     yield put(addHistoryItemSuccess(addedItem));
   } catch (err) {
-    console.log("TCL: function*addHistoryRoomRequest -> err", err)
     yield put(addHistoryItemFailure(err));
   }
 }
@@ -98,7 +91,6 @@ export function* getHistoryRoomRequest(obj) {
     const historyList = yield call(getHistoryListAPI, obj.payload);
     yield put(getHistoryListSuccess(historyList));
   } catch (err) {
-    console.log("TCL: function*getHistoryRoomRequest -> err", err)
     yield put(getHistoryListFailure(err));
   }
 }

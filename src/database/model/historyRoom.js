@@ -70,7 +70,6 @@ export const getHistoryRoomDetail = ({ sectionID }) => {
       }
       resolve(returnedData)
     } catch (error) {
-      console.log("TCL: getHistoryRoomDetail -> error", error)
       reject(error);
     }
   });
@@ -131,7 +130,6 @@ export const getHistory = () => {
       }
       resolve(returnedHistory)
     } catch (error) {
-      console.log("TCL: getHistory -> error", error)
       reject(error);
     }
   });
@@ -344,7 +342,6 @@ export const deleteHistoryRoom = (sectionID) => {
       })
       resolve(historyItem)
     } catch (error) {
-      console.log("TCL: deletehistoryItem -> error", error)
       reject(error);
     }
   });

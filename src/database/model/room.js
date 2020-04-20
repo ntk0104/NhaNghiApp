@@ -11,13 +11,11 @@ export const checkRoomExisted = (id) => {
     }
     return false
   } catch (error) {
-    console.log(error)
     return false
   }
 }
 
 export const addRoom = ({ id, roomName, currentStatus, timeIn, note, tag, sectionRoom, overnight_price, type, cmnd }) => {
-  //console.log('%c%s', 'color: #f2ceb6', "added Room " + id);
   return new Promise((resolve, reject) => {
     try {
       realm.write(() => {

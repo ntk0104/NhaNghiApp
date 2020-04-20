@@ -25,7 +25,6 @@ export default class HistoryItem extends Component {
 
   render() {
     const { roomName, total, sectionID, timeIn, timeOut, tag, addedTime } = this.props.item
-    //console.log("TCL: HistoryItem -> render -> render ", roomName)
     return (
       <TouchableOpacity style={[styles.container, { backgroundColor: addedTime == timeIn ? '#52BE80' : '#CB4335' }]} onPress={this.navigateToDetail}>
         <View style={{ flex: 1 }}>

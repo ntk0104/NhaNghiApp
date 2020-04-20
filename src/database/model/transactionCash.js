@@ -35,7 +35,6 @@ export const getTotalPaidMoney = () => {
 
       resolve(totalPaidMoney)
     } catch (error) {
-      console.log("TCL: getTotalPaidMoney -> error", error)
       reject(error);
     }
   });
@@ -55,7 +54,6 @@ export const getCurrentMoneyInBox = () => {
       }
       resolve(totalMoneyInBox)
     } catch (error) {
-      console.log("TCL: getCurrentMoneyInBox -> error", error)
       reject(error);
     }
   });
@@ -77,7 +75,6 @@ export const getHistoryWithdrawAndDeposit = (timestampOfDay) => {
       }
       resolve(returnedData)
     } catch (error) {
-      console.log("TCL: getHistoryWithdrawAndDeposit -> error", error)
       reject(error);
     }
   });
@@ -93,7 +90,6 @@ export const deleteTransaction = (transactionID) => {
       })
       resolve(transaction)
     } catch (error) {
-      console.log("TCL: deleteTransaction -> error", error)
       reject(error);
     }
   });

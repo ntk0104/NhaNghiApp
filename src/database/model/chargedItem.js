@@ -63,7 +63,6 @@ export const getChargedItemsBySectionID = ({ sectionId }) => {
       }
       resolve(chargedItemsData)
     } catch (error) {
-      console.log("TCL: getChargedItemsBySectionID -> error", error)
       reject(error);
     }
   });

@@ -12,7 +12,6 @@ const updateChargedItemRequestAPI = async (payload) => {
         resolve()
       })
       .catch((err) => {
-      console.log("TCL: updateChargedItemRequestAPI -> err", err)
         reject(err)
       })
   })

@@ -12,7 +12,6 @@ const getCashInBoxAPI = () => {
         resolve(totalMoney)
       })
       .catch(err => {
-        console.log("TCL: getCashInBoxAPI -> err", err)
         reject(err)
       })
   })
@@ -25,7 +24,6 @@ const updateCashInBoxAPI = (obj) => {
         resolve()
       })
       .catch(err => {
-        console.log("TCL: updateCashInBoxAPI -> err", err)
         reject(err)
       })
   })
@@ -38,7 +36,6 @@ const getHistoryWithdrawAndDepositAPI = ({ startTime }) => {
         resolve(transactions)
       })
       .catch(err => {
-        console.log("TCL: getHistoryWithdrawAndDepositAPI -> err", err)
         reject(err)
       })
   })
@@ -51,7 +48,6 @@ const deleteHistoryWithdrawAndDepositAPI = ({ transactionID }) => {
         resolve(rs)
       })
       .catch(err => {
-        console.log("TCL: deleteHistoryWithdrawAndDepositAPI -> err", err)
         reject(err)
       })
   })

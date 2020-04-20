@@ -17,7 +17,6 @@ class HistoryList extends Component {
 
 
   render() {
-    //console.log('%c%s', 'color: #f2ceb6', 'Rendering HistoryList'); 
     let data = [...this.props.historyRoom]
     data = data.sort((a, b) => b['addedTime'] - a['addedTime'])
     return (

@@ -30,7 +30,6 @@ const getRoomInfoAPI = ({ id }) => {
       }
       resolve(roomData)
     } catch (error) {
-      console.log("TCL: getRoomInfoAPI -> error", error)
       reject(error);
     }
   })
@@ -43,7 +42,6 @@ const updateRoomInfoAPI = (payload) => {
         resolve()
       })
       .catch((err) => {
-        console.log("TCL: updateRoomInfoAPI -> err", err)
         reject(err)
       })
   })
@@ -56,7 +54,6 @@ const addChargedItemAPI = (payload) => {
         resolve()
       })
       .catch((err) => {
-        console.log("TCL: addChargedItemAPI -> err", err)
         reject(err)
       })
   })
@@ -69,7 +66,6 @@ const cancelCurrentRoomAPI = (payload) => {
         resolve()
       })
       .catch((err) => {
-        console.log("TCL: cancelCurrentRoomAPI -> err", err)
         reject(err)
       })
   })

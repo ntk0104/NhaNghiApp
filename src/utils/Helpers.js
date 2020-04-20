@@ -13,6 +13,11 @@ export const calculateNumsNightFrom = (timestampIn, timestampOut) => {
   const timeOutMoment = moment([yearValueOut, monthValueOut, dateValueOut])
 
   const numsNights = timeOutMoment.diff(timeInMoment, 'days')
+  const gioVao = moment(timestampIn).hours()
+  // fix bug khi user vào sau 0h và hôm qua hôm sau thì số đêm vẫn bằng 1, nhưng thực tế phải là 2 vì qua 12h hôm trước là tính 1 đêm rồi
+  if(gioVao < 6){
+    return numsNights + 1  
+  }
   return numsNights
 }
 

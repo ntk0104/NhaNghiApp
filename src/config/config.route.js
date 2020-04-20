@@ -1,4 +1,4 @@
-import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator, createAppContainer } from "react-navigation"
+import { createStackNavigator, createAppContainer } from "react-navigation"
 
 import Home from '../screens/Home/index'
 import DetailRoom from '../screens/DetailRoom/index'
