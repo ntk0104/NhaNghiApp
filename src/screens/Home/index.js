@@ -21,13 +21,6 @@ class Home extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      modalGetRoomVisible: false,
-      selectedSectionType: 'DG',
-      selectedRoomType: 'quat',
-      gettingRoomName: null,
-      currentNote: '',
-      gettingRoomID: null,
-
       changeCashBoxVisible: false,
       changeCashBoxModalHeader: '',
       modalCashBoxTitle: 'Ghi chú khoản thêm',
@@ -112,20 +105,9 @@ class Home extends PureComponent {
     this.props.getCurrentMoneyInBoxHandler()
   }
 
-  closeGetRoomModal = () => {
-    this.setState({
-      modalGetRoomVisible: false,
-      selectedSectionType: 'DG',
-      selectedRoomType: 'quat',
-      gettingRoomName: null,
-      currentNote: '',
-      gettingRoomID: null,
-    })
-  }
-
-  showGetRoomModal = (roomId, roomNumber) => {
-    this.setState({
-      modalGetRoomVisible: true,
+  openGetRoomScreen = (roomId, roomNumber) => {
+    this.props.navigation.navigate('Modal', {
+      modalType: 'getRoom',
       gettingRoomName: roomNumber,
       gettingRoomID: roomId
     })
@@ -146,144 +128,14 @@ class Home extends PureComponent {
     }
   }
 
-
-  onSubmitGetRoom = () => {
-    const currentTimestamp = moment().valueOf()
-    const updatedInfo = {
-      id: this.state.gettingRoomID,
-      currentStatus: 'busy',
-      timeIn: currentTimestamp,
-      sectionID: currentTimestamp,
-      chargedItems: [],
-      note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
-      tag: this.state.selectedSectionType,
-      sectionRoom: this.state.selectedRoomType,
-      cmnd: ''
-    }
-
-    this.props.updateRoomInfoRequestHandler(updatedInfo)
-
-    const roomCostItem = {
-      addedTime: updatedInfo.sectionID,
-      sectionID: updatedInfo.sectionID,
-      itemKey: 'roomcost',
-      roomID: this.state.gettingRoomID,
-      quantity: 1,
-      unitPrice: 0,
-      total: 0,
-      payStatus: 'pending'
-    }
-    const waterCostItem = {
-      addedTime: updatedInfo.sectionID,
-      sectionID: updatedInfo.sectionID,
-      itemKey: 'water',
-      roomID: this.state.gettingRoomID,
-      quantity: 0,
-      unitPrice: appConfig.unitWaterPrice,
-      total: 0,
-      payStatus: 'pending'
-    }
-    const softdrinkCostItem = {
-      addedTime: updatedInfo.sectionID,
-      sectionID: updatedInfo.sectionID,
-      itemKey: 'softdrink',
-      roomID: this.state.gettingRoomID,
-      quantity: 0,
-      unitPrice: appConfig.unitSoftDrinkPrice,
-      total: 0,
-      payStatus: 'pending'
-    }
-    const beerCostItem = {
-      addedTime: updatedInfo.sectionID,
-      sectionID: updatedInfo.sectionID,
-      itemKey: 'beer',
-      roomID: this.state.gettingRoomID,
-      quantity: 0,
-      unitPrice: appConfig.unitBeerPrice,
-      total: 0,
-      payStatus: 'pending'
-    }
-    const instantNoodleCostItem = {
-      addedTime: updatedInfo.sectionID,
-      sectionID: updatedInfo.sectionID,
-      itemKey: 'instantNoodle',
-      roomID: this.state.gettingRoomID,
-      quantity: 0,
-      unitPrice: appConfig.unitInstantNoodle,
-      total: 0,
-      payStatus: 'pending'
-    }
-    const anotherCostCostItem = {
-      addedTime: updatedInfo.sectionID,
-      sectionID: updatedInfo.sectionID,
-      itemKey: 'anotherCost',
-      roomID: this.state.gettingRoomID,
-      quantity: 0,
-      unitPrice: 0,
-      total: 0,
-      payStatus: 'pending'
-    }
-
-    this.props.addChargedItemRequestHandler(roomCostItem)
-    this.props.addChargedItemRequestHandler(waterCostItem)
-    this.props.addChargedItemRequestHandler(beerCostItem)
-    this.props.addChargedItemRequestHandler(softdrinkCostItem)
-    this.props.addChargedItemRequestHandler(instantNoodleCostItem)
-    this.props.addChargedItemRequestHandler(anotherCostCostItem)
-
-    this.props.addHistoryItemRequestHandler({
-      roomID: this.state.gettingRoomID,
-      roomName: this.state.gettingRoomName,
-      total: 0,
-      sectionID: updatedInfo.timeIn,
-      timeIn: updatedInfo.timeIn,
-      timeOut: 0,
-      note: this.state.currentNote.length > 0 ? this.state.currentNote + ',' : '',
-      tag: this.state.selectedSectionType,
-      sectionRoom: this.state.selectedRoomType,
-      cmnd: ''
-    })
-
-    this.closeGetRoomModal()
-    setTimeout(() => {
-      this.props.getRoomsDataRequestHandler()
-      this.props.getHistoryListRequestHandler()
-    }, 300)
-  }
-
-  selectSectionType = (sectionType) => {
-    if (sectionType == 'DG') {
-      this.setState({
-        selectedSectionType: sectionType,
-        selectedRoomType: 'quat'
-      })
-    } else if (sectionType == 'CD') {
-      this.setState({
-        selectedSectionType: sectionType,
-        selectedRoomType: 'lanh'
-      })
-    } else {
-      this.setState({
-        selectedSectionType: sectionType,
-        selectedRoomType: 'lanh'
-      })
-    }
-  }
-
-  selectRoomType = (roomType) => {
-    this.setState({
-      selectedRoomType: roomType
-    })
-  }
-
   render() {
-    const { modalGetRoomVisible, selectedSectionType, gettingRoomName, selectedRoomType, changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
+    const { changeCashBoxVisible, changeCashBoxModalHeader, modalCashBoxTitle, changeMoneyTxt, changeMoneyValue, changeMoneyType } = this.state
     return (
       <View style={styles.container}>
         <MenuBar goToStatisticDay={this.goToStatisticDay} />
         <View style={styles.contentContainer}>
           <View style={styles.leftSideContent}>
-            <RoomMap showGetRoomModal={this.showGetRoomModal} showRoomDetail={this.showRoomDetail} />
+            <RoomMap openGetRoomScreen={this.openGetRoomScreen} showRoomDetail={this.showRoomDetail} />
             <CashBox showWithdrawModal={this.showWithdrawModal} showDepositModal={this.showDepositModal} goToDetail={() => this.props.navigation.navigate('ChangeCashHistory')} />
           </View>
           <View style={styles.rightSideContent}>
@@ -291,96 +143,13 @@ class Home extends PureComponent {
             <HistoryList navigation={this.props.navigation} />
           </View>
         </View>
-
-        <Modal isVisible={modalGetRoomVisible} avoidKeyboard={true} onBackdropPress={this.closeGetRoomModal}>
-          {/* <ScrollView keyboardShouldPersistTaps='handled'> */}
-          <View style={styles.modalContent}>
-            <View style={styles.modalTopBar}>
-              <View style={styles.modalHeaderTxtWrapper}>
-                <Text style={[styles.headerTxt, { marginRight: 20 }]}>Nhận Phòng</Text>
-                <View style={styles.roomNumber}>
-                  <Text style={styles.roomNumberTxt}>{gettingRoomName}</Text>
-                </View>
-              </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal}>
-                <Icon type="AntDesign" name="close" style={styles.iconClose} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.modalBody}>
-              <View style={styles.leftBodyContainer}>
-                <View style={styles.typeContainer}>
-                  <Text style={styles.titleTxt}>Loại:</Text>
-                  <View style={styles.typeOptionsWrapper}>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('DG')}>
-                      <View style={styles.optionBtnWrapper}>
-                        <CheckBox checked={selectedSectionType == 'DG'} color="green" onPress={() => this.selectSectionType('DG')} />
-                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>DG</Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('CD')}>
-                      <View style={styles.optionBtnWrapper}>
-                        <CheckBox checked={selectedSectionType == 'CD'} color="green" onPress={() => this.selectSectionType('CD')} />
-                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>CD</Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectSectionType('QD')}>
-                      <View style={styles.optionBtnWrapper}>
-                        <CheckBox checked={selectedSectionType == 'QD'} color="green" onPress={() => this.selectSectionType('QD')} />
-                        <Text style={[styles.titleTxt, { marginLeft: 10 }]}>Qua đêm</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.typeContainer}>
-                  <Text style={styles.titleTxt}>Phòng:</Text>
-                  <View style={styles.typeOptionsWrapper}>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('quat')}>
-                      <View style={styles.optionBtnWrapper}>
-                        <CheckBox checked={selectedRoomType == 'quat'} color="green" onPress={() => this.selectRoomType('quat')} />
-                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Quạt</Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.optionWrapper]} onPress={() => this.selectRoomType('lanh')}>
-                      <View style={styles.optionBtnWrapper}>
-                        <CheckBox checked={selectedRoomType == 'lanh'} color="green" onPress={() => this.selectRoomType('lanh')} />
-                        <Text style={[styles.titleTxt, { marginLeft: 20 }]}>Lạnh</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.rightBodyContainer}>
-                <Text style={styles.titleTxt}>Ghi chú:</Text>
-                <TextInput
-                  style={{ height: 100, width: '90%', borderWidth: 1, backgroundColor: 'white' }}
-                  placeholder="Nhập ghi chú"
-                  onChangeText={(text) => this.setState({ currentNote: text })}
-                  multiline
-                  keyboardType="default"
-                  blurOnSubmit={true}
-                  returnKeyType="done"
-                />
-              </View>
-            </View>
-            <View style={styles.modalFooter}>
-              <TouchableOpacity activeOpacity={0.7} style={[styles.btnOK, { backgroundColor: '#E74C3C' }]} onPress={this.closeGetRoomModal}>
-                <Text style={styles.headerTxt}>Hủy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnOK} onPress={this.onSubmitGetRoom}>
-                <Text style={styles.headerTxt}>OK</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          {/* </ScrollView> */}
-        </Modal>
-
         <Modal isVisible={changeCashBoxVisible} style={styles.modalContainer} >
           <View style={styles.modalWrapper}>
             <View style={[styles.modalHeaderWrapper, { backgroundColor: this.state.changeMoneyType == 'withdraw' ? '#F5B041' : '#2A6C97' }]}>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={styles.modalHeaderTxt}>{changeCashBoxModalHeader}</Text>
               </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeGetRoomModal} onPress={this.closeChangeMoneyBoxModal}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btnCloseModal} onPress={this.closeChangeMoneyBoxModal}>
                 <Icon type="AntDesign" name="close" style={styles.iconClose} />
               </TouchableOpacity>
             </View>

@@ -67,7 +67,7 @@ export default class StatisticDay extends Component {
                   <FlatList
                     data={hourSection}
                     keyExtractor={(item) => item.sectionID}
-                    renderItem={({ item }) => <SectionHourItem sectionID={item.sectionID} roomID={item.roomID} timeIn={item.timeIn} timeOut={item.timeOut} roomType={item.roomType} total={item.total} navigation={this.props.navigation} />}
+                    renderItem={({ item }) => <SectionHourItem key={item.sectionID} sectionID={item.sectionID} roomID={item.roomID} timeIn={item.timeIn} timeOut={item.timeOut} roomType={item.roomType} total={item.total} navigation={this.props.navigation} />}
                     numColumns={2}
                     scrollEnabled
                     nestedScrollEnabled

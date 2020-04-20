@@ -22,11 +22,11 @@ class HistoryList extends Component {
     return (
       <View style={{ width: '100%', flex: 1 }}>
         <FlatList
-          data={data}
+          data={data.slice(0,100)}
           scrollEnabled
           bounces={true}
           keyExtractor={item => item.addedTime + ''}
-          renderItem={({ item, index }) => <HistoryItem item={item} navigation={this.props.navigation} />}
+          renderItem={({ item, index }) => <HistoryItem key={item.addedTime} item={item} navigation={this.props.navigation} />}
         />
       </View>
     )
