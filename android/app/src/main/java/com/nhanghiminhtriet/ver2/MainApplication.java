@@ -1,4 +1,4 @@
-package com.testrunandroid;
+package com.nhanghiminhtriet.ver2;
 
 import android.app.Application;
 import android.content.Context;

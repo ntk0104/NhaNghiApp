@@ -958,7 +958,7 @@ class DetailRoom extends Component {
               </TouchableOpacity>
             </View>
             <View style={[styles.modalSwapRoomWrapper, { padding: 10, justifyContent: 'space-around' }]}>
-              <RoomMap showGetRoomModal={this.swapToNewRoom} showRoomDetail={this.showAlertBusyRoom} />
+              <RoomMap openGetRoomScreen={this.swapToNewRoom} showRoomDetail={this.showAlertBusyRoom} />
             </View>
           </View>
         </Modal>

@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.testrunandroid"
+        applicationId "com.nhanghiminhtriet.ver2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
