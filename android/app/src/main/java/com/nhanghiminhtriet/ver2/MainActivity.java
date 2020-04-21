@@ -1,4 +1,4 @@
-package com.testrunandroid;
+package com.nhanghiminhtriet.ver2;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
