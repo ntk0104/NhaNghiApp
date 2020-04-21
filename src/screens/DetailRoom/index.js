@@ -318,16 +318,6 @@ class DetailRoom extends Component {
     })
   }
 
-  closeEditAnotherCostModal = () => {
-    this.setState({
-      anotherCostModalVisible: false,
-      modalAnotherCostHeader: 'Cộng thêm chi phí khác',
-      modalNoteTitle: 'Ghi chú khoản thêm',
-      anotherCostNoteText: '',
-      anotherCostValue: 0
-    })
-  }
-
   submitAnotherCost = () => {
     const { roomInfo } = this.props
     let addedNote = ''
@@ -338,6 +328,7 @@ class DetailRoom extends Component {
         total: parseInt(this.state.additionalCost) + parseInt(this.state.anotherCostValue)
       })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' CỘNG thêm vào chi phí khác (' + this.state.anotherCostNoteText + ') thêm: ' + this.state.anotherCostValue + ' K'
+      this.setState({ additionalCost: parseInt(this.state.additionalCost) + parseInt(this.state.anotherCostValue) })
     } else {
       this.props.updateChargedItemRequestHandler({
         id: roomInfo.sectionID + '_anotherCost',
@@ -345,13 +336,14 @@ class DetailRoom extends Component {
         total: parseInt(this.state.additionalCost) - parseInt(this.state.anotherCostValue)
       })
       addedNote = moment().format('DD/MM/YY HH:mm') + ' GIẢM chi phí khác (' + this.state.anotherCostNoteText + ') bớt đi: ' + this.state.anotherCostValue + ' K'
+      this.setState({ additionalCost: parseInt(this.state.additionalCost) - parseInt(this.state.anotherCostValue) })
     }
     this.props.updateRoomInfoRequestHandler({
       id: this.props.roomInfo.id,
       note: this.state.note + ',' + addedNote
     })
     this.closeAnotherCostModal()
-    this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
+    // this.props.getRoomInfoRequestHandler({ id: this.props.roomInfo.id })
   }
 
   returnRoom = () => {
