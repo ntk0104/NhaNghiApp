@@ -1,4 +1,4 @@
-package com.nhanghiminhtriet.ver2;
+package com.minhtriethotel;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
