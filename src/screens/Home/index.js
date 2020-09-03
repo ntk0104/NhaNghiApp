@@ -1,20 +1,19 @@
+import { Icon } from 'native-base'
 import React, { PureComponent } from 'react'
-import { Text, View, TouchableOpacity, TextInput, ScrollView, StatusBar } from 'react-native'
-import styles from './styles'
-import MenuBar from '../../components/MenuBar/index'
+import { Text, TextInput, TouchableOpacity, View } from 'react-native'
 import Modal from 'react-native-modal'
-import { Icon, CheckBox } from 'native-base'
-import Realm from 'realm'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+import MenuBar from '../../components/MenuBar/index'
 import { addRoom } from '../../database/index'
-import moment from 'moment'
-import { Storage, constants, appConfig } from '../../utils'
-import RoomMap from './RoomMap'
+import { addChargedItemRequest, addHistoryItemRequest, getCashBoxRequest, getHistoryListRequest, getRoomsDataRequest, updateCashBoxRequest, updateRoomInfoRequest } from '../../redux/actions/index'
+import { appConfig, constants, Storage } from '../../utils'
 import CashBox from './CashBox'
 import HistoryList from './HistoryList'
-import { getRoomsDataRequest, updateRoomInfoRequest, addChargedItemRequest, getCashBoxRequest, updateCashBoxRequest, addHistoryItemRequest, getHistoryListRequest } from '../../redux/actions/index'
-import { connect } from 'react-redux';
+import RoomMap from './RoomMap'
+import styles from './styles'
+import realm from '../../database/configRealm'
 
-import { createStructuredSelector } from 'reselect';
 
 class Home extends PureComponent {
 
@@ -31,8 +30,12 @@ class Home extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('%c%s', 'color: #22b6', Realm.defaultPath);
+    // console.log('%c%s', 'color: #22b6', Realm.defaultPath);
     this.checkFirstInitApp()
+  }
+
+  componentWillUnmount(){
+    realm.close()
   }
 
   checkFirstInitApp = async () => {

@@ -48,7 +48,12 @@ const MainNavigation = createStackNavigator(
   {
     initialRouteName: "App",
     headerMode: 'none',
-    mode: 'modal' // slide from the bottom to the top like as the animation of modal
+    mode: 'modal', // slide from the bottom to the top like as the animation of modal
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 20
+      }
+    }),
   }
 )
 

@@ -31,9 +31,10 @@ class ChangeCashItem extends PureComponent {
         {
           text: 'Chắc chắn', onPress: () => {
             this.props.deleteHistoryWithdrawDepositRequestHandler({ transactionID: this.props.item.addedTime })
-            setTimeout(() => {
+            this.timeout = setTimeout(() => {
               this.props.updateHistory()
               this.props.getCurrentMoneyInBoxHandler()
+              clearTimeout(this.timeout)
             }, 200)
           }
         }

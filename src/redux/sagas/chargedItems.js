@@ -1,9 +1,7 @@
-import { UPDATE_CHARGED_ITEM_REQUEST } from '../types'
-import { put, takeLatest, fork, call, takeEvery } from 'redux-saga/effects';
-import { updateChargedItemSuccess, updateChargedItemFailure } from '../actions'
-import realm from '../../database/configRealm'
-import moment from 'moment'
-import { updateChargedItem } from '../../database/model/chargedItem'
+import { call, fork, put, takeEvery } from 'redux-saga/effects';
+import { updateChargedItem } from '../../database/model/chargedItem';
+import { updateChargedItemFailure, updateChargedItemSuccess } from '../actions';
+import { UPDATE_CHARGED_ITEM_REQUEST } from '../types';
 
 const updateChargedItemRequestAPI = async (payload) => {
   return new Promise((resolve, reject) => {
