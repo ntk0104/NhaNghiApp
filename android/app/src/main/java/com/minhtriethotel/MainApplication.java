@@ -1,4 +1,4 @@
-package com.nhanghiminhtriet.ver2;
+package com.minhtriethotel;
 
 import android.app.Application;
 import android.content.Context;

@@ -5,9 +5,9 @@ import TransactionCash from './schema/transactionCash'
 import HistoryRoom from './schema/HistoryRoom'
 
 export default realm = new Realm({schema: [
-    Room,
-    ChargedItem,
-    TransactionCash,
-    HistoryRoom
+    Room.schema,
+    ChargedItem.schema,
+    TransactionCash.schema,
+    HistoryRoom.schema
   ]
 })

@@ -175,9 +175,10 @@ class ModalGetRoom extends React.Component {
     });
 
     this.closeGetRoomScreen();
-    setTimeout(() => {
+    this.timeout = setTimeout(() => {
       this.props.getRoomsDataRequestHandler();
       this.props.getHistoryListRequestHandler();
+      clearTimeout(this.timeout)
     }, 300);
   };
 

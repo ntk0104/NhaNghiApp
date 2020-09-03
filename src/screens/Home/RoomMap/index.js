@@ -16,8 +16,12 @@ class RoomMap extends Component {
     }
   }
 
-  componentDidMount(){
-    this.timer = setInterval(() => {this.props.getRoomsDataRequestHandler()}, 60000)
+  componentDidMount() {
+    this.timer = setInterval(() => { this.props.getRoomsDataRequestHandler() }, 60000)
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.timer)
   }
 
   render() {

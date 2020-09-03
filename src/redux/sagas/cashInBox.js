@@ -1,9 +1,7 @@
-import { GET_CASH_BOX_REQUEST, UPDATE_CASH_BOX_REQUEST, GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST, DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST } from '../types'
-import { put, takeLatest, fork, call } from 'redux-saga/effects';
-import { getCashBoxSuccess, getCashBoxFailure, udpateCashBoxSuccess, updateCashBoxFailure, getHistoryWithdrawDepositSuccess, getHistoryWithdrawDepositFailure, deleteHistoryWithdrawDepositSuccess, deleteHistoryWithdrawDepositFailure } from '../actions'
-import realm from '../../database/configRealm'
-import moment from 'moment'
-import { getCurrentMoneyInBox, addTransaction, getHistoryWithdrawAndDeposit, deleteTransaction } from '../../database/model/transactionCash'
+import { call, fork, put, takeLatest } from 'redux-saga/effects';
+import { addTransaction, deleteTransaction, getCurrentMoneyInBox, getHistoryWithdrawAndDeposit } from '../../database/model/transactionCash';
+import { deleteHistoryWithdrawDepositFailure, deleteHistoryWithdrawDepositSuccess, getCashBoxFailure, getCashBoxSuccess, getHistoryWithdrawDepositFailure, getHistoryWithdrawDepositSuccess, udpateCashBoxSuccess, updateCashBoxFailure } from '../actions';
+import { DELETE_HISTORY_WITHDRAW_DEPOSIT_REQUEST, GET_CASH_BOX_REQUEST, GET_HISTORY_WITHDRAW_DEPOSIT_REQUEST, UPDATE_CASH_BOX_REQUEST } from '../types';
 
 const getCashInBoxAPI = () => {
   return new Promise(async (resolve, reject) => {

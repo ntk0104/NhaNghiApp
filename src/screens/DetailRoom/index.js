@@ -443,7 +443,10 @@ class DetailRoom extends Component {
         sectionID: roomInfo.sectionID,
         timeOut: moment().valueOf()
       })
-      setTimeout(() => this.props.getHistoryListRequestHandler(), 200)
+      this.timeout = setTimeout(() => { 
+        this.props.getHistoryListRequestHandler() 
+        clearTimeout(this.timeout)
+      }, 200)
     })
   }
 
@@ -464,9 +467,10 @@ class DetailRoom extends Component {
               sectionID: roomInfo.sectionID,
               roomID: roomInfo.id,
             })
-            setTimeout(() => {
+            this.timeout2 = setTimeout(() => {
               this.props.getHistoryListRequestHandler()
               this.props.navigation.goBack()
+              clearTimeout(this.timeout2)
             }, 300)
           }
         }
