@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.minhtriethotel"
+        applicationId "com.nnmt071020"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

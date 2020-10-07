@@ -1,4 +1,4 @@
-package com.minhtriethotel;
+package com.nnmt071020;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

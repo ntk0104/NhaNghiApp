@@ -35,8 +35,8 @@ export default (appConfig = {
       note: '',
       tag: '',
       sectionRoom: '',
-      overnight_price: 150,
-      type: 'special',
+      overnight_price: 180,
+      type: '2beds',
       cmnd: ''
     },
     {
